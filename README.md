@@ -51,6 +51,18 @@ npm run web
 
 Log in with any email/password (demo teacher auth).
 
+### Public Heritage Explore (QR codes)
+
+No login required. Visitors can browse sites, scan QR codes, and read location info:
+
+```
+https://YOUR_USERNAME.github.io/singapore-heritage-quest/explore
+```
+
+- **Edit content:** [packages/shared/src/locations.config.ts](packages/shared/src/locations.config.ts)
+- **Edit images:** add files to `apps/web-dashboard/public/locations/`
+- **Full guide:** [LOCATIONS_CONFIG.md](LOCATIONS_CONFIG.md)
+
 ---
 
 ## Mobile App (Expo Go)

@@ -48,6 +48,33 @@ export interface Location {
   color: string;
 }
 
+/** Rich content for website location pages — edit in locations.config.ts */
+export interface LocationHighlight {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface LocationGuide {
+  id: string;
+  name: string;
+  district: string;
+  emoji: string;
+  color: string;
+  characterId: string;
+  lat: number;
+  lng: number;
+  radiusMeters: number;
+  tagline: string;
+  shortDescription: string;
+  overview: string;
+  heroImage: string;
+  gallery: string[];
+  highlights: LocationHighlight[];
+  funFacts: string[];
+  visitTips: string[];
+}
+
 export interface StoryPanel {
   text: string;
   emoji: string;

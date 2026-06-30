@@ -1,12 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
+import ExploreLayout from './components/ExploreLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import StudentDetail from './pages/StudentDetail';
 import Classes from './pages/Classes';
 import Content from './pages/Content';
+import ExploreHome from './pages/explore/ExploreHome';
+import LocationScan from './pages/explore/LocationScan';
+import LocationView from './pages/explore/LocationView';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -17,6 +21,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public heritage explorer — no login required */}
+      <Route path="/explore" element={<ExploreLayout />}>
+        <Route index element={<ExploreHome />} />
+        <Route path="scan" element={<LocationScan />} />
+        <Route path="location/:id" element={<LocationView />} />
+      </Route>
+
       <Route path="/login" element={<Login />} />
       <Route
         path="/"

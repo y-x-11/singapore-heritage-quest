@@ -1,5 +1,8 @@
 import type { Badge, Character, Collectible, Location, Mission, Quiz } from './types';
 import { formatQrPayload } from './constants';
+import { LOCATIONS_FROM_CONFIG } from './locationUtils';
+
+export const LOCATIONS: Location[] = LOCATIONS_FROM_CONFIG;
 
 export const CHARACTERS: Character[] = [
   {
@@ -27,45 +30,6 @@ export const CHARACTERS: Character[] = [
     locationId: 'kampong-glam',
     introLine: "Assalamualaikum! I'm Razak. Before the tall buildings, we lived in kampongs full of community spirit!",
     emoji: '🪁',
-    color: '#2A9D8F',
-  },
-];
-
-export const LOCATIONS: Location[] = [
-  {
-    id: 'chinatown',
-    name: 'Chinatown',
-    district: 'Outram',
-    lat: 1.2834,
-    lng: 103.8444,
-    radiusMeters: 150,
-    characterId: 'coolie',
-    description: 'Explore temple streets, shophouses, and the stories of early Chinese migrants who shaped Singapore.',
-    emoji: '🏮',
-    color: '#E63946',
-  },
-  {
-    id: 'little-india',
-    name: 'Little India',
-    district: 'Rochor',
-    lat: 1.3064,
-    lng: 103.851,
-    radiusMeters: 150,
-    characterId: 'hawker',
-    description: 'Discover spice markets, colourful murals, and the vibrant food culture of the Indian community.',
-    emoji: '🪔',
-    color: '#9B5DE5',
-  },
-  {
-    id: 'kampong-glam',
-    name: 'Kampong Glam',
-    district: 'Bugis',
-    lat: 1.302,
-    lng: 103.859,
-    radiusMeters: 150,
-    characterId: 'kampong-boy',
-    description: 'Walk through the Malay-Arab quarter, Sultan Mosque, and memories of traditional kampong life.',
-    emoji: '🕌',
     color: '#2A9D8F',
   },
 ];

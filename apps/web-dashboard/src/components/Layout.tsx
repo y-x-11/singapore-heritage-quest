@@ -33,6 +33,15 @@ export default function Layout() {
               {item.label}
             </Link>
           ))}
+          <a
+            href={`${import.meta.env.BASE_URL}explore`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl font-body font-semibold text-sm text-white/70 hover:bg-white/10 mt-2 border border-white/10"
+          >
+            <span>🗺️</span>
+            Public Explore (QR)
+          </a>
         </nav>
         <div className="p-4 border-t border-white/10">
           <p className="text-sm font-semibold">{user?.displayName}</p>
