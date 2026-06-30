@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Singapore Heritage Quest AR",
+    "slug": "heritage-quest-ar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "heritagequest",
+    "platforms": ["ios", "android"],
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8F0"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.heritagequest.ar",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Scan heritage cards to unlock AR characters",
+        "NSLocationWhenInUseUsageDescription": "Discover heritage zones near you"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFF8F0"
+      },
+      "package": "com.heritagequest.ar",
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Heritage Quest to scan heritage cards"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Heritage Quest to find heritage zones near you"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

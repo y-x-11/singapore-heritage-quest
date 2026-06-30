@@ -1,0 +1,17 @@
+{
+  "name": "singapore-heritage-quest",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/generate-assets.js",
+    "mobile": "npm run start --workspace=mobile",
+    "mobile:clear": "npm run start:clear --workspace=mobile",
+    "web": "npm run dev --workspace=web-dashboard",
+    "build:web": "npm run build --workspace=web-dashboard",
+    "seed": "npm run seed --workspace=@heritage/shared"
+  }
+}

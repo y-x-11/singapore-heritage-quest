@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isTeacher() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isTeacherOfClass(classId) {
+      return isTeacher() &&
+        get(/databases/$(database)/documents/classes/$(classId)).data.teacherId == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isTeacher();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+    }
+
+    match /classes/{classId} {
+      allow read: if isSignedIn();
+      allow create: if isTeacher();
+      allow update: if isTeacherOfClass(classId);
+    }
+
+    match /characters/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /locations/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /missions/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /quizzes/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /badges/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /collectibles/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /progress/{progressId} {
+      allow read: if isOwner(resource.data.userId) || isTeacher();
+      allow create, update: if isOwner(request.resource.data.userId);
+    }
+
+    match /user_badges/{docId} {
+      allow read: if isOwner(resource.data.userId) || isTeacher();
+      allow create: if isOwner(request.resource.data.userId);
+    }
+
+    match /user_collectibles/{docId} {
+      allow read: if isOwner(resource.data.userId) || isTeacher();
+      allow create: if isOwner(request.resource.data.userId);
+    }
+  }
+}

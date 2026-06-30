@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+build/
+*.log
+.env
+.env.local
+.firebase/
+google-services.json
+GoogleService-Info.plist
+serviceAccountKey.json
+.DS_Store
