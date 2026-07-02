@@ -43,6 +43,16 @@ async function seed() {
   for (const b of BADGES) batch.set(db.collection('badges').doc(b.id), b);
   for (const c of COLLECTIBLES) batch.set(db.collection('collectibles').doc(c.id), c);
 
+  batch.set(db.collection('classes').doc('class-demo'), {
+    id: 'class-demo',
+    name: 'Heritage Explorers 2026',
+    school: 'UWCSEA Dover',
+    joinCode: 'HERIT1',
+    teacherId: 'demo-teacher',
+    studentIds: [],
+    createdAt: new Date().toISOString(),
+  });
+
   await batch.commit();
   console.log('Seed complete!');
 }

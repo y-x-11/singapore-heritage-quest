@@ -15,7 +15,7 @@ export default function StudentProfile() {
       <div className="text-center py-12">
         <p className="text-4xl mb-4">🔐</p>
         <p className="font-body text-navy/60 mb-4">Sign in to view your profile</p>
-        <Link to="/explore/login" className="bg-teal text-white font-heading font-bold px-6 py-3 rounded-xl">
+        <Link to="/login" className="bg-teal text-white font-heading font-bold px-6 py-3 rounded-xl">
           Student Sign In
         </Link>
       </div>

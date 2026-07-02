@@ -16,6 +16,7 @@ import {
   loadDemoStudent,
   clearDemoStudent,
   createDemoGoogleStudent,
+  formatFirebaseError,
 } from '../lib/authService';
 
 interface AuthContextType {
@@ -62,13 +63,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
         return;
       }
-      const profile = await fetchUserProfile(fbUser.uid);
-      if (profile) {
-        setUser(mapFirebaseUser(fbUser, profile));
-      } else {
+      try {
+        const profile = await fetchUserProfile(fbUser.uid);
+        if (profile) {
+          setUser(mapFirebaseUser(fbUser, profile));
+        } else {
+          setUser(null);
+        }
+      } catch {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsub();
@@ -111,35 +117,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const result = await signInWithPopup(auth, googleProvider);
-    const fbUser = result.user;
-    let profile = await fetchUserProfile(fbUser.uid);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const fbUser = result.user;
+      let profile = await fetchUserProfile(fbUser.uid);
 
-    if (!profile) {
-      const code = classCode?.trim().toUpperCase();
-      if (!code) {
+      if (!profile) {
+        const code = classCode?.trim().toUpperCase();
+        if (!code) {
+          await signOut(auth);
+          throw new Error('Welcome! Enter your class code below, then sign in with Google again.');
+        }
+        const classId = await findClassByJoinCode(code);
+        if (!classId) {
+          await signOut(auth);
+          throw new Error(
+            'Invalid class code. Ask your teacher to create a class with joinCode HERIT1 in Firebase, or run the seed script.'
+          );
+        }
+        profile = await createStudentProfile(
+          fbUser.uid,
+          fbUser.email ?? '',
+          fbUser.displayName ?? 'Student',
+          fbUser.photoURL ?? undefined,
+          classId
+        );
+      } else if (profile.role !== 'student') {
         await signOut(auth);
-        throw new Error('Welcome! Enter your class code below, then sign in with Google again.');
+        throw new Error('This Google account is registered as a teacher. Use the teacher login instead.');
       }
-      const classId = await findClassByJoinCode(code);
-      if (!classId) {
+
+      setUser(mapFirebaseUser(fbUser, profile));
+      localStorage.removeItem(DEMO_TEACHER_KEY);
+    } catch (error) {
+      if (auth.currentUser) {
         await signOut(auth);
-        throw new Error('Invalid class code. Check with your teacher and try again.');
       }
-      profile = await createStudentProfile(
-        fbUser.uid,
-        fbUser.email ?? '',
-        fbUser.displayName ?? 'Student',
-        fbUser.photoURL ?? undefined,
-        classId
-      );
-    } else if (profile.role !== 'student') {
-      await signOut(auth);
-      throw new Error('This Google account is registered as a teacher. Use the teacher login instead.');
+      throw new Error(formatFirebaseError(error));
     }
-
-    setUser(mapFirebaseUser(fbUser, profile));
-    localStorage.removeItem(DEMO_TEACHER_KEY);
   };
 
   const logout = async () => {

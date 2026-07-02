@@ -1,6 +1,6 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, memoryLocalCache, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,14 +11,36 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-export const isFirebaseConfigured = Boolean(
-  firebaseConfig.apiKey &&
-    firebaseConfig.projectId &&
-    firebaseConfig.apiKey !== 'your-api-key'
+function looksLikePlaceholder(value: string | undefined) {
+  if (!value) return true;
+  const v = value.trim().toLowerCase();
+  if (!v) return true;
+  if (v.startsWith('your') || v.includes('your-')) return true;
+  if (v === 'abc123' || v.includes('abc123')) return true;
+  if (v.includes('your-project-id') || v.includes('your-project')) return true;
+  return false;
+}
+
+export const isFirebaseConfigured = !(
+  looksLikePlaceholder(firebaseConfig.apiKey) ||
+  looksLikePlaceholder(firebaseConfig.authDomain) ||
+  looksLikePlaceholder(firebaseConfig.projectId) ||
+  looksLikePlaceholder(firebaseConfig.storageBucket) ||
+  looksLikePlaceholder(firebaseConfig.messagingSenderId) ||
+  looksLikePlaceholder(firebaseConfig.appId)
 );
 
-const app = getApps().length ? getApps()[0] : isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
 
+if (isFirebaseConfigured) {
+  app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  db = initializeFirestore(app, {
+    localCache: memoryLocalCache(),
+    experimentalAutoDetectLongPolling: true,
+  });
+}
+
+export { app, db };
 export const auth = app ? getAuth(app) : null;
-export const db = app ? getFirestore(app) : null;
 export const googleProvider = new GoogleAuthProvider();

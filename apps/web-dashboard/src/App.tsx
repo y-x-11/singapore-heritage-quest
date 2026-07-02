@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import ExploreLayout from './components/ExploreLayout';
-import Login from './pages/Login';
+import TeacherLogin from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import StudentDetail from './pages/StudentDetail';
@@ -33,7 +33,8 @@ function AppRoutes() {
         <Route path="profile" element={<StudentProfile />} />
       </Route>
 
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<StudentLogin />} />
+      <Route path="/teacher/login" element={<TeacherLogin />} />
       <Route
         path="/"
         element={

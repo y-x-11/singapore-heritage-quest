@@ -15,6 +15,11 @@ export default function StudentLogin() {
     return null;
   }
 
+  if (user?.role === 'teacher') {
+    navigate('/', { replace: true });
+    return null;
+  }
+
   const handleGoogle = async () => {
     setError('');
     setBusy(true);
@@ -81,7 +86,7 @@ export default function StudentLogin() {
 
       <p className="text-center mt-4 font-body text-xs text-navy/40">
         Are you a teacher?{' '}
-        <Link to="/login" className="text-teal hover:underline">
+        <Link to="/teacher/login" className="text-teal hover:underline">
           Teacher login
         </Link>
       </p>

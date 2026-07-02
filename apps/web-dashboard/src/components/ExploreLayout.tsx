@@ -38,7 +38,7 @@ export default function ExploreLayout() {
                 </Link>
               ) : (
                 <Link
-                  to="/explore/login"
+                  to="/login"
                   className="bg-white text-navy font-heading font-bold text-sm px-3 py-2 rounded-xl shadow hover:bg-cream transition-colors"
                 >
                   Sign in
