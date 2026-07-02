@@ -1,39 +1,170 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface TeacherUser {
-  email: string;
-  displayName: string;
-  role: 'teacher';
-}
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  signOut,
+  User as FirebaseUser,
+} from 'firebase/auth';
+import { auth, googleProvider, isFirebaseConfigured } from '../lib/firebase';
+import {
+  AppUser,
+  fetchUserProfile,
+  createStudentProfile,
+  findClassByJoinCode,
+  saveDemoStudent,
+  loadDemoStudent,
+  clearDemoStudent,
+  createDemoGoogleStudent,
+} from '../lib/authService';
 
 interface AuthContextType {
-  user: TeacherUser | null;
-  login: (email: string, password: string) => void;
-  logout: () => void;
+  user: AppUser | null;
+  loading: boolean;
+  isConfigured: boolean;
+  /** Teacher email/password (demo or Firebase) */
+  loginTeacher: (email: string, password: string) => Promise<void>;
+  /** Student — Google sign-in; classCode required for new students */
+  loginStudentWithGoogle: (classCode?: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const DEMO_TEACHER_KEY = 'heritage_teacher';
+
+function mapFirebaseUser(fb: FirebaseUser, profile: AppUser): AppUser {
+  return {
+    ...profile,
+    email: fb.email ?? profile.email,
+    displayName: fb.displayName ?? profile.displayName,
+    photoURL: fb.photoURL ?? profile.photoURL,
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<TeacherUser | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('heritage_teacher');
-    if (saved) setUser(JSON.parse(saved));
+    if (!isFirebaseConfigured || !auth) {
+      const demoStudent = loadDemoStudent();
+      const demoTeacher = localStorage.getItem(DEMO_TEACHER_KEY);
+      if (demoStudent) setUser(demoStudent);
+      else if (demoTeacher) setUser(JSON.parse(demoTeacher));
+      setLoading(false);
+      return;
+    }
+
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+      if (!fbUser) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      const profile = await fetchUserProfile(fbUser.uid);
+      if (profile) {
+        setUser(mapFirebaseUser(fbUser, profile));
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsub();
   }, []);
 
-  const login = (email: string, _password: string) => {
-    const u: TeacherUser = { email, displayName: email.split('@')[0], role: 'teacher' };
-    localStorage.setItem('heritage_teacher', JSON.stringify(u));
+  const loginTeacher = async (email: string, password: string) => {
+    if (isFirebaseConfigured && auth) {
+      await signInWithEmailAndPassword(auth, email, password);
+      const profile = await fetchUserProfile(auth.currentUser!.uid);
+      if (profile?.role !== 'teacher') {
+        await signOut(auth);
+        throw new Error('This account is not registered as a teacher.');
+      }
+      return;
+    }
+    const u: AppUser = {
+      uid: 'demo_teacher',
+      email,
+      displayName: email.split('@')[0],
+      role: 'teacher',
+      xp: 0,
+      level: 1,
+      streak: 0,
+    };
+    localStorage.setItem(DEMO_TEACHER_KEY, JSON.stringify(u));
+    clearDemoStudent();
     setUser(u);
   };
 
-  const logout = () => {
-    localStorage.removeItem('heritage_teacher');
+  const loginStudentWithGoogle = async (classCode?: string) => {
+    if (!isFirebaseConfigured || !auth) {
+      const code = classCode?.trim().toUpperCase();
+      if (!code) throw new Error('Enter your class code to sign up.');
+      const classId = await findClassByJoinCode(code);
+      if (!classId) throw new Error('Invalid class code. Ask your teacher for the correct code.');
+      const demo = createDemoGoogleStudent('Student Explorer', 'student@demo.school', classId);
+      saveDemoStudent(demo);
+      localStorage.removeItem(DEMO_TEACHER_KEY);
+      setUser(demo);
+      return;
+    }
+
+    const result = await signInWithPopup(auth, googleProvider);
+    const fbUser = result.user;
+    let profile = await fetchUserProfile(fbUser.uid);
+
+    if (!profile) {
+      const code = classCode?.trim().toUpperCase();
+      if (!code) {
+        await signOut(auth);
+        throw new Error('Welcome! Enter your class code below, then sign in with Google again.');
+      }
+      const classId = await findClassByJoinCode(code);
+      if (!classId) {
+        await signOut(auth);
+        throw new Error('Invalid class code. Check with your teacher and try again.');
+      }
+      profile = await createStudentProfile(
+        fbUser.uid,
+        fbUser.email ?? '',
+        fbUser.displayName ?? 'Student',
+        fbUser.photoURL ?? undefined,
+        classId
+      );
+    } else if (profile.role !== 'student') {
+      await signOut(auth);
+      throw new Error('This Google account is registered as a teacher. Use the teacher login instead.');
+    }
+
+    setUser(mapFirebaseUser(fbUser, profile));
+    localStorage.removeItem(DEMO_TEACHER_KEY);
+  };
+
+  const logout = async () => {
+    if (auth && isFirebaseConfigured) {
+      await signOut(auth);
+    }
+    localStorage.removeItem(DEMO_TEACHER_KEY);
+    clearDemoStudent();
     setUser(null);
   };
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        isConfigured: isFirebaseConfigured,
+        loginTeacher,
+        loginStudentWithGoogle,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

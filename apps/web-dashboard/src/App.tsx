@@ -11,10 +11,13 @@ import Content from './pages/Content';
 import ExploreHome from './pages/explore/ExploreHome';
 import LocationScan from './pages/explore/LocationScan';
 import LocationView from './pages/explore/LocationView';
+import StudentLogin from './pages/explore/StudentLogin';
+import StudentProfile from './pages/explore/StudentProfile';
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+function TeacherRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user || user.role !== 'teacher') return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
 
@@ -26,15 +29,17 @@ function AppRoutes() {
         <Route index element={<ExploreHome />} />
         <Route path="scan" element={<LocationScan />} />
         <Route path="location/:id" element={<LocationView />} />
+        <Route path="login" element={<StudentLogin />} />
+        <Route path="profile" element={<StudentProfile />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
       <Route
         path="/"
         element={
-          <ProtectedRoute>
+          <TeacherRoute>
             <Layout />
-          </ProtectedRoute>
+          </TeacherRoute>
         }
       >
         <Route index element={<Dashboard />} />

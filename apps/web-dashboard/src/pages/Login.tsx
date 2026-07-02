@@ -1,22 +1,31 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const { loginTeacher } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please enter email and password');
       return;
     }
-    login(email, password);
-    navigate('/');
+    setError('');
+    setBusy(true);
+    try {
+      await loginTeacher(email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -43,11 +52,23 @@ export default function Login() {
             className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 font-body focus:border-teal outline-none"
           />
           {error && <p className="text-merlion text-sm font-semibold">{error}</p>}
-          <button type="submit" className="w-full bg-teal text-white font-heading font-bold py-3 rounded-xl hover:bg-teal/90 transition-colors">
-            Log In
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full bg-teal text-white font-heading font-bold py-3 rounded-xl hover:bg-teal/90 transition-colors disabled:opacity-60"
+          >
+            {busy ? 'Logging in…' : 'Log In'}
           </button>
         </form>
-        <p className="text-center text-xs text-navy/40 mt-6 font-body">Demo mode — any credentials work for teachers</p>
+        <p className="text-center text-xs text-navy/40 mt-6 font-body">
+          Demo mode — any credentials work without Firebase configured
+        </p>
+        <p className="text-center mt-4 font-body text-sm text-navy/50">
+          Student?{' '}
+          <Link to="/explore/login" className="text-teal font-semibold hover:underline">
+            Sign in with Google
+          </Link>
+        </p>
       </div>
     </div>
   );

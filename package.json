@@ -13,5 +13,8 @@
     "web": "npm run dev --workspace=web-dashboard",
     "build:web": "npm run build --workspace=web-dashboard",
     "seed": "npm run seed --workspace=@heritage/shared"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0"
   }
 }
