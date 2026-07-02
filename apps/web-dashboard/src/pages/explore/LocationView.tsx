@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { getLocationGuide, resolveAssetUrl, CHARACTERS } from '@heritage/shared';
 import { getSiteBaseUrl } from '../../lib/site';
+import LocationGame from '../../games/LocationGame';
 
 export default function LocationView() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +58,8 @@ export default function LocationView() {
         <h2 className="font-heading font-bold text-lg text-navy mb-3">About this place</h2>
         <p className="font-body text-navy/80 leading-relaxed text-sm">{guide.overview}</p>
       </section>
+
+      <LocationGame config={guide.game} accentColor={guide.color} locationName={guide.name} />
 
       <section className="mt-4 grid gap-3">
         {guide.highlights.map((h) => (

@@ -13,6 +13,7 @@ Edit **[packages/shared/src/locations.config.ts](packages/shared/src/locations.c
 | `highlights` | Key heritage points (icon + title + description) |
 | `funFacts` | Bullet list of interesting facts |
 | `visitTips` | Practical tips for visitors |
+| `game` | Mini-game settings (title, falling items, win score) |
 | `lat`, `lng`, `radiusMeters` | GPS (used by mobile app) |
 
 ## Adding images
@@ -22,7 +23,17 @@ Edit **[packages/shared/src/locations.config.ts](packages/shared/src/locations.c
 
 Or use full URLs: `"https://example.com/photo.jpg"`
 
-## QR codes
+## Mini-games
+
+Each location page includes a **heritage mini-game** (configured in `game`):
+
+| Location | Game | Catch items |
+|----------|------|-------------|
+| Chinatown | Dish Dash! | 🥟 🍜 🥮 Chinese dishes |
+| Little India | Prata Flip Catch! | 🫓 🌶️ roti & spices |
+| Kampong Glam | Wau Kite Catch! | 🪁 kampong items |
+
+Edit `game.items`, `game.title`, and `game.winScore` in the config file.
 
 Each location automatically gets a QR code on the **Explore** page:
 

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LOCATION_GUIDES, getLocationPageUrl, resolveAssetUrl } from '@heritage/shared';
-import QRCodeDisplay from '../components/QRCodeDisplay';
-import { getSiteBaseUrl } from '../lib/site';
+import QRCodeDisplay from '../../components/QRCodeDisplay';
+import { getSiteBaseUrl } from '../../lib/site';
 
 export default function ExploreHome() {
   const siteBase = getSiteBaseUrl();

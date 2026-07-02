@@ -55,6 +55,22 @@ export interface LocationHighlight {
   icon: string;
 }
 
+/** Mini-game shown on each location's explore page */
+export interface LocationGameConfig {
+  type: 'catch';
+  title: string;
+  instructions: string;
+  catcherName: string;
+  /** Emoji shown above the open-mouth catcher sprite */
+  catcherEmoji: string;
+  /** Items that fall from the sky */
+  items: string[];
+  /** Score needed to win */
+  winScore: number;
+  /** Heritage fact shown after winning */
+  winMessage: string;
+}
+
 export interface LocationGuide {
   id: string;
   name: string;
@@ -73,6 +89,7 @@ export interface LocationGuide {
   highlights: LocationHighlight[];
   funFacts: string[];
   visitTips: string[];
+  game: LocationGameConfig;
 }
 
 export interface StoryPanel {
