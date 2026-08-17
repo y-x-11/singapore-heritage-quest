@@ -29,8 +29,13 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Explore temple streets, shophouses, and the stories of early Chinese migrants who shaped Singapore.',
     overview:
       'Chinatown is one of Singapore\'s oldest districts, where Chinese immigrants arrived in the 1800s seeking work and a new life. Shophouses line narrow streets, temples anchor the community, and festivals like Chinese New Year still fill the air with drums and red lanterns. Walk Smith Street, visit the Buddha Tooth Relic Temple, and imagine the coolies who carried goods through these same alleys.',
-    heroImage: 'locations/chinatown.svg',
-    gallery: ['locations/chinatown.svg', 'locations/chinatown-2.svg'],
+    intangibleHeritage: {
+      title: 'Heritage Trades & Businesses',
+      description:
+        'Generational family enterprises dominate the area. This includes Traditional Chinese Medicine (TCM) practitioners like Eu Yan Sang, historic tea merchants like Pek Sin Choon, traditional pastry making (such as mooncakes at Tai Chong Kok), and religious incense craft.',
+    },
+    heroImage: 'locations/chinatown.png',
+    gallery: ['locations/chinatown.png', 'locations/chinatown-2.svg'],
     highlights: [
       {
         icon: '🏠',
@@ -84,8 +89,12 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Discover spice markets, colourful murals, and the vibrant food culture of the Indian community.',
     overview:
       'Little India pulses with colour, fragrance, and flavour. Indian immigrants brought spices, traditions, and recipes that became part of Singapore\'s identity. Serangoon Road is the main artery — spice shops spill onto sidewalks, saree stores shimmer, and hawkers flip roti prata at all hours. During Deepavali, the entire district transforms into a Festival of Lights.',
-    heroImage: 'locations/little-india.svg',
-    gallery: ['locations/little-india.svg', 'locations/little-india-2.svg'],
+    intangibleHeritage: {
+      description:
+        'Centralized at Tekka Center, the area preserves South and North Indian culinary arts, ranging from the performance art of pulling teh tarik to the skilled preparation of roti prata, thosai, and complex spice grinding.',
+    },
+    heroImage: 'locations/little-india.png',
+    gallery: ['locations/little-india.png', 'locations/little-india-2.svg'],
     highlights: [
       {
         icon: '🌶️',
@@ -139,8 +148,13 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Walk through the Malay-Arab quarter, Sultan Mosque, and memories of traditional kampong life.',
     overview:
       'Kampong Glam was the historic seat of Malay royalty and a thriving Arab trading quarter. Before HDB flats, kampong villages dotted the landscape — neighbours shared food, flew wau kites, and looked out for one another. Today, the golden dome of Sultan Mosque still anchors the community, while Arab Street shops sell batik, perfumes, and textiles.',
-    heroImage: 'locations/kampong-glam.svg',
-    gallery: ['locations/kampong-glam.svg', 'locations/kampong-glam-2.svg'],
+    intangibleHeritage: {
+      title: 'Batik & Textile Arts',
+      description:
+        'Historic family storefronts along Arab Street continue the preservation of Batik block-printing, Songket weaving, and traditional garment tailoring (such as the Baju Melayu and Kebaya).',
+    },
+    heroImage: 'locations/kampong-glam.png',
+    gallery: ['locations/kampong-glam.png', 'locations/kampong-glam-2.svg'],
     highlights: [
       {
         icon: '🏡',

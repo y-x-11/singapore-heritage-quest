@@ -59,6 +59,21 @@ export default function LocationView() {
         <p className="font-body text-navy/80 leading-relaxed text-sm">{guide.overview}</p>
       </section>
 
+      <section
+        className="mt-4 rounded-2xl p-5 shadow-sm"
+        style={{ backgroundColor: guide.color }}
+      >
+        <h2 className="font-heading font-bold text-lg text-white mb-2">Intangible heritage</h2>
+        {guide.intangibleHeritage.title && (
+          <p className="font-heading font-semibold text-white text-sm mb-2">
+            {guide.intangibleHeritage.title}
+          </p>
+        )}
+        <p className="font-body text-white/90 leading-relaxed text-sm">
+          {guide.intangibleHeritage.description}
+        </p>
+      </section>
+
       <LocationGame config={guide.game} accentColor={guide.color} locationName={guide.name} />
 
       <section className="mt-4 grid gap-3">

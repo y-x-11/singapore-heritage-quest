@@ -5,9 +5,10 @@ interface QRCodeDisplayProps {
   value: string;
   size?: number;
   label?: string;
+  labelClassName?: string;
 }
 
-export default function QRCodeDisplay({ value, size = 180, label }: QRCodeDisplayProps) {
+export default function QRCodeDisplay({ value, size = 180, label, labelClassName }: QRCodeDisplayProps) {
   const [dataUrl, setDataUrl] = useState<string>('');
 
   useEffect(() => {
@@ -32,7 +33,11 @@ export default function QRCodeDisplay({ value, size = 180, label }: QRCodeDispla
   return (
     <div className="flex flex-col items-center gap-2">
       <img src={dataUrl} alt={label ? `QR code for ${label}` : 'QR code'} className="rounded-2xl shadow-md" width={size} height={size} />
-      {label && <p className="text-xs text-navy/50 font-body text-center max-w-[200px]">{label}</p>}
+      {label && (
+        <p className={`text-xs font-body text-center max-w-[200px] ${labelClassName ?? 'text-navy/50'}`}>
+          {label}
+        </p>
+      )}
     </div>
   );
 }

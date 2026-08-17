@@ -71,6 +71,12 @@ export interface LocationGameConfig {
   winMessage: string;
 }
 
+export interface IntangibleHeritage {
+  /** Optional subtitle, e.g. "Heritage Trades & Businesses" */
+  title?: string;
+  description: string;
+}
+
 export interface LocationGuide {
   id: string;
   name: string;
@@ -84,6 +90,7 @@ export interface LocationGuide {
   tagline: string;
   shortDescription: string;
   overview: string;
+  intangibleHeritage: IntangibleHeritage;
   heroImage: string;
   gallery: string[];
   highlights: LocationHighlight[];

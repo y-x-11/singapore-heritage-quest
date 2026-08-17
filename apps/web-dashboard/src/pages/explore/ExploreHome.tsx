@@ -43,12 +43,28 @@ export default function ExploreHome() {
                 </div>
               </div>
 
-              <div className="p-5">
-                <p className="font-body font-semibold text-teal text-sm mb-1">{guide.tagline}</p>
-                <p className="font-body text-navy/70 text-sm leading-relaxed mb-4">{guide.shortDescription}</p>
+              <div className="p-5" style={{ backgroundColor: guide.color }}>
+                <p className="font-body font-semibold text-white text-sm mb-1">{guide.tagline}</p>
+                <p className="font-body text-white/90 text-sm leading-relaxed mb-4">{guide.shortDescription}</p>
+
+                <div className="mb-4">
+                  <p className="font-heading font-bold text-white text-sm mb-1">Intangible heritage</p>
+                  {guide.intangibleHeritage.title && (
+                    <p className="font-body font-semibold text-white text-sm mb-1">
+                      {guide.intangibleHeritage.title}
+                    </p>
+                  )}
+                  <p className="font-body text-white/90 text-sm leading-relaxed">
+                    {guide.intangibleHeritage.description}
+                  </p>
+                </div>
 
                 <div className="flex flex-col sm:flex-row gap-5 items-center">
-                  <QRCodeDisplay value={pageUrl} label="Scan to open on your phone" />
+                  <QRCodeDisplay
+                    value={pageUrl}
+                    label="Scan to open on your phone"
+                    labelClassName="text-white/80"
+                  />
                   <div className="flex-1 space-y-2 w-full">
                     <Link
                       to={`/explore/location/${guide.id}`}
@@ -56,8 +72,8 @@ export default function ExploreHome() {
                     >
                       View {guide.name} →
                     </Link>
-                    <p className="text-xs text-navy/40 font-body text-center break-all">{pageUrl}</p>
-                    <p className="text-xs text-navy/50 font-body text-center">
+                    <p className="text-xs text-white/70 font-body text-center break-all">{pageUrl}</p>
+                    <p className="text-xs text-white/80 font-body text-center">
                       Print this QR at the site for visitors to scan
                     </p>
                   </div>
