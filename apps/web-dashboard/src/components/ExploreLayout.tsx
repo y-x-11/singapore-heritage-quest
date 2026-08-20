@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function ExploreLayout() {
@@ -47,6 +47,35 @@ export default function ExploreLayout() {
           </div>
         </div>
       </header>
+      <nav className="bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 flex gap-1">
+          <NavLink
+            to="/explore"
+            end
+            className={({ isActive }) =>
+              `font-heading font-bold text-sm px-4 py-3 border-b-2 transition-colors ${
+                isActive
+                  ? 'border-teal text-teal'
+                  : 'border-transparent text-navy/50 hover:text-navy'
+              }`
+            }
+          >
+            Heritage Sites
+          </NavLink>
+          <NavLink
+            to="/explore/references"
+            className={({ isActive }) =>
+              `font-heading font-bold text-sm px-4 py-3 border-b-2 transition-colors ${
+                isActive
+                  ? 'border-teal text-teal'
+                  : 'border-transparent text-navy/50 hover:text-navy'
+              }`
+            }
+          >
+            References
+          </NavLink>
+        </div>
+      </nav>
       <main className="max-w-3xl mx-auto px-4 py-6">
         <Outlet />
       </main>

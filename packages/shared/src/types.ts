@@ -75,6 +75,8 @@ export interface IntangibleHeritage {
   /** Optional subtitle, e.g. "Heritage Trades & Businesses" */
   title?: string;
   description: string;
+  /** Optional photo illustrating the heritage trade or craft */
+  image?: string;
 }
 
 export interface LocationGuide {

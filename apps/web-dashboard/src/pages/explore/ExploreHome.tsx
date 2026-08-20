@@ -47,18 +47,6 @@ export default function ExploreHome() {
                 <p className="font-body font-semibold text-white text-sm mb-1">{guide.tagline}</p>
                 <p className="font-body text-white/90 text-sm leading-relaxed mb-4">{guide.shortDescription}</p>
 
-                <div className="mb-4">
-                  <p className="font-heading font-bold text-white text-sm mb-1">Intangible heritage</p>
-                  {guide.intangibleHeritage.title && (
-                    <p className="font-body font-semibold text-white text-sm mb-1">
-                      {guide.intangibleHeritage.title}
-                    </p>
-                  )}
-                  <p className="font-body text-white/90 text-sm leading-relaxed">
-                    {guide.intangibleHeritage.description}
-                  </p>
-                </div>
-
                 <div className="flex flex-col sm:flex-row gap-5 items-center">
                   <QRCodeDisplay
                     value={pageUrl}

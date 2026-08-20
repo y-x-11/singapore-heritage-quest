@@ -11,6 +11,7 @@ import Content from './pages/Content';
 import ExploreHome from './pages/explore/ExploreHome';
 import LocationScan from './pages/explore/LocationScan';
 import LocationView from './pages/explore/LocationView';
+import References from './pages/explore/References';
 import StudentLogin from './pages/explore/StudentLogin';
 import StudentProfile from './pages/explore/StudentProfile';
 
@@ -27,6 +28,7 @@ function AppRoutes() {
       {/* Public heritage explorer — no login required */}
       <Route path="/explore" element={<ExploreLayout />}>
         <Route index element={<ExploreHome />} />
+        <Route path="references" element={<References />} />
         <Route path="scan" element={<LocationScan />} />
         <Route path="location/:id" element={<LocationView />} />
         <Route path="login" element={<StudentLogin />} />

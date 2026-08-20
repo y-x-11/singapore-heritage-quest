@@ -60,7 +60,7 @@ export default function LocationView() {
       </section>
 
       <section
-        className="mt-4 rounded-2xl p-5 shadow-sm"
+        className="mt-4 rounded-2xl p-5 shadow-sm overflow-hidden"
         style={{ backgroundColor: guide.color }}
       >
         <h2 className="font-heading font-bold text-lg text-white mb-2">Intangible heritage</h2>
@@ -68,6 +68,13 @@ export default function LocationView() {
           <p className="font-heading font-semibold text-white text-sm mb-2">
             {guide.intangibleHeritage.title}
           </p>
+        )}
+        {guide.intangibleHeritage.image && (
+          <img
+            src={resolveAssetUrl(guide.intangibleHeritage.image, siteBase)}
+            alt={`${guide.name} intangible heritage`}
+            className="rounded-xl w-full h-48 object-cover mb-3 shadow-md"
+          />
         )}
         <p className="font-body text-white/90 leading-relaxed text-sm">
           {guide.intangibleHeritage.description}

@@ -33,9 +33,10 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       title: 'Heritage Trades & Businesses',
       description:
         'Generational family enterprises dominate the area. This includes Traditional Chinese Medicine (TCM) practitioners like Eu Yan Sang, historic tea merchants like Pek Sin Choon, traditional pastry making (such as mooncakes at Tai Chong Kok), and religious incense craft.',
+      image: 'locations/chinatown-heritage.png',
     },
     heroImage: 'locations/chinatown.png',
-    gallery: ['locations/chinatown.png', 'locations/chinatown-2.svg'],
+    gallery: ['locations/chinatown.png', 'locations/chinatown-heritage.png', 'locations/chinatown-2.svg'],
     highlights: [
       {
         icon: '🏠',
@@ -92,9 +93,10 @@ export const LOCATION_GUIDES: LocationGuide[] = [
     intangibleHeritage: {
       description:
         'Centralized at Tekka Center, the area preserves South and North Indian culinary arts, ranging from the performance art of pulling teh tarik to the skilled preparation of roti prata, thosai, and complex spice grinding.',
+      image: 'locations/little-india-heritage.png',
     },
     heroImage: 'locations/little-india.png',
-    gallery: ['locations/little-india.png', 'locations/little-india-2.svg'],
+    gallery: ['locations/little-india.png', 'locations/little-india-heritage.png', 'locations/little-india-2.svg'],
     highlights: [
       {
         icon: '🌶️',
@@ -152,9 +154,10 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       title: 'Batik & Textile Arts',
       description:
         'Historic family storefronts along Arab Street continue the preservation of Batik block-printing, Songket weaving, and traditional garment tailoring (such as the Baju Melayu and Kebaya).',
+      image: 'locations/kampong-glam-heritage.png',
     },
     heroImage: 'locations/kampong-glam.png',
-    gallery: ['locations/kampong-glam.png', 'locations/kampong-glam-2.svg'],
+    gallery: ['locations/kampong-glam.png', 'locations/kampong-glam-heritage.png', 'locations/kampong-glam-2.svg'],
     highlights: [
       {
         icon: '🏡',
