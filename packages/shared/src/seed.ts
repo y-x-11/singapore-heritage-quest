@@ -53,6 +53,16 @@ async function seed() {
     createdAt: new Date().toISOString(),
   });
 
+  batch.set(db.collection('classes').doc('class-test1'), {
+    id: 'class-test1',
+    name: 'test1',
+    school: 'International School',
+    joinCode: 'TEST1',
+    teacherId: 'demo-teacher',
+    studentIds: [],
+    createdAt: new Date().toISOString(),
+  });
+
   await batch.commit();
   console.log('Seed complete!');
 }

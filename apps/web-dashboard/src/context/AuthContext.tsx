@@ -132,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!classId) {
           await signOut(auth);
           throw new Error(
-            'Invalid class code. Ask your teacher to create a class with joinCode HERIT1 in Firebase, or run the seed script.'
+            'Invalid class code. Ask your teacher for the correct code, or run the seed script to add classes in Firebase.'
           );
         }
         profile = await createStudentProfile(

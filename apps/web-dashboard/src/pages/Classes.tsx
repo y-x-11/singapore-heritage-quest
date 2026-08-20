@@ -4,6 +4,7 @@ import { generateJoinCode } from '@heritage/shared';
 export default function Classes() {
   const [classes, setClasses] = useState([
     { id: '1', name: 'Heritage Explorers 2026', school: 'UWCSEA Dover', code: 'HERIT1', students: 5 },
+    { id: '2', name: 'test1', school: 'International School', code: 'TEST1', students: 0 },
   ]);
   const [newName, setNewName] = useState('');
   const [newSchool, setNewSchool] = useState('');

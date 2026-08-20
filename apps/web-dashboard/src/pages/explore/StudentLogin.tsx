@@ -50,7 +50,7 @@ export default function StudentLogin() {
           </label>
           <input
             type="text"
-            placeholder="e.g. HERIT1"
+            placeholder="Enter code"
             value={classCode}
             onChange={(e) => setClassCode(e.target.value.toUpperCase())}
             className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 font-body uppercase tracking-widest focus:border-teal outline-none"
@@ -67,7 +67,7 @@ export default function StudentLogin() {
         {!isConfigured && (
           <p className="text-xs text-navy/50 font-body bg-cream rounded-xl p-3">
             Demo mode: Google sign-in is simulated. Add Firebase keys in <code>.env</code> for real Google login.
-            Use class code <strong>HERIT1</strong>.
+            Ask your teacher for your class code.
           </p>
         )}
 

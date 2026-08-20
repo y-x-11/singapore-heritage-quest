@@ -25,8 +25,11 @@ export interface AppUser {
 }
 
 const DEMO_STUDENT_KEY = 'heritage_web_student';
-const DEMO_CLASS_CODE = 'HERIT1';
-const DEMO_CLASS_ID = 'class-demo';
+/** Demo join codes → class IDs (add entries here for extra groups in demo mode) */
+const DEMO_CLASSES: Record<string, string> = {
+  HERIT1: 'class-demo',
+  TEST1: 'class-test1',
+};
 
 export function formatFirebaseError(error: unknown): string {
   if (error instanceof FirebaseError) {
@@ -42,7 +45,7 @@ export function formatFirebaseError(error: unknown): string {
         'In Firebase Console: create a Firestore database (Build → Firestore → Create database),',
         'enable Google sign-in (Authentication → Sign-in method),',
         'and add this site to Authorized domains (Authentication → Settings).',
-        'Then create a class document with joinCode HERIT1, or run the project seed script.',
+        'Then create a class document with a joinCode, or run the project seed script.',
       ].join(' ');
     }
     if (error.code === 'permission-denied') {
@@ -57,8 +60,7 @@ export function formatFirebaseError(error: unknown): string {
 export async function findClassByJoinCode(joinCode: string): Promise<string | null> {
   const code = joinCode.trim().toUpperCase();
   if (!db || !isFirebaseConfigured) {
-    if (code === DEMO_CLASS_CODE) return DEMO_CLASS_ID;
-    return null;
+    return DEMO_CLASSES[code] ?? null;
   }
 
   try {
