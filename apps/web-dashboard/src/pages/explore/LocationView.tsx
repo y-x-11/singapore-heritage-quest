@@ -73,7 +73,7 @@ export default function LocationView() {
           <img
             src={resolveAssetUrl(guide.intangibleHeritage.image, siteBase)}
             alt={`${guide.name} intangible heritage`}
-            className="rounded-xl w-full h-48 object-cover mb-3 shadow-md"
+            className="rounded-xl w-full h-auto mb-3 shadow-md"
           />
         )}
         <p className="font-body text-white/90 leading-relaxed text-sm">

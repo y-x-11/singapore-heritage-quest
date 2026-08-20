@@ -36,7 +36,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       image: 'locations/chinatown-heritage.png',
     },
     heroImage: 'locations/chinatown.png',
-    gallery: ['locations/chinatown.png', 'locations/chinatown-heritage.png', 'locations/chinatown-2.svg'],
+    gallery: ['locations/chinatown.png', 'locations/chinatown-heritage.png'],
     highlights: [
       {
         icon: '🏠',
@@ -96,7 +96,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       image: 'locations/little-india-heritage.png',
     },
     heroImage: 'locations/little-india.png',
-    gallery: ['locations/little-india.png', 'locations/little-india-heritage.png', 'locations/little-india-2.svg'],
+    gallery: ['locations/little-india.png', 'locations/little-india-heritage.png'],
     highlights: [
       {
         icon: '🌶️',
@@ -157,7 +157,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       image: 'locations/kampong-glam-heritage.png',
     },
     heroImage: 'locations/kampong-glam.png',
-    gallery: ['locations/kampong-glam.png', 'locations/kampong-glam-heritage.png', 'locations/kampong-glam-2.svg'],
+    gallery: ['locations/kampong-glam.png', 'locations/kampong-glam-heritage.png'],
     highlights: [
       {
         icon: '🏡',
