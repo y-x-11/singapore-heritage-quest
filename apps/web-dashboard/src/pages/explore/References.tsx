@@ -23,6 +23,38 @@ const REFERENCES = [
     text: "National Heritage Board. (n.d.). Kiah's Gallery. https://www.roots.gov.sg/places/places-landing/trails/landmarks/kampong-gelam-citizen-engagement/kiahs-gallery",
     url: 'https://www.roots.gov.sg/places/places-landing/trails/landmarks/kampong-gelam-citizen-engagement/kiahs-gallery',
   },
+  {
+    text: 'The Qi. (n.d.). The history and healing power of chrysanthemum. https://the-qi.com/blogs/journal/the-history-and-healing-power-of-chrysanthemum',
+    url: 'https://the-qi.com/blogs/journal/the-history-and-healing-power-of-chrysanthemum',
+  },
+  {
+    text: 'South China Morning Post. (n.d.). Goji berries are a superfood — here\'s why you should eat them in moderation. https://www.scmp.com/lifestyle/health-wellness/article/3298004/goji-berries-are-superfood-heres-why-you-should-eat-them-moderation',
+    url: 'https://www.scmp.com/lifestyle/health-wellness/article/3298004/goji-berries-are-superfood-heres-why-you-should-eat-them-moderation',
+  },
+  {
+    text: 'Thomson Medical. (n.d.). 10 restorative herbs recommended by our TCM physicians. https://www.thomsonmedical.com/blog/10-restorative-herbs-recommended-by-our-tcm-physicians',
+    url: 'https://www.thomsonmedical.com/blog/10-restorative-herbs-recommended-by-our-tcm-physicians',
+  },
+  {
+    text: 'Berry Ltd. (n.d.). Hawthorn — a prized little fruit high in vitamin C. https://www.berryltd.co.uk/products/hawthorn-a-prized-little-fruit-high-in-vitamin-c/',
+    url: 'https://www.berryltd.co.uk/products/hawthorn-a-prized-little-fruit-high-in-vitamin-c/',
+  },
+  {
+    text: 'LJH. (n.d.). Mint local leaf 300g. https://ljh.com.sg/products/mint-local-leaf-300g-%E6%9C%AC%E5%9C%B0%E8%96%84%E8%8D%B7%E5%8F%B6',
+    url: 'https://ljh.com.sg/products/mint-local-leaf-300g-%E6%9C%AC%E5%9C%B0%E8%96%84%E8%8D%B7%E5%8F%B6',
+  },
+  {
+    text: 'Michelin Guide. (n.d.). Ingredient: Tangerine peel. https://guide.michelin.com/sg/en/article/dining-in/ingredient-tangerine-peel',
+    url: 'https://guide.michelin.com/sg/en/article/dining-in/ingredient-tangerine-peel',
+  },
+  {
+    text: 'Unsplash. (n.d.). A bunch of red lanterns hanging from a ceiling [Photograph]. https://unsplash.com/photos/a-bunch-of-red-lanterns-hanging-from-a-ceiling-_VHun2XySEs',
+    url: 'https://unsplash.com/photos/a-bunch-of-red-lanterns-hanging-from-a-ceiling-_VHun2XySEs',
+  },
+  {
+    text: 'Home & Decor Singapore. (n.d.). Buying a shophouse in Singapore? 5 things to know. https://www.homeanddecor.com.sg/property/buying-shophouse-singapore',
+    url: 'https://www.homeanddecor.com.sg/property/buying-shophouse-singapore',
+  },
 ];
 
 export default function References() {

@@ -6,6 +6,7 @@ interface Herb {
   id: string;
   emoji: string;
   name: string;
+  image: string;
   bowl: BowlId;
   fact: string;
 }
@@ -19,12 +20,12 @@ const BOWLS: { id: BowlId; label: string; emoji: string }[] = [
 ];
 
 const HERBS: Herb[] = [
-  { id: 'chrysanthemum', emoji: '🌼', name: 'Chrysanthemum', bowl: 'cooling', fact: 'Chrysanthemum tea is used to clear heat and soothe the eyes.' },
-  { id: 'goji', emoji: '🔴', name: 'Goji berries', bowl: 'vitality', fact: 'Goji berries are prized for nourishing the liver and supporting Qi.' },
-  { id: 'ginseng', emoji: '🫚', name: 'Ginseng', bowl: 'vitality', fact: 'Ginseng is a classic tonic for energy and resilience.' },
-  { id: 'hawthorn', emoji: '🍎', name: 'Hawthorn', bowl: 'digestion', fact: 'Hawthorn helps settle heavy meals and supports digestion.' },
-  { id: 'mint', emoji: '🌿', name: 'Mint', bowl: 'cooling', fact: 'Mint cools the body and eases heat-related discomfort.' },
-  { id: 'tangerine', emoji: '🍊', name: 'Dried tangerine peel', bowl: 'digestion', fact: 'Chen pi (dried peel) warms the middle and aids appetite.' },
+  { id: 'chrysanthemum', emoji: '🌼', name: 'Chrysanthemum', image: '/games/chinatown/tcm/chrysanthemum.jpg', bowl: 'cooling', fact: 'Chrysanthemum tea is used to clear heat and soothe the eyes.' },
+  { id: 'goji', emoji: '🔴', name: 'Goji berries', image: '/games/chinatown/tcm/goji-berries.jpg', bowl: 'vitality', fact: 'Goji berries are prized for nourishing the liver and supporting Qi.' },
+  { id: 'ginseng', emoji: '🫚', name: 'Ginseng', image: '/games/chinatown/tcm/ginseng.jpg', bowl: 'vitality', fact: 'Ginseng is a classic tonic for energy and resilience.' },
+  { id: 'hawthorn', emoji: '🍎', name: 'Hawthorn', image: '/games/chinatown/tcm/hawthorn.jpg', bowl: 'digestion', fact: 'Hawthorn helps settle heavy meals and supports digestion.' },
+  { id: 'mint', emoji: '🌿', name: 'Mint', image: '/games/chinatown/tcm/mint.jpg', bowl: 'cooling', fact: 'Mint cools the body and eases heat-related discomfort.' },
+  { id: 'tangerine', emoji: '🍊', name: 'Dried tangerine peel', image: '/games/chinatown/tcm/dried-tangerine-peel.jpg', bowl: 'digestion', fact: 'Chen pi (dried peel) warms the middle and aids appetite.' },
 ];
 
 interface Props {
@@ -99,13 +100,17 @@ export default function TcmSortGame({ config, accentColor }: Props) {
                   setSelected(herb.id);
                   setError(null);
                 }}
-                className={`rounded-xl px-3 py-2 border-2 font-body text-sm transition-all ${
+                className={`rounded-xl px-3 py-2 border-2 font-body text-sm transition-all flex items-center gap-2 ${
                   selected === herb.id
                     ? 'border-navy bg-sunshine/40 scale-105'
                     : 'border-gray-200 bg-cream hover:border-navy/30'
                 }`}
               >
-                <span className="mr-1">{herb.emoji}</span>
+                <img
+                  src={herb.image}
+                  alt={herb.name}
+                  className="w-10 h-10 rounded-lg object-cover shrink-0"
+                />
                 {herb.name}
               </button>
             ))}
@@ -130,9 +135,13 @@ export default function TcmSortGame({ config, accentColor }: Props) {
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {inBowl.map((h) => (
-                      <span key={h.id} className="text-lg" title={h.name}>
-                        {h.emoji}
-                      </span>
+                      <img
+                        key={h.id}
+                        src={h.image}
+                        alt={h.name}
+                        title={h.name}
+                        className="w-8 h-8 rounded-md object-cover"
+                      />
                     ))}
                   </div>
                 </button>

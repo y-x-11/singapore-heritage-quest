@@ -6,6 +6,7 @@ interface Choice {
   label: string;
   community: number;
   result: string;
+  image?: string;
 }
 
 interface Scene {
@@ -14,6 +15,9 @@ interface Scene {
   prompt: string;
   choices: Choice[];
 }
+
+const SHOPHOUSE_IMAGE = '/games/chinatown/shophouse/shophouse.jpg';
+const LANTERNS_IMAGE = '/games/chinatown/shophouse/lanterns.jpg';
 
 const SCENES: Scene[] = [
   {
@@ -24,11 +28,13 @@ const SCENES: Scene[] = [
       {
         label: 'Help hang lanterns first',
         community: 2,
+        image: LANTERNS_IMAGE,
         result: 'The street looks festive. Clan ties made Chinatown resilient — neighbours relied on each other.',
       },
       {
         label: 'Open early for sales',
         community: 0,
+        image: SHOPHOUSE_IMAGE,
         result: 'You earn a few extra coins, but the neighbour looks disappointed. Profit alone rarely built these streets.',
       },
     ],
@@ -137,8 +143,15 @@ export default function ShophouseDayGame({ config, accentColor }: Props) {
                   key={choice.label}
                   type="button"
                   onClick={() => choose(choice)}
-                  className="w-full text-left rounded-xl border-2 border-gray-200 px-4 py-3 font-body text-sm hover:border-navy/40 hover:bg-cream transition-colors"
+                  className="w-full text-left rounded-xl border-2 border-gray-200 px-4 py-3 font-body text-sm hover:border-navy/40 hover:bg-cream transition-colors flex items-center gap-3"
                 >
+                  {choice.image && (
+                    <img
+                      src={choice.image}
+                      alt=""
+                      className="w-14 h-14 rounded-lg object-cover shrink-0"
+                    />
+                  )}
                   {choice.label}
                 </button>
               ))}
