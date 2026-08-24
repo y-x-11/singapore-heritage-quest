@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getLocationGuide, resolveAssetUrl, CHARACTERS } from '@heritage/shared';
 import { getSiteBaseUrl } from '../../lib/site';
@@ -7,6 +8,7 @@ export default function LocationView() {
   const { id } = useParams<{ id: string }>();
   const guide = id ? getLocationGuide(id) : undefined;
   const siteBase = getSiteBaseUrl();
+  const [tab, setTab] = useState<'games' | 'information'>('games');
 
   if (!guide) {
     return (
@@ -31,13 +33,13 @@ export default function LocationView() {
 
       <div className="mt-4 rounded-3xl overflow-hidden shadow-lg relative h-52">
         <img src={heroUrl} alt={guide.name} className="w-full h-full object-cover" />
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent"
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
           <span className="text-4xl">{guide.emoji}</span>
           <h1 className="font-heading font-extrabold text-3xl mt-1">{guide.name}</h1>
-          <p className="font-body text-white/80 text-sm">{guide.district} · {guide.tagline}</p>
+          <p className="font-body text-white/80 text-sm">
+            {guide.district} · {guide.tagline}
+          </p>
         </div>
       </div>
 
@@ -54,86 +56,122 @@ export default function LocationView() {
         </div>
       )}
 
-      <section className="mt-6 bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-heading font-bold text-lg text-navy mb-3">About this place</h2>
-        <p className="font-body text-navy/80 leading-relaxed text-sm">{guide.overview}</p>
-      </section>
+      <div className="mt-6 flex rounded-2xl bg-white p-1 shadow-sm border border-gray-100">
+        <button
+          type="button"
+          onClick={() => setTab('games')}
+          className={`flex-1 font-heading font-bold text-sm py-2.5 rounded-xl transition-colors ${
+            tab === 'games' ? 'text-white' : 'text-navy/50 hover:text-navy'
+          }`}
+          style={tab === 'games' ? { backgroundColor: guide.color } : undefined}
+        >
+          Games
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('information')}
+          className={`flex-1 font-heading font-bold text-sm py-2.5 rounded-xl transition-colors ${
+            tab === 'information' ? 'text-white' : 'text-navy/50 hover:text-navy'
+          }`}
+          style={tab === 'information' ? { backgroundColor: guide.color } : undefined}
+        >
+          Information
+        </button>
+      </div>
 
-      <section
-        className="mt-4 rounded-2xl p-5 shadow-sm overflow-hidden"
-        style={{ backgroundColor: guide.color }}
-      >
-        <h2 className="font-heading font-bold text-lg text-white mb-2">Intangible heritage</h2>
-        {guide.intangibleHeritage.title && (
-          <p className="font-heading font-semibold text-white text-sm mb-2">
-            {guide.intangibleHeritage.title}
+      {tab === 'games' && (
+        <div className="mt-4 space-y-5">
+          <p className="font-body text-sm text-navy/60 text-center">
+            Play two heritage challenges inspired by {guide.name}.
           </p>
-        )}
-        {guide.intangibleHeritage.image && (
-          <img
-            src={resolveAssetUrl(guide.intangibleHeritage.image, siteBase)}
-            alt={`${guide.name} intangible heritage`}
-            className="rounded-xl w-full h-auto mb-3 shadow-md"
-          />
-        )}
-        <p className="font-body text-white/90 leading-relaxed text-sm">
-          {guide.intangibleHeritage.description}
-        </p>
-      </section>
-
-      <LocationGame config={guide.game} accentColor={guide.color} locationName={guide.name} />
-
-      <section className="mt-4 grid gap-3">
-        {guide.highlights.map((h) => (
-          <div key={h.title} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
-            <span className="text-2xl">{h.icon}</span>
-            <div>
-              <h3 className="font-heading font-bold text-navy text-sm">{h.title}</h3>
-              <p className="font-body text-navy/60 text-sm mt-0.5">{h.description}</p>
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {guide.gallery.length > 1 && (
-        <section className="mt-6">
-          <h2 className="font-heading font-bold text-lg text-navy mb-3">Gallery</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {guide.gallery.map((img, i) => (
-              <img
-                key={i}
-                src={resolveAssetUrl(img, siteBase)}
-                alt={`${guide.name} ${i + 1}`}
-                className="rounded-xl w-full h-28 object-cover shadow-sm"
-              />
-            ))}
-          </div>
-        </section>
+          {guide.games.map((game) => (
+            <LocationGame key={game.id} config={game} accentColor={guide.color} />
+          ))}
+        </div>
       )}
 
-      <section className="mt-6 bg-sunshine/20 rounded-2xl p-5">
-        <h2 className="font-heading font-bold text-lg text-navy mb-3">🧠 Fun Facts</h2>
-        <ul className="space-y-2">
-          {guide.funFacts.map((fact, i) => (
-            <li key={i} className="font-body text-sm text-navy/80 flex gap-2">
-              <span className="text-gold font-bold">•</span>
-              {fact}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {tab === 'information' && (
+        <div className="mt-4 space-y-4">
+          <section className="bg-white rounded-2xl p-5 shadow-sm">
+            <h2 className="font-heading font-bold text-lg text-navy mb-3">About this place</h2>
+            <p className="font-body text-navy/80 leading-relaxed text-sm">{guide.overview}</p>
+          </section>
 
-      <section className="mt-4 bg-teal/10 rounded-2xl p-5">
-        <h2 className="font-heading font-bold text-lg text-navy mb-3">📍 Visit Tips</h2>
-        <ul className="space-y-2">
-          {guide.visitTips.map((tip, i) => (
-            <li key={i} className="font-body text-sm text-navy/80 flex gap-2">
-              <span className="text-teal font-bold">{i + 1}.</span>
-              {tip}
-            </li>
-          ))}
-        </ul>
-      </section>
+          <section
+            className="rounded-2xl p-5 shadow-sm overflow-hidden"
+            style={{ backgroundColor: guide.color }}
+          >
+            <h2 className="font-heading font-bold text-lg text-white mb-2">Intangible heritage</h2>
+            {guide.intangibleHeritage.title && (
+              <p className="font-heading font-semibold text-white text-sm mb-2">
+                {guide.intangibleHeritage.title}
+              </p>
+            )}
+            {guide.intangibleHeritage.image && (
+              <img
+                src={resolveAssetUrl(guide.intangibleHeritage.image, siteBase)}
+                alt={`${guide.name} intangible heritage`}
+                className="rounded-xl w-full h-auto mb-3 shadow-md"
+              />
+            )}
+            <p className="font-body text-white/90 leading-relaxed text-sm">
+              {guide.intangibleHeritage.description}
+            </p>
+          </section>
+
+          <section className="grid gap-3">
+            {guide.highlights.map((h) => (
+              <div key={h.title} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
+                <span className="text-2xl">{h.icon}</span>
+                <div>
+                  <h3 className="font-heading font-bold text-navy text-sm">{h.title}</h3>
+                  <p className="font-body text-navy/60 text-sm mt-0.5">{h.description}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {guide.gallery.length > 1 && (
+            <section>
+              <h2 className="font-heading font-bold text-lg text-navy mb-3">Gallery</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {guide.gallery.map((img, i) => (
+                  <img
+                    key={i}
+                    src={resolveAssetUrl(img, siteBase)}
+                    alt={`${guide.name} ${i + 1}`}
+                    className="rounded-xl w-full h-28 object-cover shadow-sm"
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section className="bg-sunshine/20 rounded-2xl p-5">
+            <h2 className="font-heading font-bold text-lg text-navy mb-3">Fun Facts</h2>
+            <ul className="space-y-2">
+              {guide.funFacts.map((fact, i) => (
+                <li key={i} className="font-body text-sm text-navy/80 flex gap-2">
+                  <span className="text-gold font-bold">•</span>
+                  {fact}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="bg-teal/10 rounded-2xl p-5">
+            <h2 className="font-heading font-bold text-lg text-navy mb-3">Visit Tips</h2>
+            <ul className="space-y-2">
+              {guide.visitTips.map((tip, i) => (
+                <li key={i} className="font-body text-sm text-navy/80 flex gap-2">
+                  <span className="text-teal font-bold">{i + 1}.</span>
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      )}
 
       <div className="mt-8 text-center pb-8">
         <Link

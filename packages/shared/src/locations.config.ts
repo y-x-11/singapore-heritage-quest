@@ -64,16 +64,26 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Try local snacks along Smith Street and Temple Street.',
       'Look up at the ornate shophouse facades — each tells a story.',
     ],
-    game: {
-      type: 'catch',
-      title: 'Dish Dash!',
-      instructions: 'Move Ah Beng left and right to catch falling Chinese dishes in his mouth! Use arrow keys, mouse, or touch.',
-      catcherName: 'Ah Beng',
-      catcherEmoji: '👷',
-      items: ['🥟', '🍜', '🥮', '🍚', '🥡', '🍵', '🥢'],
-      winScore: 12,
-      winMessage: 'Shiok! You caught enough dishes to feed the whole clan association!',
-    },
+    games: [
+      {
+        id: 'chinatown-tcm-sort',
+        type: 'tcm-sort',
+        title: 'TCM Apothecary Sort',
+        instructions:
+          'Drag each herb into the bowl that matches its traditional use — Cooling, Vitality, or Digestion. Learn a short fact after each correct sort.',
+        winMessage:
+          'Well sorted! TCM shops like Eu Yan Sang still blend herbs to restore balance of Qi — mind, body, and spirit together.',
+      },
+      {
+        id: 'chinatown-shophouse',
+        type: 'shophouse-day',
+        title: 'Shophouse Day',
+        instructions:
+          'Run a Chinatown shophouse from morning to night. Open the shop, greet clan and customers, hang lanterns — and choose between community care and quick profit.',
+        winMessage:
+          'A day well spent! Shophouses were homes and businesses at once — shops below, families above, held together by clan associations.',
+      },
+    ],
   },
   {
     id: 'little-india',
@@ -124,16 +134,26 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Morning is best for fresh spices and market bustle.',
       'Don\'t miss a plate of roti prata with curry on Serangoon Road.',
     ],
-    game: {
-      type: 'catch',
-      title: 'Prata Flip Catch!',
-      instructions: 'Help Muthu the hawker catch flying roti prata and spices! Move with arrow keys, mouse, or touch.',
-      catcherName: 'Muthu',
-      catcherEmoji: '🍛',
-      items: ['🫓', '🌶️', '🍛', '☕', '🥥', '🧄', '🫚'],
-      winScore: 12,
-      winMessage: 'Wah lau! Muthu\'s stall is ready — the best prata on Serangoon Road!',
-    },
+    games: [
+      {
+        id: 'little-india-teh-tarik',
+        type: 'teh-tarik',
+        title: 'Teh Tarik Pull',
+        instructions:
+          'Hold to pour, release in the sweet zone for perfect froth. Too early = weak tea; too late = a spill. Pull three good cups!',
+        winMessage:
+          'Frothy and fragrant! Pulling teh tarik cools the tea and aerates it — a performance art of South Indian mamak stalls and Tekka Centre.',
+      },
+      {
+        id: 'little-india-kolam',
+        type: 'kolam',
+        title: 'Kolam Pattern Trace',
+        instructions:
+          'Tap dots to connect a Deepavali kolam. Match the pattern and aim for symmetry — then learn why these floor designs welcome prosperity.',
+        winMessage:
+          'Beautiful kolam! During Deepavali, families draw these rice-flour patterns at doorways to welcome guests, light, and good fortune.',
+      },
+    ],
   },
   {
     id: 'kampong-glam',
@@ -185,15 +205,25 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Explore Haji Lane and Arab Street for unique crafts and cafés.',
       'Visit the Malay Heritage Centre for deeper history.',
     ],
-    game: {
-      type: 'catch',
-      title: 'Wau Kite Catch!',
-      instructions: 'Help Razak catch wau kites drifting on the kampong breeze! Move with arrow keys, mouse, or touch.',
-      catcherName: 'Razak',
-      catcherEmoji: '🪁',
-      items: ['🪁', '🎐', '🏠', '🌴', '⚽', '🪶', '🌺'],
-      winScore: 12,
-      winMessage: 'Bagus! The kampong kids cheer — you kept every kite flying high!',
-    },
+    games: [
+      {
+        id: 'kampong-glam-songket',
+        type: 'songket',
+        title: 'Songket Weave Loom',
+        instructions:
+          'Study the gold-thread pattern, then recreate it on the loom. Complete three patterns to master Songket memory weaving.',
+        winMessage:
+          'Bagus weaving! Songket is a Malay textile with metallic threads woven into silk or cotton — still cherished along Arab Street.',
+      },
+      {
+        id: 'kampong-glam-tailor',
+        type: 'tailor',
+        title: 'Kebaya & Baju Melayu Tailor',
+        instructions:
+          'Choose fabric, cut the pattern, then stitch in the right order. Finish a traditional garment and unlock your tailor collectible.',
+        winMessage:
+          'Tailoring complete! Family shops on Arab Street still craft the Baju Melayu and Kebaya — living textile heritage of Kampong Glam.',
+      },
+    ],
   },
 ];

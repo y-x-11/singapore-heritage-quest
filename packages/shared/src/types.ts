@@ -55,19 +55,34 @@ export interface LocationHighlight {
   icon: string;
 }
 
-/** Mini-game shown on each location's explore page */
+/** Heritage mini-game types on location explore pages */
+export type HeritageGameType =
+  | 'tcm-sort'
+  | 'shophouse-day'
+  | 'teh-tarik'
+  | 'kolam'
+  | 'songket'
+  | 'tailor';
+
+/** Mini-game shown on each location's Games tab */
+export interface HeritageGameConfig {
+  id: string;
+  type: HeritageGameType;
+  title: string;
+  instructions: string;
+  /** Heritage fact shown after winning */
+  winMessage: string;
+}
+
+/** @deprecated Use HeritageGameConfig — kept for CatchHeritageGame compatibility */
 export interface LocationGameConfig {
   type: 'catch';
   title: string;
   instructions: string;
   catcherName: string;
-  /** Emoji shown above the open-mouth catcher sprite */
   catcherEmoji: string;
-  /** Items that fall from the sky */
   items: string[];
-  /** Score needed to win */
   winScore: number;
-  /** Heritage fact shown after winning */
   winMessage: string;
 }
 
@@ -98,7 +113,7 @@ export interface LocationGuide {
   highlights: LocationHighlight[];
   funFacts: string[];
   visitTips: string[];
-  game: LocationGameConfig;
+  games: HeritageGameConfig[];
 }
 
 export interface StoryPanel {
