@@ -75,13 +75,13 @@ export const LOCATION_GUIDES: LocationGuide[] = [
           'Well sorted! TCM shops like Eu Yan Sang still blend herbs to restore balance of Qi — mind, body, and spirit together.',
       },
       {
-        id: 'chinatown-shophouse',
-        type: 'shophouse-day',
-        title: 'Shophouse Day',
+        id: 'chinatown-lion-dance',
+        type: 'lion-dance',
+        title: 'Lion Dance Cai Qing',
         instructions:
-          'Run a Chinatown shophouse from morning to night. Open the shop, greet clan and customers, hang lanterns — and choose between community care and quick profit.',
+          'Use the arrow keys or tap a lane to slide the lion. Catch falling drum (left) and leap (right) beats on the dotted line. Each catch slides the greens toward the plate.',
         winMessage:
-          'A day well spent! Shophouses were homes and businesses at once — shops below, families above, held together by clan associations.',
+          'Cai qing (采青) uses lettuce — 生菜 sheng cai — a homophone for growing wealth. Chinatown troupes still drum along Temple Street at Chinese New Year so the lion can “eat” the greens.'
       },
     ],
   },

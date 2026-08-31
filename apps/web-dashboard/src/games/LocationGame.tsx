@@ -1,6 +1,6 @@
 import type { HeritageGameConfig } from '@heritage/shared';
 import TcmSortGame from './TcmSortGame';
-import ShophouseDayGame from './ShophouseDayGame';
+import LionDanceGame from './LionDanceGame';
 import TehTarikGame from './TehTarikGame';
 import KolamGame from './KolamGame';
 import SongketGame from './SongketGame';
@@ -15,8 +15,8 @@ export default function LocationGame({ config, accentColor }: LocationGameProps)
   switch (config.type) {
     case 'tcm-sort':
       return <TcmSortGame config={config} accentColor={accentColor} />;
-    case 'shophouse-day':
-      return <ShophouseDayGame config={config} accentColor={accentColor} />;
+    case 'lion-dance':
+      return <LionDanceGame config={config} accentColor={accentColor} />;
     case 'teh-tarik':
       return <TehTarikGame config={config} accentColor={accentColor} />;
     case 'kolam':

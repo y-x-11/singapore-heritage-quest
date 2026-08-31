@@ -36,16 +36,6 @@ const ASSETS = [
     file: 'dried-tangerine-peel.jpg',
     pageUrl: 'https://guide.michelin.com/sg/en/article/dining-in/ingredient-tangerine-peel',
   },
-  {
-    dir: 'shophouse',
-    file: 'lanterns.jpg',
-    imageUrl: 'https://unsplash.com/photos/_VHun2XySEs/download?force=true',
-  },
-  {
-    dir: 'shophouse',
-    file: 'shophouse.jpg',
-    pageUrl: 'https://www.homeanddecor.com.sg/property/buying-shophouse-singapore',
-  },
 ];
 
 function extractImage(html, pageUrl) {

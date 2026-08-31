@@ -58,7 +58,7 @@ export interface LocationHighlight {
 /** Heritage mini-game types on location explore pages */
 export type HeritageGameType =
   | 'tcm-sort'
-  | 'shophouse-day'
+  | 'lion-dance'
   | 'teh-tarik'
   | 'kolam'
   | 'songket'
