@@ -14,6 +14,7 @@ import LocationView from './pages/explore/LocationView';
 import References from './pages/explore/References';
 import StudentLogin from './pages/explore/StudentLogin';
 import StudentProfile from './pages/explore/StudentProfile';
+import Leaderboard from './pages/explore/Leaderboard';
 
 function TeacherRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -28,6 +29,7 @@ function AppRoutes() {
       {/* Public heritage explorer — no login required */}
       <Route path="/explore" element={<ExploreLayout />}>
         <Route index element={<ExploreHome />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="references" element={<References />} />
         <Route path="scan" element={<LocationScan />} />
         <Route path="location/:id" element={<LocationView />} />

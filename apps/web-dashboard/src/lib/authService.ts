@@ -16,12 +16,45 @@ export interface AppUser {
   uid: string;
   email: string;
   displayName: string;
+  /** Public name shown on profile and leaderboard */
+  username?: string;
   photoURL?: string;
   role: UserRole;
   classId?: string;
   xp: number;
   level: number;
   streak: number;
+}
+
+export interface LeaderboardEntry {
+  uid: string;
+  username: string;
+  photoURL?: string;
+  level: number;
+  xp: number;
+}
+
+const USERNAME_MIN = 2;
+const USERNAME_MAX = 20;
+
+export function defaultUsernameFromDisplayName(displayName: string): string {
+  const cleaned = displayName.trim().replace(/\s+/g, ' ').slice(0, USERNAME_MAX);
+  return cleaned.length >= USERNAME_MIN ? cleaned : 'Explorer';
+}
+
+export function validateUsername(raw: string): string {
+  const trimmed = raw.trim().replace(/\s+/g, ' ');
+  if (trimmed.length < USERNAME_MIN || trimmed.length > USERNAME_MAX) {
+    throw new Error(`Username must be ${USERNAME_MIN} to ${USERNAME_MAX} characters.`);
+  }
+  if (!/^[a-zA-Z0-9 ]+$/.test(trimmed)) {
+    throw new Error('Username may only use letters, numbers, and spaces.');
+  }
+  return trimmed;
+}
+
+export function publicUsername(user: Pick<AppUser, 'username' | 'displayName'>): string {
+  return user.username?.trim() || user.displayName;
 }
 
 const DEMO_STUDENT_KEY = 'heritage_web_student';
@@ -84,6 +117,7 @@ export async function fetchUserProfile(uid: string): Promise<AppUser | null> {
       uid,
       email: data.email,
       displayName: data.displayName,
+      username: data.username ?? defaultUsernameFromDisplayName(data.displayName ?? 'Explorer'),
       photoURL: data.photoURL,
       role: data.role,
       classId: data.classId,
@@ -103,10 +137,12 @@ export async function createStudentProfile(
   photoURL: string | undefined,
   classId?: string
 ): Promise<AppUser> {
+  const username = defaultUsernameFromDisplayName(displayName);
   const profile: AppUser = {
     uid,
     email,
     displayName,
+    username,
     photoURL,
     role: 'student',
     classId,
@@ -120,6 +156,7 @@ export async function createStudentProfile(
       await setDoc(doc(db, 'users', uid), {
         email,
         displayName,
+        username,
         photoURL: photoURL ?? null,
         role: 'student',
         ...(classId ? { classId } : {}),
@@ -178,10 +215,59 @@ export function createDemoGoogleStudent(displayName: string, email: string): App
     uid: `demo_${Date.now()}`,
     email,
     displayName,
+    username: defaultUsernameFromDisplayName(displayName),
     photoURL: undefined,
     role: 'student',
     xp: 0,
     level: 1,
     streak: 0,
   };
+}
+
+export async function updateUserUsername(uid: string, username: string): Promise<void> {
+  const valid = validateUsername(username);
+  if (!db || !isFirebaseConfigured) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      { username: valid, lastActive: new Date().toISOString() },
+      { merge: true }
+    );
+  } catch (error) {
+    throw new Error(formatFirebaseError(error));
+  }
+}
+
+export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
+  if (!db || !isFirebaseConfigured) {
+    const demo = loadDemoStudent();
+    if (!demo) return [];
+    return [
+      {
+        uid: demo.uid,
+        username: publicUsername(demo),
+        photoURL: demo.photoURL,
+        level: demo.level,
+        xp: demo.xp,
+      },
+    ];
+  }
+
+  try {
+    const q = query(collection(db, 'users'), where('role', '==', 'student'));
+    const snap = await getDocs(q);
+    const entries: LeaderboardEntry[] = snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        uid: d.id,
+        username: data.username ?? defaultUsernameFromDisplayName(data.displayName ?? 'Explorer'),
+        photoURL: data.photoURL ?? undefined,
+        level: data.level ?? 1,
+        xp: data.xp ?? 0,
+      };
+    });
+    return entries.sort((a, b) => b.level - a.level || b.xp - a.xp);
+  } catch (error) {
+    throw new Error(formatFirebaseError(error));
+  }
 }

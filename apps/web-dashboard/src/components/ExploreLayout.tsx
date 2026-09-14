@@ -63,6 +63,18 @@ export default function ExploreLayout() {
             Heritage Sites
           </NavLink>
           <NavLink
+            to="/explore/leaderboard"
+            className={({ isActive }) =>
+              `font-heading font-bold text-sm px-4 py-3 border-b-2 transition-colors ${
+                isActive
+                  ? 'border-teal text-teal'
+                  : 'border-transparent text-navy/50 hover:text-navy'
+              }`
+            }
+          >
+            Leaderboard
+          </NavLink>
+          <NavLink
             to="/explore/references"
             className={({ isActive }) =>
               `font-heading font-bold text-sm px-4 py-3 border-b-2 transition-colors ${

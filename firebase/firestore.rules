@@ -20,7 +20,8 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow read: if isOwner(userId) || isTeacher();
+      allow read: if isOwner(userId) || isTeacher() ||
+        (isSignedIn() && resource.data.role == 'student');
       allow create: if isOwner(userId);
       allow update: if isOwner(userId);
     }

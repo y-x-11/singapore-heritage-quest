@@ -18,6 +18,8 @@ import {
   formatFirebaseError,
   applyXpToUser,
   persistUserXp,
+  updateUserUsername,
+  validateUsername,
 } from '../lib/authService';
 
 interface AuthContextType {
@@ -30,6 +32,8 @@ interface AuthContextType {
   loginStudentWithGoogle: () => Promise<void>;
   /** Add XP after completing a mini-game (no-op for guests) */
   awardGameXp: (gameId: string, amount: number) => void;
+  /** Set the public username shown on profile and leaderboard */
+  updateUsername: (username: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -156,6 +160,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const updateUsername = async (username: string) => {
+    if (!user || user.role !== 'student') return;
+    const trimmed = validateUsername(username);
+    if (!isFirebaseConfigured || !auth) {
+      const updated = { ...user, username: trimmed };
+      saveDemoStudent(updated);
+      setUser(updated);
+      return;
+    }
+    await updateUserUsername(user.uid, trimmed);
+    setUser({ ...user, username: trimmed });
+  };
+
   const logout = async () => {
     if (auth && isFirebaseConfigured) {
       await signOut(auth);
@@ -174,6 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginTeacher,
         loginStudentWithGoogle,
         awardGameXp,
+        updateUsername,
         logout,
       }}
     >
