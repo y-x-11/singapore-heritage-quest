@@ -24,9 +24,10 @@ interface OverlayProps {
   buttonLabel: string;
   onAction: () => void;
   tone?: 'idle' | 'won' | 'lost' | 'info';
+  xpEarned?: number;
 }
 
-export function GameOverlay({ title, body, buttonLabel, onAction, tone = 'idle' }: OverlayProps) {
+export function GameOverlay({ title, body, buttonLabel, onAction, tone = 'idle', xpEarned }: OverlayProps) {
   const bg =
     tone === 'won'
       ? 'bg-teal/90'
@@ -40,6 +41,9 @@ export function GameOverlay({ title, body, buttonLabel, onAction, tone = 'idle' 
     <div className={`rounded-2xl ${bg} p-5 text-center text-white`}>
       <h4 className="font-heading font-extrabold text-xl mb-2">{title}</h4>
       <p className="font-body text-white/90 text-sm mb-4 leading-relaxed">{body}</p>
+      {xpEarned != null && xpEarned > 0 && (
+        <p className="font-heading font-bold text-sunshine text-lg mb-3">+{xpEarned} XP</p>
+      )}
       <button
         type="button"
         onClick={onAction}

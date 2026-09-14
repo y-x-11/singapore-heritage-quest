@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
 interface Props {
@@ -14,10 +15,13 @@ const PATTERNS: boolean[][] = [
 ];
 
 export default function SongketGame({ config, accentColor }: Props) {
+  const { awardOnWin, resetAward } = useGameXpAward(config.id);
+  const mistakesRef = useRef(0);
   const [phase, setPhase] = useState<'idle' | 'memorize' | 'weave' | 'won'>('idle');
   const [round, setRound] = useState(0);
   const [player, setPlayer] = useState<boolean[]>(Array(9).fill(false));
   const [message, setMessage] = useState<string | null>(null);
+  const [xpEarned, setXpEarned] = useState<number | undefined>();
 
   const pattern = PATTERNS[round] ?? PATTERNS[0];
 
@@ -28,6 +32,9 @@ export default function SongketGame({ config, accentColor }: Props) {
   }, [phase, round]);
 
   const start = () => {
+    mistakesRef.current = 0;
+    resetAward();
+    setXpEarned(undefined);
     setRound(0);
     setPlayer(Array(9).fill(false));
     setMessage(null);
@@ -46,12 +53,16 @@ export default function SongketGame({ config, accentColor }: Props) {
   const check = () => {
     const ok = pattern.every((v, i) => v === player[i]);
     if (!ok) {
+      mistakesRef.current += 1;
       setMessage('Not quite — gold threads must match the remembered Songket motif.');
       return;
     }
     if (round >= PATTERNS.length - 1) {
       setMessage('Third pattern woven!');
-      setTimeout(() => setPhase('won'), 600);
+      setTimeout(() => {
+        setXpEarned(awardOnWin(mistakesRef.current));
+        setPhase('won');
+      }, 600);
       return;
     }
     setMessage('Beautiful weave! Next pattern…');
@@ -70,7 +81,14 @@ export default function SongketGame({ config, accentColor }: Props) {
       )}
 
       {phase === 'won' && (
-        <GameOverlay title="Songket master!" body={config.winMessage} buttonLabel="Weave again" onAction={start} tone="won" />
+        <GameOverlay
+          title="Songket master!"
+          body={config.winMessage}
+          buttonLabel="Weave again"
+          onAction={start}
+          tone="won"
+          xpEarned={xpEarned}
+        />
       )}
 
       {(phase === 'memorize' || phase === 'weave') && (

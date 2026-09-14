@@ -13,6 +13,19 @@ export const THEME = {
 
 export const XP_PER_LEVEL = 100;
 
+/** Base XP for completing a heritage mini-game on the web explorer */
+export const GAME_XP_BASE = 50;
+/** XP deducted per mistake during a mini-game */
+export const GAME_XP_MISTAKE_PENALTY = 5;
+/** Minimum XP granted for completing a mini-game */
+export const GAME_XP_MIN = 10;
+
+/** XP earned from a mini-game win, reduced by mistakes */
+export function calculateGameXp(mistakes: number): number {
+  const penalty = Math.max(0, mistakes) * GAME_XP_MISTAKE_PENALTY;
+  return Math.max(GAME_XP_MIN, GAME_XP_BASE - penalty);
+}
+
 export const PROXIMITY_RADIUS_METERS = 150;
 
 export function xpForLevel(level: number): number {

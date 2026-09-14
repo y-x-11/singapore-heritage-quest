@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import GoogleSignInButton from '../../components/GoogleSignInButton';
 
 export default function StudentLogin() {
-  const [classCode, setClassCode] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const { loginStudentWithGoogle, isConfigured, user } = useAuth();
@@ -24,7 +23,7 @@ export default function StudentLogin() {
     setError('');
     setBusy(true);
     try {
-      await loginStudentWithGoogle(classCode || undefined);
+      await loginStudentWithGoogle();
       navigate('/explore/profile');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Sign in failed');
@@ -39,25 +38,11 @@ export default function StudentLogin() {
         <p className="text-5xl mb-3">🎒</p>
         <h1 className="font-heading font-extrabold text-2xl text-navy">Student Sign In</h1>
         <p className="font-body text-navy/60 text-sm mt-2">
-          Join your class and track your heritage quest progress
+          Sign in to track your heritage quest progress and earn XP
         </p>
       </div>
 
       <div className="bg-white rounded-3xl shadow-lg p-6 space-y-4">
-        <div>
-          <label className="block font-body font-semibold text-sm text-navy mb-2">
-            Class code {isConfigured ? '(required for first sign-up)' : '(required)'}
-          </label>
-          <input
-            type="text"
-            placeholder="Enter code"
-            value={classCode}
-            onChange={(e) => setClassCode(e.target.value.toUpperCase())}
-            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 font-body uppercase tracking-widest focus:border-teal outline-none"
-          />
-          <p className="text-xs text-navy/40 font-body mt-1.5">Get this code from your teacher</p>
-        </div>
-
         <GoogleSignInButton onClick={handleGoogle} loading={busy} label="Sign in with Google" />
 
         {error && (
@@ -67,13 +52,6 @@ export default function StudentLogin() {
         {!isConfigured && (
           <p className="text-xs text-navy/50 font-body bg-cream rounded-xl p-3">
             Demo mode: Google sign-in is simulated. Add Firebase keys in <code>.env</code> for real Google login.
-            Ask your teacher for your class code.
-          </p>
-        )}
-
-        {isConfigured && (
-          <p className="text-xs text-navy/50 font-body bg-cream rounded-xl p-3">
-            First time? Enter your class code, then tap Google. Returning students can sign in directly.
           </p>
         )}
       </div>

@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import { db, isFirebaseConfigured } from './firebase';
-import type { UserRole } from '@heritage/shared';
+import { calculateLevel, type UserRole } from '@heritage/shared';
 
 export interface AppUser {
   uid: string;
@@ -101,7 +101,7 @@ export async function createStudentProfile(
   email: string,
   displayName: string,
   photoURL: string | undefined,
-  classId: string
+  classId?: string
 ): Promise<AppUser> {
   const profile: AppUser = {
     uid,
@@ -122,7 +122,7 @@ export async function createStudentProfile(
         displayName,
         photoURL: photoURL ?? null,
         role: 'student',
-        classId,
+        ...(classId ? { classId } : {}),
         xp: 0,
         level: 1,
         streak: 0,
@@ -135,6 +135,24 @@ export async function createStudentProfile(
   }
 
   return profile;
+}
+
+export async function persistUserXp(uid: string, xp: number, level: number): Promise<void> {
+  if (!db || !isFirebaseConfigured) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      { xp, level, lastActive: new Date().toISOString() },
+      { merge: true }
+    );
+  } catch (error) {
+    throw new Error(formatFirebaseError(error));
+  }
+}
+
+export function applyXpToUser(user: AppUser, amount: number): AppUser {
+  const xp = user.xp + amount;
+  return { ...user, xp, level: calculateLevel(xp) };
 }
 
 export function saveDemoStudent(user: AppUser): void {
@@ -155,18 +173,13 @@ export function clearDemoStudent(): void {
   localStorage.removeItem(DEMO_STUDENT_KEY);
 }
 
-export function createDemoGoogleStudent(
-  displayName: string,
-  email: string,
-  classId: string
-): AppUser {
+export function createDemoGoogleStudent(displayName: string, email: string): AppUser {
   return {
     uid: `demo_${Date.now()}`,
     email,
     displayName,
     photoURL: undefined,
     role: 'student',
-    classId,
     xp: 0,
     level: 1,
     streak: 0,

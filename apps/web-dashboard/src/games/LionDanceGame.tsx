@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
 interface Props {
@@ -38,12 +39,15 @@ const HIT_WINDOW = 7;
 const STAGE_H = 340;
 
 export default function LionDanceGame({ config, accentColor }: Props) {
+  const { awardOnWin, resetAward } = useGameXpAward(config.id);
   const [phase, setPhase] = useState<'idle' | 'playing' | 'won'>('idle');
   const [lionLane, setLionLane] = useState<Lane>('drum');
   const [notes, setNotes] = useState<Note[]>([]);
   const [collected, setCollected] = useState(0);
   const [pose, setPose] = useState<'idle' | 'catch' | 'miss'>('idle');
   const [message, setMessage] = useState<string | null>(null);
+  const [xpEarned, setXpEarned] = useState<number | undefined>();
+  const mistakesRef = useRef(0);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
   const phaseRef = useRef(phase);
@@ -82,6 +86,9 @@ export default function LionDanceGame({ config, accentColor }: Props) {
 
   const start = () => {
     stopLoop();
+    mistakesRef.current = 0;
+    resetAward();
+    setXpEarned(undefined);
     spawnIndexRef.current = 0;
     lastSpawnRef.current = 0;
     lastTickRef.current = 0;
@@ -149,10 +156,12 @@ export default function LionDanceGame({ config, accentColor }: Props) {
         flashPose('catch');
         setMessage(gained > 1 ? 'Nice catch!' : next >= NEEDED ? 'The greens reach the plate!' : 'Caught! The greens shuffle closer.');
         if (next >= NEEDED) {
+          setXpEarned(awardOnWin(mistakesRef.current));
           setPhase('won');
           return;
         }
       } else if (missed) {
+        mistakesRef.current += 1;
         flashPose('miss');
         setMessage('Missed the line — slide under the next beat.');
       }
@@ -208,6 +217,7 @@ export default function LionDanceGame({ config, accentColor }: Props) {
           buttonLabel="Dance again"
           onAction={start}
           tone="won"
+          xpEarned={xpEarned}
         />
       )}
 

@@ -11,12 +11,13 @@ import {
   AppUser,
   fetchUserProfile,
   createStudentProfile,
-  findClassByJoinCode,
   saveDemoStudent,
   loadDemoStudent,
   clearDemoStudent,
   createDemoGoogleStudent,
   formatFirebaseError,
+  applyXpToUser,
+  persistUserXp,
 } from '../lib/authService';
 
 interface AuthContextType {
@@ -25,8 +26,10 @@ interface AuthContextType {
   isConfigured: boolean;
   /** Teacher email/password (demo or Firebase) */
   loginTeacher: (email: string, password: string) => Promise<void>;
-  /** Student — Google sign-in; classCode required for new students */
-  loginStudentWithGoogle: (classCode?: string) => Promise<void>;
+  /** Student — Google sign-in */
+  loginStudentWithGoogle: () => Promise<void>;
+  /** Add XP after completing a mini-game (no-op for guests) */
+  awardGameXp: (gameId: string, amount: number) => void;
   logout: () => Promise<void>;
 }
 
@@ -104,13 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u);
   };
 
-  const loginStudentWithGoogle = async (classCode?: string) => {
+  const loginStudentWithGoogle = async () => {
     if (!isFirebaseConfigured || !auth) {
-      const code = classCode?.trim().toUpperCase();
-      if (!code) throw new Error('Enter your class code to sign up.');
-      const classId = await findClassByJoinCode(code);
-      if (!classId) throw new Error('Invalid class code. Ask your teacher for the correct code.');
-      const demo = createDemoGoogleStudent('Student Explorer', 'student@demo.school', classId);
+      const demo = createDemoGoogleStudent('Student Explorer', 'student@demo.school');
       saveDemoStudent(demo);
       localStorage.removeItem(DEMO_TEACHER_KEY);
       setUser(demo);
@@ -123,24 +122,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       let profile = await fetchUserProfile(fbUser.uid);
 
       if (!profile) {
-        const code = classCode?.trim().toUpperCase();
-        if (!code) {
-          await signOut(auth);
-          throw new Error('Welcome! Enter your class code below, then sign in with Google again.');
-        }
-        const classId = await findClassByJoinCode(code);
-        if (!classId) {
-          await signOut(auth);
-          throw new Error(
-            'Invalid class code. Ask your teacher for the correct code, or run the seed script to add classes in Firebase.'
-          );
-        }
         profile = await createStudentProfile(
           fbUser.uid,
           fbUser.email ?? '',
           fbUser.displayName ?? 'Student',
-          fbUser.photoURL ?? undefined,
-          classId
+          fbUser.photoURL ?? undefined
         );
       } else if (profile.role !== 'student') {
         await signOut(auth);
@@ -155,6 +141,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       throw new Error(formatFirebaseError(error));
     }
+  };
+
+  const awardGameXp = (_gameId: string, amount: number) => {
+    if (!user || user.role !== 'student' || amount <= 0) return;
+    const updated = applyXpToUser(user, amount);
+    setUser(updated);
+    if (!isFirebaseConfigured || !auth) {
+      saveDemoStudent(updated);
+      return;
+    }
+    void persistUserXp(updated.uid, updated.xp, updated.level).catch(() => {
+      /* keep local state even if sync fails */
+    });
   };
 
   const logout = async () => {
@@ -174,6 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isConfigured: isFirebaseConfigured,
         loginTeacher,
         loginStudentWithGoogle,
+        awardGameXp,
         logout,
       }}
     >

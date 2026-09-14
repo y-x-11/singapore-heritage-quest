@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { calculateLevel } from '@heritage/shared';
+import { calculateLevel, levelProgress, XP_PER_LEVEL } from '@heritage/shared';
 
 export default function StudentProfile() {
   const { user, logout, loading } = useAuth();
@@ -23,6 +23,8 @@ export default function StudentProfile() {
   }
 
   const level = calculateLevel(user.xp);
+  const progress = levelProgress(user.xp);
+  const xpInLevel = user.xp - (level - 1) * XP_PER_LEVEL;
 
   const handleLogout = async () => {
     await logout();
@@ -48,7 +50,7 @@ export default function StudentProfile() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mt-4">
+      <div className="grid grid-cols-2 gap-3 mt-4">
         <div className="bg-white rounded-2xl p-4 text-center shadow-sm">
           <p className="font-heading font-extrabold text-2xl text-teal">Lv.{level}</p>
           <p className="font-body text-xs text-navy/50">Level</p>
@@ -57,16 +59,31 @@ export default function StudentProfile() {
           <p className="font-heading font-extrabold text-2xl text-gold">{user.xp}</p>
           <p className="font-body text-xs text-navy/50">XP</p>
         </div>
-        <div className="bg-white rounded-2xl p-4 text-center shadow-sm">
-          <p className="font-heading font-extrabold text-2xl text-merlion">🔥{user.streak}</p>
-          <p className="font-body text-xs text-navy/50">Streak</p>
+      </div>
+
+      <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm">
+        <div className="flex justify-between font-body text-xs text-navy/50 mb-2">
+          <span>Level {level}</span>
+          <span>
+            {xpInLevel} / {XP_PER_LEVEL} XP
+          </span>
         </div>
+        <div className="h-3 bg-cream rounded-full overflow-hidden">
+          <div
+            className="h-full bg-teal rounded-full transition-all duration-500"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
+        <p className="font-body text-xs text-navy/40 mt-2 text-center">
+          {XP_PER_LEVEL - xpInLevel} XP to reach Level {level + 1}
+        </p>
       </div>
 
       <div className="mt-6 bg-sunshine/20 rounded-2xl p-5">
         <h2 className="font-heading font-bold text-navy mb-2">🗺️ Keep exploring!</h2>
         <p className="font-body text-sm text-navy/70 mb-4">
-          Visit heritage sites, play mini-games, and scan QR codes to earn XP. Progress syncs when you use the mobile app with the same account.
+          Visit heritage sites and play mini-games to earn XP. Better performance means more XP — every {XP_PER_LEVEL} XP
+          levels you up!
         </p>
         <Link to="/explore" className="block text-center bg-navy text-white font-heading font-bold py-3 rounded-xl">
           Explore Heritage Sites

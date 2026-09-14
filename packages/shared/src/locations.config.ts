@@ -140,7 +140,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         type: 'teh-tarik',
         title: 'Teh Tarik Pull',
         instructions:
-          'Hold to pour, release in the sweet zone for perfect froth. Too early = weak tea; too late = a spill. Pull three good cups!',
+          'Tap teh and condensed milk into the mug, then drag the top mug up to stretch the tea. Release in the gold froth zone — three good pulls, each a little tighter.',
         winMessage:
           'Frothy and fragrant! Pulling teh tarik cools the tea and aerates it — a performance art of South Indian mamak stalls and Tekka Centre.',
       },

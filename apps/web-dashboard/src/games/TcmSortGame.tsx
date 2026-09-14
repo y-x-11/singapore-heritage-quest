@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
 interface Herb {
@@ -34,11 +35,14 @@ interface Props {
 }
 
 export default function TcmSortGame({ config, accentColor }: Props) {
+  const { awardOnWin, resetAward } = useGameXpAward(config.id);
+  const mistakesRef = useRef(0);
   const [phase, setPhase] = useState<'idle' | 'playing' | 'won'>('idle');
   const [selected, setSelected] = useState<string | null>(null);
   const [placed, setPlaced] = useState<Record<string, BowlId>>({});
   const [fact, setFact] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [xpEarned, setXpEarned] = useState<number | undefined>();
 
   const remaining = useMemo(
     () => HERBS.filter((h) => !placed[h.id]),
@@ -46,6 +50,9 @@ export default function TcmSortGame({ config, accentColor }: Props) {
   );
 
   const start = () => {
+    mistakesRef.current = 0;
+    resetAward();
+    setXpEarned(undefined);
     setPlaced({});
     setSelected(null);
     setFact(null);
@@ -59,6 +66,7 @@ export default function TcmSortGame({ config, accentColor }: Props) {
     if (!herb) return;
 
     if (herb.bowl !== bowl) {
+      mistakesRef.current += 1;
       setError(`${herb.name} doesn't belong in ${BOWLS.find((b) => b.id === bowl)?.label}. Try again!`);
       setFact(null);
       return;
@@ -71,7 +79,10 @@ export default function TcmSortGame({ config, accentColor }: Props) {
     setFact(herb.fact);
 
     if (Object.keys(next).length === HERBS.length) {
-      setTimeout(() => setPhase('won'), 900);
+      setTimeout(() => {
+        setXpEarned(awardOnWin(mistakesRef.current));
+        setPhase('won');
+      }, 900);
     }
   };
 
@@ -82,7 +93,14 @@ export default function TcmSortGame({ config, accentColor }: Props) {
       )}
 
       {phase === 'won' && (
-        <GameOverlay title="Apothecary complete!" body={config.winMessage} buttonLabel="Play again" onAction={start} tone="won" />
+        <GameOverlay
+          title="Apothecary complete!"
+          body={config.winMessage}
+          buttonLabel="Play again"
+          onAction={start}
+          tone="won"
+          xpEarned={xpEarned}
+        />
       )}
 
       {phase === 'playing' && (

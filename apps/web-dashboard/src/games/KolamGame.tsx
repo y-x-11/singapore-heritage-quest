@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
 interface Props {
@@ -30,10 +31,13 @@ function adjacent(a: string, b: string) {
 }
 
 export default function KolamGame({ config, accentColor }: Props) {
+  const { awardOnWin, resetAward } = useGameXpAward(config.id);
+  const mistakesRef = useRef(0);
   const [phase, setPhase] = useState<'idle' | 'playing' | 'won'>('idle');
   const [active, setActive] = useState<string | null>(null);
   const [edges, setEdges] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState<string | null>(null);
+  const [xpEarned, setXpEarned] = useState<number | undefined>();
 
   const dots = useMemo(() => {
     const list: string[] = [];
@@ -44,10 +48,18 @@ export default function KolamGame({ config, accentColor }: Props) {
   }, []);
 
   const start = () => {
+    mistakesRef.current = 0;
+    resetAward();
+    setXpEarned(undefined);
     setEdges(new Set());
     setActive(null);
     setMessage(null);
     setPhase('playing');
+  };
+
+  const win = (extraMistakes = 0) => {
+    setXpEarned(awardOnWin(mistakesRef.current + extraMistakes));
+    setPhase('won');
   };
 
   const symmetryScore = () => {
@@ -75,6 +87,7 @@ export default function KolamGame({ config, accentColor }: Props) {
       return;
     }
     if (!adjacent(active, id)) {
+      mistakesRef.current += 1;
       setMessage('Connect neighbouring dots only.');
       setActive(id);
       return;
@@ -91,14 +104,14 @@ export default function KolamGame({ config, accentColor }: Props) {
     const matched = [...TARGET_EDGES].every((t) => next.has(t)) && next.size === TARGET_EDGES.size;
     if (matched) {
       setMessage(`Pattern complete! Symmetry ${symmetryScore()}% — kolam designs often balance both sides.`);
-      setTimeout(() => setPhase('won'), 900);
+      setTimeout(() => win(), 900);
     }
   };
 
   const showHint = () => {
     setEdges(new Set(TARGET_EDGES));
     setMessage('Hint shown — this is a classic diamond kolam. Trace it yourself next time!');
-    setTimeout(() => setPhase('won'), 1200);
+    setTimeout(() => win(8), 1200);
   };
 
   return (
@@ -108,7 +121,14 @@ export default function KolamGame({ config, accentColor }: Props) {
       )}
 
       {phase === 'won' && (
-        <GameOverlay title="Festival ready!" body={config.winMessage} buttonLabel="Draw again" onAction={start} tone="won" />
+        <GameOverlay
+          title="Festival ready!"
+          body={config.winMessage}
+          buttonLabel="Draw again"
+          onAction={start}
+          tone="won"
+          xpEarned={xpEarned}
+        />
       )}
 
       {phase === 'playing' && (

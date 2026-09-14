@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
 interface Props {
@@ -20,14 +21,20 @@ const CUT_STEPS = ['Mark pattern', 'Cut bodice', 'Cut sleeves'] as const;
 const STITCH_ORDER = ['Shoulders', 'Sides', 'Sleeves', 'Finishing'] as const;
 
 export default function TailorGame({ config, accentColor }: Props) {
+  const { awardOnWin, resetAward } = useGameXpAward(config.id);
+  const mistakesRef = useRef(0);
   const [phase, setPhase] = useState<'idle' | 'garment' | 'fabric' | 'cut' | 'stitch' | 'won'>('idle');
   const [garment, setGarment] = useState<Garment | null>(null);
   const [fabric, setFabric] = useState<Fabric | null>(null);
   const [cutDone, setCutDone] = useState<string[]>([]);
   const [stitchDone, setStitchDone] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [xpEarned, setXpEarned] = useState<number | undefined>();
 
   const start = () => {
+    mistakesRef.current = 0;
+    resetAward();
+    setXpEarned(undefined);
     setGarment(null);
     setFabric(null);
     setCutDone([]);
@@ -50,6 +57,7 @@ export default function TailorGame({ config, accentColor }: Props) {
     if (!garment) return;
     const option = FABRICS.find((x) => x.id === f)!;
     if (!option.okFor.includes(garment)) {
+      mistakesRef.current += 1;
       setMessage('That fabric pairing is uncommon for this garment. Try another.');
       return;
     }
@@ -62,6 +70,7 @@ export default function TailorGame({ config, accentColor }: Props) {
   const doCut = (step: string) => {
     const expected = CUT_STEPS[cutDone.length];
     if (step !== expected) {
+      mistakesRef.current += 1;
       setMessage(`Next cut should be: ${expected}.`);
       return;
     }
@@ -77,13 +86,17 @@ export default function TailorGame({ config, accentColor }: Props) {
   const doStitch = (step: string) => {
     const expected = STITCH_ORDER[stitchDone.length];
     if (step !== expected) {
+      mistakesRef.current += 1;
       setMessage(`Next stitch: ${expected}.`);
       return;
     }
     const next = [...stitchDone, step];
     setStitchDone(next);
     if (next.length === STITCH_ORDER.length) {
-      setTimeout(() => setPhase('won'), 500);
+      setTimeout(() => {
+        setXpEarned(awardOnWin(mistakesRef.current));
+        setPhase('won');
+      }, 500);
     }
   };
 
@@ -105,6 +118,7 @@ export default function TailorGame({ config, accentColor }: Props) {
           buttonLabel="Sew another"
           onAction={start}
           tone="won"
+          xpEarned={xpEarned}
         />
       )}
 
