@@ -255,7 +255,7 @@ export default function CatchHeritageGame({ config, accentColor }: CatchHeritage
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-merlion/90 backdrop-blur-sm z-20 p-4 text-center">
             <p className="text-5xl mb-2">😅</p>
             <h3 className="font-heading font-extrabold text-white text-xl mb-2">Try Again!</h3>
-            <p className="font-body text-white/90 text-sm mb-4">Too many missed — heritage heroes never give up!</p>
+            <p className="font-body text-white/90 text-sm mb-4">Too many missed. Heritage heroes never give up!</p>
             <button type="button" onClick={start} className="bg-white text-merlion font-heading font-bold px-6 py-2 rounded-xl">
               Retry
             </button>
@@ -264,7 +264,7 @@ export default function CatchHeritageGame({ config, accentColor }: CatchHeritage
       </div>
 
       <p className="text-xs text-navy/40 font-body mt-2 text-center max-w-xs">
-        ← → keys · drag · touch to move
+        Use arrow keys, drag, or touch to move
       </p>
     </div>
   );

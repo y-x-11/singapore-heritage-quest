@@ -11,7 +11,7 @@ export default function ExploreHome() {
       <div className="text-center mb-8">
         <h1 className="font-heading font-extrabold text-3xl text-navy mb-2">Explore Heritage Sites</h1>
         <p className="font-body text-navy/60 text-sm max-w-md mx-auto">
-          Scan a location QR code to learn about Singapore&apos;s cultural heritage — or browse each site below.
+          Scan a location QR code to learn about Singapore&apos;s cultural heritage, or browse each site below.
         </p>
         <Link
           to="/explore/scan"
@@ -58,7 +58,7 @@ export default function ExploreHome() {
                       to={`/explore/location/${guide.id}`}
                       className="block w-full text-center bg-navy text-white font-heading font-bold py-3 rounded-xl hover:bg-navy/90"
                     >
-                      View {guide.name} →
+                      View {guide.name}
                     </Link>
                     <p className="text-xs text-white/70 font-body text-center break-all">{pageUrl}</p>
                     <p className="text-xs text-white/80 font-body text-center">

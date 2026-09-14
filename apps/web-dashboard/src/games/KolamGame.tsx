@@ -103,14 +103,14 @@ export default function KolamGame({ config, accentColor }: Props) {
 
     const matched = [...TARGET_EDGES].every((t) => next.has(t)) && next.size === TARGET_EDGES.size;
     if (matched) {
-      setMessage(`Pattern complete! Symmetry ${symmetryScore()}% — kolam designs often balance both sides.`);
+      setMessage(`Pattern complete! Symmetry ${symmetryScore()}%. Kolam designs often balance both sides.`);
       setTimeout(() => win(), 900);
     }
   };
 
   const showHint = () => {
     setEdges(new Set(TARGET_EDGES));
-    setMessage('Hint shown — this is a classic diamond kolam. Trace it yourself next time!');
+    setMessage('Hint shown. This is a classic diamond kolam. Trace it yourself next time!');
     setTimeout(() => win(8), 1200);
   };
 

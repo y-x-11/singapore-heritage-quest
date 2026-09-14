@@ -163,7 +163,7 @@ export default function LionDanceGame({ config, accentColor }: Props) {
       } else if (missed) {
         mistakesRef.current += 1;
         flashPose('miss');
-        setMessage('Missed the line — slide under the next beat.');
+        setMessage('Missed the line. Slide under the next beat.');
       }
 
       rafRef.current = requestAnimationFrame(tick);
@@ -224,7 +224,7 @@ export default function LionDanceGame({ config, accentColor }: Props) {
       {phase === 'playing' && (
         <div className="space-y-3">
           <p className="font-body text-xs text-navy/50 text-center">
-            Arrow keys or tap a lane · catch {collected}/{NEEDED} beats on the dotted line
+            Arrow keys or tap a lane. Catch {collected}/{NEEDED} beats on the dotted line
           </p>
 
           <div
@@ -318,7 +318,7 @@ export default function LionDanceGame({ config, accentColor }: Props) {
                 moveLion('drum');
               }}
             >
-              ← Drum
+              Drum
             </button>
             <button
               type="button"
@@ -329,7 +329,7 @@ export default function LionDanceGame({ config, accentColor }: Props) {
                 moveLion('leap');
               }}
             >
-              Leap →
+              Leap
             </button>
           </div>
 

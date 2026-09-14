@@ -1,6 +1,6 @@
 const REFERENCES = [
   {
-    text: 'Trip.com. (n.d.). Singapore three cultural districts 4 hr private chartered tour (English-speaking driver). https://sg.trip.com/things-to-do/detail/108001587/',
+    text: 'Trip.com. (n.d.). Singapore three cultural districts 4 hr private chartered tour (English speaking driver). https://sg.trip.com/things-to-do/detail/108001587/',
     url: 'https://sg.trip.com/things-to-do/detail/108001587/',
   },
   {
@@ -8,7 +8,7 @@ const REFERENCES = [
     url: 'https://www.casamia.co/page/little-india',
   },
   {
-    text: 'TourHQ. (n.d.). 4-hour Kampong Glam walking tour with Sultan Mosque and Haji Lane. https://www.tourhq.com/tours/50184/4-hour-private-walking-tour-of-the-vibrant-kampong-glam',
+    text: 'TourHQ. (n.d.). 4 hour Kampong Glam walking tour with Sultan Mosque and Haji Lane. https://www.tourhq.com/tours/50184/4-hour-private-walking-tour-of-the-vibrant-kampong-glam',
     url: 'https://www.tourhq.com/tours/50184/4-hour-private-walking-tour-of-the-vibrant-kampong-glam',
   },
   {
@@ -28,7 +28,7 @@ const REFERENCES = [
     url: 'https://the-qi.com/blogs/journal/the-history-and-healing-power-of-chrysanthemum',
   },
   {
-    text: 'South China Morning Post. (n.d.). Goji berries are a superfood — here\'s why you should eat them in moderation. https://www.scmp.com/lifestyle/health-wellness/article/3298004/goji-berries-are-superfood-heres-why-you-should-eat-them-moderation',
+    text: 'South China Morning Post. (n.d.). Goji berries are a superfood: here\'s why you should eat them in moderation. https://www.scmp.com/lifestyle/health-wellness/article/3298004/goji-berries-are-superfood-heres-why-you-should-eat-them-moderation',
     url: 'https://www.scmp.com/lifestyle/health-wellness/article/3298004/goji-berries-are-superfood-heres-why-you-should-eat-them-moderation',
   },
   {
@@ -36,7 +36,7 @@ const REFERENCES = [
     url: 'https://www.thomsonmedical.com/blog/10-restorative-herbs-recommended-by-our-tcm-physicians',
   },
   {
-    text: 'Berry Ltd. (n.d.). Hawthorn — a prized little fruit high in vitamin C. https://www.berryltd.co.uk/products/hawthorn-a-prized-little-fruit-high-in-vitamin-c/',
+    text: 'Berry Ltd. (n.d.). Hawthorn: a prized little fruit high in vitamin C. https://www.berryltd.co.uk/products/hawthorn-a-prized-little-fruit-high-in-vitamin-c/',
     url: 'https://www.berryltd.co.uk/products/hawthorn-a-prized-little-fruit-high-in-vitamin-c/',
   },
   {
@@ -54,6 +54,26 @@ const REFERENCES = [
   {
     text: 'Home & Decor Singapore. (n.d.). Buying a shophouse in Singapore? 5 things to know. https://www.homeanddecor.com.sg/property/buying-shophouse-singapore',
     url: 'https://www.homeanddecor.com.sg/property/buying-shophouse-singapore',
+  },
+  {
+    text: 'Ostrich Trails. (n.d.). Little India walking trail, Singapore. https://www.ostrichtrails.com/asia/singapore/little-india-walking-trail/',
+    url: 'https://www.ostrichtrails.com/asia/singapore/little-india-walking-trail/',
+  },
+  {
+    text: 'Pelago. (n.d.). Little India, Singapore guide. https://www.pelago.com/en/articles/little-india-singapore-guide/',
+    url: 'https://www.pelago.com/en/articles/little-india-singapore-guide/',
+  },
+  {
+    text: 'Wikipedia. (n.d.). Sri Veeramakaliamman Temple. https://en.wikipedia.org/wiki/Sri_Veeramakaliamman_Temple',
+    url: 'https://en.wikipedia.org/wiki/Sri_Veeramakaliamman_Temple',
+  },
+  {
+    text: 'AFAR. (n.d.). Little India, Singapore. https://www.afar.com/places/little-india-singapore-3',
+    url: 'https://www.afar.com/places/little-india-singapore-3',
+  },
+  {
+    text: 'Tripadvisor. (n.d.). Moghul Sweets, Singapore. https://www.tripadvisor.com/Restaurant_Review-g294265-d11803564-Reviews-Moghul_Sweets-Singapore.html',
+    url: 'https://www.tripadvisor.com/Restaurant_Review-g294265-d11803564-Reviews-Moghul_Sweets-Singapore.html',
   },
 ];
 

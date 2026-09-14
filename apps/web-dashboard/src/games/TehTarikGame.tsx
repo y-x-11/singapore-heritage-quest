@@ -61,7 +61,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
     setHeight(0);
     setDragging(false);
     setSplash(false);
-    setMessage('Tap teh and condensed milk into the mug — order does not matter.');
+    setMessage('Tap teh and condensed milk into the mug. Order does not matter.');
     setPhase('mix');
   };
 
@@ -74,7 +74,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
       setMessage(item === 'teh' ? 'Strong tea in. Now add susu (condensed milk).' : 'Susu in. Now pour the teh.');
       return;
     }
-    setMessage('Condensed milk sweetens and clouds the pull — now stretch the tea between the mugs.');
+    setMessage('Condensed milk sweetens and clouds the pull. Now stretch the tea between the mugs.');
     mixTimerRef.current = setTimeout(() => {
       setHeight(0);
       heightRef.current = 0;
@@ -132,7 +132,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
 
     if (h < min) {
       mistakesRef.current += 1;
-      setMessage('Too weak — drag higher so the ribbon cools and froths.');
+      setMessage('Too weak. Drag higher so the ribbon cools and froths.');
       setHeight(0);
       heightRef.current = 0;
       return;
@@ -140,7 +140,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
     if (h > max || offMug) {
       mistakesRef.current += 1;
       setSplash(true);
-      setMessage(offMug ? 'Off the mug — keep the ribbon over the catch cup.' : 'Spill! Release sooner, while the ribbon is in the gold zone.');
+      setMessage(offMug ? 'Off the mug. Keep the ribbon over the catch cup.' : 'Spill! Release sooner, while the ribbon is in the gold zone.');
       pullTimerRef.current = setTimeout(() => {
         setHeight(0);
         heightRef.current = 0;
@@ -154,7 +154,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
     goodRef.current = next;
     setGoodPulls(next);
     const foamNote =
-      next === 1 ? 'First pull — a light foam starts to form.' : next === 2 ? 'Second pull — the tea cools and the foam thickens.' : 'Third pull — classic mamak froth!';
+      next === 1 ? 'First pull: a light foam starts to form.' : next === 2 ? 'Second pull: the tea cools and the foam thickens.' : 'Third pull: classic mamak froth!';
     setMessage(foamNote);
 
     pullTimerRef.current = setTimeout(() => {
@@ -202,8 +202,8 @@ export default function TehTarikGame({ config, accentColor }: Props) {
         <div className="space-y-3">
           <p className="font-body text-xs text-navy/50 text-center">
             {phase === 'mix'
-              ? `Mix ${mixed.size}/2 · Tap teh and susu into the mug`
-              : `Cup ${Math.min(goodPulls + 1, 3)}/3 · Drag the top mug up, release in the gold zone`}
+              ? `Mix ${mixed.size}/2. Tap teh and susu into the mug`
+              : `Cup ${Math.min(goodPulls + 1, 3)}/3. Drag the top mug up, release in the gold zone`}
           </p>
 
           <div
@@ -367,7 +367,7 @@ export default function TehTarikGame({ config, accentColor }: Props) {
               </button>
             </div>
           ) : (
-            <p className="font-body text-xs text-navy/50 text-center">Drag the top mug (or anywhere on the stall) · release in the gold band</p>
+            <p className="font-body text-xs text-navy/50 text-center">Drag the top mug (or anywhere on the stall), then release in the gold band</p>
           )}
 
           {message ? (

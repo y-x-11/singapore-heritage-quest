@@ -5,6 +5,7 @@ import TehTarikGame from './TehTarikGame';
 import KolamGame from './KolamGame';
 import SongketGame from './SongketGame';
 import TailorGame from './TailorGame';
+import WeddingRushGame from './WeddingRushGame';
 
 interface LocationGameProps {
   config: HeritageGameConfig;
@@ -25,6 +26,8 @@ export default function LocationGame({ config, accentColor }: LocationGameProps)
       return <SongketGame config={config} accentColor={accentColor} />;
     case 'tailor':
       return <TailorGame config={config} accentColor={accentColor} />;
+    case 'wedding-rush':
+      return <WeddingRushGame config={config} accentColor={accentColor} />;
     default:
       return null;
   }

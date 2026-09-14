@@ -61,7 +61,7 @@ export default function Login() {
           </button>
         </form>
         <p className="text-center text-xs text-navy/40 mt-6 font-body">
-          Demo mode — any credentials work without Firebase configured
+          Demo mode: any credentials work without Firebase configured
         </p>
         <p className="text-center mt-4 font-body text-sm text-navy/50">
           Student?{' '}

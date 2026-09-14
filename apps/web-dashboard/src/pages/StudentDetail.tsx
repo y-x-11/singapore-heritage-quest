@@ -23,7 +23,7 @@ export default function StudentDetail() {
 
   return (
     <div>
-      <Link to="/students" className="text-teal font-body font-semibold text-sm hover:underline">← Back to Students</Link>
+      <Link to="/students" className="text-teal font-body font-semibold text-sm hover:underline">Back to Students</Link>
       <h1 className="font-heading font-extrabold text-3xl text-navy mt-4 mb-2">{student.name}</h1>
       <p className="text-navy/60 font-body mb-8">{student.xp} XP total</p>
 

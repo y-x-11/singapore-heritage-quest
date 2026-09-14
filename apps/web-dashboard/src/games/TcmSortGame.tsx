@@ -25,7 +25,7 @@ const HERBS: Herb[] = [
   { id: 'goji', emoji: '🔴', name: 'Goji berries', image: '/games/chinatown/tcm/goji-berries.jpg', bowl: 'vitality', fact: 'Goji berries are prized for nourishing the liver and supporting Qi.' },
   { id: 'ginseng', emoji: '🫚', name: 'Ginseng', image: '/games/chinatown/tcm/ginseng.jpg', bowl: 'vitality', fact: 'Ginseng is a classic tonic for energy and resilience.' },
   { id: 'hawthorn', emoji: '🍎', name: 'Hawthorn', image: '/games/chinatown/tcm/hawthorn.jpg', bowl: 'digestion', fact: 'Hawthorn helps settle heavy meals and supports digestion.' },
-  { id: 'mint', emoji: '🌿', name: 'Mint', image: '/games/chinatown/tcm/mint.jpg', bowl: 'cooling', fact: 'Mint cools the body and eases heat-related discomfort.' },
+  { id: 'mint', emoji: '🌿', name: 'Mint', image: '/games/chinatown/tcm/mint.jpg', bowl: 'cooling', fact: 'Mint cools the body and eases heat related discomfort.' },
   { id: 'tangerine', emoji: '🍊', name: 'Dried tangerine peel', image: '/games/chinatown/tcm/dried-tangerine-peel.jpg', bowl: 'digestion', fact: 'Chen pi (dried peel) warms the middle and aids appetite.' },
 ];
 

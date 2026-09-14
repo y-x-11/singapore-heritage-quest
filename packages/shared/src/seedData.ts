@@ -40,18 +40,18 @@ export const BADGES: Badge[] = [
   { id: 'badge-kampong-glam', name: 'Kampong Hero', description: 'Completed all Kampong Glam missions', locationId: 'kampong-glam', emoji: '🕌', color: '#2A9D8F' },
   { id: 'badge-explorer', name: 'Heritage Explorer', description: 'Discovered all three heritage zones', locationId: 'all', emoji: '🗺️', color: '#FFD166' },
   { id: 'badge-quiz-master', name: 'Quiz Master', description: 'Scored 100% on any heritage quiz', locationId: 'all', emoji: '🧠', color: '#F4A261' },
-  { id: 'badge-streak-7', name: '7-Day Streak', description: 'Maintained a 7-day learning streak', locationId: 'all', emoji: '🔥', color: '#EF476F' },
+  { id: 'badge-streak-7', name: '7 Day Streak', description: 'Maintained a 7 day learning streak', locationId: 'all', emoji: '🔥', color: '#EF476F' },
 ];
 
 export const COLLECTIBLES: Collectible[] = [
   { id: 'joss-stick', name: 'Joss Stick', description: 'Used in temple offerings at Chinatown', locationId: 'chinatown', emoji: '🧧', rarity: 'common' },
-  { id: 'opium-pipe-replica', name: 'Opium Pipe Replica', description: 'A reminder of colonial-era trade', locationId: 'chinatown', emoji: '🏺', rarity: 'rare' },
+  { id: 'opium-pipe-replica', name: 'Opium Pipe Replica', description: 'A reminder of colonial era trade', locationId: 'chinatown', emoji: '🏺', rarity: 'rare' },
   { id: 'lion-dance-mask', name: 'Lion Dance Mask', description: 'Worn during Chinese New Year celebrations', locationId: 'chinatown', emoji: '🦁', rarity: 'legendary' },
   { id: 'roti-prata-card', name: 'Roti Prata Recipe Card', description: 'Secret recipe from a famous hawker', locationId: 'little-india', emoji: '🫓', rarity: 'common' },
   { id: 'spice-box', name: 'Spice Box', description: 'Cardamom, cumin, and turmeric from Serangoon Road', locationId: 'little-india', emoji: '🌶️', rarity: 'rare' },
   { id: 'kolam-pattern', name: 'Kolam Pattern', description: 'Rangoli art drawn during Deepavali', locationId: 'little-india', emoji: '🎨', rarity: 'legendary' },
   { id: 'kampong-wau', name: 'Kampong Wau', description: 'Traditional Malay kite from village days', locationId: 'kampong-glam', emoji: '🪁', rarity: 'common' },
-  { id: 'batik-cloth', name: 'Batik Cloth', description: 'Hand-dyed fabric from Arab Street traders', locationId: 'kampong-glam', emoji: '🧣', rarity: 'rare' },
+  { id: 'batik-cloth', name: 'Batik Cloth', description: 'Hand dyed fabric from Arab Street traders', locationId: 'kampong-glam', emoji: '🧣', rarity: 'rare' },
   { id: 'sultan-coin', name: 'Sultan Coin', description: 'Replica coin from the Malay royalty era', locationId: 'kampong-glam', emoji: '🪙', rarity: 'legendary' },
 ];
 
@@ -166,7 +166,7 @@ export const MISSIONS: Mission[] = [
     'Explore the spice shops and learn how trade routes connected India to Singapore.',
     [
       { text: 'Little India\'s spice shops imported cardamom, turmeric, and chilli from South India.', emoji: '🌶️' },
-      { text: 'Traders on Arab Street and Serangoon Road supplied spices to homes and restaurants island-wide.', emoji: '🛒' },
+      { text: 'Traders on Arab Street and Serangoon Road supplied spices to homes and restaurants island wide.', emoji: '🛒' },
       { text: 'The fragrance of spices still fills the air when you walk down these streets!', emoji: '👃' },
     ],
     75,
@@ -201,9 +201,9 @@ export const MISSIONS: Mission[] = [
     'Life in the Kampong',
     'Razak invites you to his wooden kampong house and shares memories of village life.',
     [
-      { text: 'Before HDB flats, many Malay families lived in kampongs — traditional villages with wooden houses.', emoji: '🏡' },
+      { text: 'Before HDB flats, many Malay families lived in kampongs, traditional villages with wooden houses.', emoji: '🏡' },
       { text: 'Children flew wau kites and played gasing (spinning tops) in open fields.', emoji: '🪁' },
-      { text: 'Neighbours shared food and helped raise each other\'s children — true kampong spirit!', emoji: '🤝' },
+      { text: 'Neighbours shared food and helped raise each other\'s children. True kampong spirit!', emoji: '🤝' },
     ],
     50,
     'kampong01',
@@ -283,7 +283,7 @@ export const QUIZZES: Quiz[] = [
       { id: 'q1', question: 'What instrument drives the lion dance rhythm?', options: ['Piano', 'Drums', 'Flute', 'Guitar'], correctIndex: 1, explanation: 'Drums, gongs, and cymbals accompany lion dance performances.' },
       { id: 'q2', question: 'Who typically performed lion dances?', options: ['Colonial officers', 'Coolie community groups', 'British soldiers', 'Tourists'], correctIndex: 1, explanation: 'Coolie kinsmen formed cultural troupes to preserve traditions.' },
       { id: 'q3', question: 'Lion dances welcome what?', options: ['Bad weather', 'Prosperity', 'Silence', 'Winter'], correctIndex: 1, explanation: 'The dance welcomes good fortune and prosperity.' },
-      { id: 'q4', question: 'How many people typically operate one lion costume?', options: ['One', 'Two', 'Five', 'Ten'], correctIndex: 1, explanation: 'Two performers — one for the head, one for the body.' },
+      { id: 'q4', question: 'How many people typically operate one lion costume?', options: ['One', 'Two', 'Five', 'Ten'], correctIndex: 1, explanation: 'Two performers: one for the head, one for the body.' },
       { id: 'q5', question: 'Lion dances are performed during which occasion?', options: ['Funerals', 'Festivals', 'Elections', 'Sports events'], correctIndex: 1, explanation: 'Lion dances are a festive tradition at celebrations and festivals.' },
     ],
   },
@@ -293,7 +293,7 @@ export const QUIZZES: Quiz[] = [
     title: 'Hawker Heritage Quiz',
     questions: [
       { id: 'q1', question: 'Roti prata originated from which culinary tradition?', options: ['Chinese', 'Indian', 'Malay', 'Japanese'], correctIndex: 1, explanation: 'Roti prata has Indian roots and became a Singapore favourite.' },
-      { id: 'q2', question: 'What is teh tarik?', options: ['Pulled tea', 'Fried rice', 'Spicy curry', 'Sweet bread'], correctIndex: 0, explanation: 'Teh tarik means "pulled tea" — aerated by pouring between cups.' },
+      { id: 'q2', question: 'What is teh tarik?', options: ['Pulled tea', 'Fried rice', 'Spicy curry', 'Sweet bread'], correctIndex: 0, explanation: 'Teh tarik means "pulled tea", aerated by pouring between cups.' },
       { id: 'q3', question: 'Serangoon Road is the main street of which district?', options: ['Chinatown', 'Little India', 'Kampong Glam', 'Marina Bay'], correctIndex: 1, explanation: 'Serangoon Road runs through the heart of Little India.' },
       { id: 'q4', question: 'Hawker stalls mainly served whom?', options: ['Only tourists', 'Workers and families', 'Only royalty', 'Only children'], correctIndex: 1, explanation: 'Hawkers provided affordable meals for everyday Singaporeans.' },
       { id: 'q5', question: 'Many Indian immigrants worked on what plantations?', options: ['Tea', 'Rubber', 'Coffee', 'Cotton'], correctIndex: 1, explanation: 'Rubber plantations employed many Indian labourers.' },
@@ -319,7 +319,7 @@ export const QUIZZES: Quiz[] = [
       { id: 'q1', question: 'Deepavali celebrates the victory of what?', options: ['Light over darkness', 'Summer over winter', 'Land over sea', 'Fire over water'], correctIndex: 0, explanation: 'Deepavali is the Festival of Lights in Hindu tradition.' },
       { id: 'q2', question: 'Kolam patterns are made using what?', options: ['Paint', 'Rice flour', 'Sand only', 'Plastic'], correctIndex: 1, explanation: 'Kolam (rangoli) patterns are traditionally drawn with rice flour.' },
       { id: 'q3', question: 'Deepavali is also known as what?', options: ['Festival of Lights', 'Festival of Kites', 'Festival of Boats', 'Festival of Flowers'], correctIndex: 0, explanation: 'Deepavali literally means "row of lights".' },
-      { id: 'q4', question: 'Little India is decorated with lights during which month roughly?', options: ['January', 'October-November', 'June', 'March'], correctIndex: 1, explanation: 'Deepavali usually falls in October or November.' },
+      { id: 'q4', question: 'Little India is decorated with lights during which month roughly?', options: ['January', 'October to November', 'June', 'March'], correctIndex: 1, explanation: 'Deepavali usually falls in October or November.' },
       { id: 'q5', question: 'Oil lamps used during Deepavali are called what?', options: ['Diyas', 'Lanterns', 'Candles', 'Torches'], correctIndex: 0, explanation: 'Diyas are small clay oil lamps lit during Deepavali.' },
     ],
   },

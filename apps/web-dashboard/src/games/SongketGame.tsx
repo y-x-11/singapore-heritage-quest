@@ -54,7 +54,7 @@ export default function SongketGame({ config, accentColor }: Props) {
     const ok = pattern.every((v, i) => v === player[i]);
     if (!ok) {
       mistakesRef.current += 1;
-      setMessage('Not quite — gold threads must match the remembered Songket motif.');
+      setMessage('Not quite. Gold threads must match the remembered Songket motif.');
       return;
     }
     if (round >= PATTERNS.length - 1) {
@@ -94,7 +94,7 @@ export default function SongketGame({ config, accentColor }: Props) {
       {(phase === 'memorize' || phase === 'weave') && (
         <div className="space-y-4">
           <p className="font-body text-xs text-navy/50 text-center">
-            Pattern {round + 1}/{PATTERNS.length} · {phase === 'memorize' ? 'Memorise the gold threads…' : 'Recreate the pattern'}
+            Pattern {round + 1}/{PATTERNS.length}. {phase === 'memorize' ? 'Memorise the gold threads…' : 'Recreate the pattern'}
           </p>
 
           <div className="grid grid-cols-3 gap-2 mx-auto max-w-[220px]">

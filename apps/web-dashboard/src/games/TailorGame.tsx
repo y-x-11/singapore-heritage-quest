@@ -48,7 +48,7 @@ export default function TailorGame({ config, accentColor }: Props) {
     setPhase('fabric');
     setMessage(
       g === 'kebaya'
-        ? 'Kebaya is a fitted blouse often paired with a sarong — elegant Malay and Peranakan attire.'
+        ? 'Kebaya is a fitted blouse often paired with a sarong, elegant Malay and Peranakan attire.'
         : "Baju Melayu is the classic Malay men's outfit, worn for festivals and formal occasions."
     );
   };
@@ -79,7 +79,7 @@ export default function TailorGame({ config, accentColor }: Props) {
     if (next.length === CUT_STEPS.length) {
       setStitchDone([]);
       setPhase('stitch');
-      setMessage('Stitch in order: shoulders → sides → sleeves → finishing.');
+      setMessage('Stitch in order: shoulders, then sides, then sleeves, then finishing.');
     }
   };
 
@@ -162,7 +162,7 @@ export default function TailorGame({ config, accentColor }: Props) {
       {phase === 'cut' && (
         <div className="space-y-3">
           <p className="font-body text-sm text-navy/70">
-            Cutting {fabric} · {cutDone.length}/{CUT_STEPS.length}
+            Cutting {fabric}. Step {cutDone.length}/{CUT_STEPS.length}
           </p>
           <div className="grid gap-2">
             {CUT_STEPS.map((step) => (
@@ -185,7 +185,7 @@ export default function TailorGame({ config, accentColor }: Props) {
       {phase === 'stitch' && (
         <div className="space-y-3">
           <p className="font-body text-sm text-navy/70">
-            Stitching · {stitchDone.length}/{STITCH_ORDER.length}
+            Stitching. Step {stitchDone.length}/{STITCH_ORDER.length}
           </p>
           <div className="grid gap-2">
             {STITCH_ORDER.map((step) => (

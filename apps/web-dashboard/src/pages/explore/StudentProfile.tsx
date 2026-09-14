@@ -34,7 +34,7 @@ export default function StudentProfile() {
   return (
     <div>
       <Link to="/explore" className="text-teal font-body font-semibold text-sm hover:underline">
-        ← Back to Explore
+        Back to Explore
       </Link>
 
       <div className="mt-6 bg-white rounded-3xl shadow-lg p-6 text-center">
@@ -82,7 +82,7 @@ export default function StudentProfile() {
       <div className="mt-6 bg-sunshine/20 rounded-2xl p-5">
         <h2 className="font-heading font-bold text-navy mb-2">🗺️ Keep exploring!</h2>
         <p className="font-body text-sm text-navy/70 mb-4">
-          Visit heritage sites and play mini-games to earn XP. Better performance means more XP — every {XP_PER_LEVEL} XP
+          Visit heritage sites and play mini games to earn XP. Better performance means more XP. Every {XP_PER_LEVEL} XP
           levels you up!
         </p>
         <Link to="/explore" className="block text-center bg-navy text-white font-heading font-bold py-3 rounded-xl">

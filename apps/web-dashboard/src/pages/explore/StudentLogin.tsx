@@ -51,14 +51,14 @@ export default function StudentLogin() {
 
         {!isConfigured && (
           <p className="text-xs text-navy/50 font-body bg-cream rounded-xl p-3">
-            Demo mode: Google sign-in is simulated. Add Firebase keys in <code>.env</code> for real Google login.
+            Demo mode: Google sign in is simulated. Add Firebase keys in <code>.env</code> for real Google login.
           </p>
         )}
       </div>
 
       <p className="text-center mt-6 font-body text-sm text-navy/50">
         <Link to="/explore" className="text-teal font-semibold hover:underline">
-          Continue without signing in →
+          Continue without signing in
         </Link>
       </p>
 

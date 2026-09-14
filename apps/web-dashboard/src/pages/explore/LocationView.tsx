@@ -16,7 +16,7 @@ export default function LocationView() {
         <p className="text-4xl mb-4">🗺️</p>
         <h1 className="font-heading font-bold text-xl text-navy">Location not found</h1>
         <Link to="/explore" className="text-teal font-body text-sm mt-4 inline-block hover:underline">
-          ← Back to Explore
+          Back to Explore
         </Link>
       </div>
     );
@@ -28,7 +28,7 @@ export default function LocationView() {
   return (
     <article>
       <Link to="/explore" className="text-teal font-body font-semibold text-sm hover:underline">
-        ← All heritage sites
+        All heritage sites
       </Link>
 
       <div className="mt-4 rounded-3xl overflow-hidden shadow-lg relative h-52">
@@ -38,7 +38,7 @@ export default function LocationView() {
           <span className="text-4xl">{guide.emoji}</span>
           <h1 className="font-heading font-extrabold text-3xl mt-1">{guide.name}</h1>
           <p className="font-body text-white/80 text-sm">
-            {guide.district} · {guide.tagline}
+            {guide.district}, {guide.tagline}
           </p>
         </div>
       </div>
@@ -82,7 +82,7 @@ export default function LocationView() {
       {tab === 'games' && (
         <div className="mt-4 space-y-5">
           <p className="font-body text-sm text-navy/60 text-center">
-            Play two heritage challenges inspired by {guide.name}.
+            Play heritage challenges inspired by {guide.name}.
           </p>
           {guide.games.map((game) => (
             <LocationGame key={game.id} config={game} accentColor={guide.color} />

@@ -33,7 +33,7 @@ export default function Content() {
                 to={`/explore/location/${guide.id}`}
                 className="ml-auto text-teal font-body text-sm font-semibold hover:underline"
               >
-                Preview →
+                Preview
               </Link>
             </div>
             <p className="font-body text-sm text-navy/70 mb-4">{guide.overview.slice(0, 200)}…</p>

@@ -62,7 +62,8 @@ export type HeritageGameType =
   | 'teh-tarik'
   | 'kolam'
   | 'songket'
-  | 'tailor';
+  | 'tailor'
+  | 'wedding-rush';
 
 /** Mini-game shown on each location's Games tab */
 export interface HeritageGameConfig {

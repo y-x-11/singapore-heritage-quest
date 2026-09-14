@@ -50,7 +50,7 @@ export default function Classes() {
           <div key={cls.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
             <div>
               <h3 className="font-heading font-bold text-lg text-navy">{cls.name}</h3>
-              <p className="text-navy/50 font-body text-sm">{cls.school} · {cls.students} students</p>
+              <p className="text-navy/50 font-body text-sm">{cls.school}, {cls.students} students</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-navy/50 font-body">Join Code</p>

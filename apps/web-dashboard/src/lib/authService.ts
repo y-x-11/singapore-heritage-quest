@@ -34,17 +34,17 @@ const DEMO_CLASSES: Record<string, string> = {
 export function formatFirebaseError(error: unknown): string {
   if (error instanceof FirebaseError) {
     if (error.code === 'auth/popup-closed-by-user') {
-      return 'Google sign-in was cancelled. Please try again.';
+      return 'Google sign in was cancelled. Please try again.';
     }
     if (error.code === 'auth/popup-blocked') {
-      return 'Pop-up was blocked. Allow pop-ups for this site and try again.';
+      return 'Pop up was blocked. Allow pop ups for this site and try again.';
     }
     if (error.code === 'unavailable' || error.message.toLowerCase().includes('offline')) {
       return [
         'Could not connect to Firebase Firestore.',
-        'In Firebase Console: create a Firestore database (Build → Firestore → Create database),',
-        'enable Google sign-in (Authentication → Sign-in method),',
-        'and add this site to Authorized domains (Authentication → Settings).',
+        'In Firebase Console: create a Firestore database (Build, Firestore, Create database),',
+        'enable Google sign in (Authentication, Sign in method),',
+        'and add this site to Authorized domains (Authentication, Settings).',
         'Then create a class document with a joinCode, or run the project seed script.',
       ].join(' ');
     }

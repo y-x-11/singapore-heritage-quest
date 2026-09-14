@@ -41,7 +41,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       {
         icon: '🏠',
         title: 'Shophouse Living',
-        description: 'Migrants lived in cramped shophouses — shops below, families above — forming tight-knit clan communities.',
+        description: 'Migrants lived in cramped shophouses, shops below and families above, forming tight knit clan communities.',
       },
       {
         icon: '🙏',
@@ -62,7 +62,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
     visitTips: [
       'Best visited in the evening when lanterns light up the streets.',
       'Try local snacks along Smith Street and Temple Street.',
-      'Look up at the ornate shophouse facades — each tells a story.',
+      'Look up at the ornate shophouse facades. Each tells a story.',
     ],
     games: [
       {
@@ -70,9 +70,9 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         type: 'tcm-sort',
         title: 'TCM Apothecary Sort',
         instructions:
-          'Drag each herb into the bowl that matches its traditional use — Cooling, Vitality, or Digestion. Learn a short fact after each correct sort.',
+          'Drag each herb into the bowl that matches its traditional use: Cooling, Vitality, or Digestion. Learn a short fact after each correct sort.',
         winMessage:
-          'Well sorted! TCM shops like Eu Yan Sang still blend herbs to restore balance of Qi — mind, body, and spirit together.',
+          'Well sorted! TCM shops like Eu Yan Sang still blend herbs to restore balance of Qi: mind, body, and spirit together.',
       },
       {
         id: 'chinatown-lion-dance',
@@ -81,7 +81,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         instructions:
           'Use the arrow keys or tap a lane to slide the lion. Catch falling drum (left) and leap (right) beats on the dotted line. Each catch slides the greens toward the plate.',
         winMessage:
-          'Cai qing (采青) uses lettuce — 生菜 sheng cai — a homophone for growing wealth. Chinatown troupes still drum along Temple Street at Chinese New Year so the lion can “eat” the greens.'
+          'Cai qing (采青) uses lettuce (生菜 sheng cai), a homophone for growing wealth. Chinatown troupes still drum along Temple Street at Chinese New Year so the lion can “eat” the greens.'
       },
     ],
   },
@@ -99,7 +99,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
     shortDescription:
       'Discover spice markets, colourful murals, and the vibrant food culture of the Indian community.',
     overview:
-      'Little India pulses with colour, fragrance, and flavour. Indian immigrants brought spices, traditions, and recipes that became part of Singapore\'s identity. Serangoon Road is the main artery — spice shops spill onto sidewalks, saree stores shimmer, and hawkers flip roti prata at all hours. During Deepavali, the entire district transforms into a Festival of Lights.',
+      'Little India pulses with colour, fragrance, and flavour. Indian immigrants brought spices, traditions, and recipes that became part of Singapore\'s identity. Serangoon Road is the main artery where spice shops spill onto sidewalks, saree stores shimmer, and hawkers flip roti prata at all hours. During Deepavali, the entire district transforms into a Festival of Lights.',
     intangibleHeritage: {
       description:
         'Centralized at Tekka Center, the area preserves South and North Indian culinary arts, ranging from the performance art of pulling teh tarik to the skilled preparation of roti prata, thosai, and complex spice grinding.',
@@ -111,7 +111,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       {
         icon: '🌶️',
         title: 'Spice Trade',
-        description: 'Indian traders imported cardamom, turmeric, and chilli — flavours that define local cuisine today.',
+        description: 'Indian traders imported cardamom, turmeric, and chilli, flavours that define local cuisine today.',
       },
       {
         icon: '🍛',
@@ -130,28 +130,37 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       'Little India Arcade sells everything from spices to henna art.',
     ],
     visitTips: [
-      'Visit during Deepavali (Oct–Nov) for spectacular light displays.',
+      'Visit during Deepavali (Oct to Nov) for spectacular light displays.',
       'Morning is best for fresh spices and market bustle.',
       'Don\'t miss a plate of roti prata with curry on Serangoon Road.',
     ],
     games: [
       {
+        id: 'little-india-wedding-rush',
+        type: 'wedding-rush',
+        title: 'The Little India Wedding Rush',
+        instructions:
+          'Race against 75 seconds to collect a garland, sweets, and veshti from three market shops. Wrong moves cost $5 and 10 seconds.',
+        winMessage:
+          'Little India Legend! You gathered every wedding treasure before the baraat arrived, from Tekka garlands to Serangoon Road sweets and silk veshti.',
+      },
+      {
         id: 'little-india-teh-tarik',
         type: 'teh-tarik',
         title: 'Teh Tarik Pull',
         instructions:
-          'Tap teh and condensed milk into the mug, then drag the top mug up to stretch the tea. Release in the gold froth zone — three good pulls, each a little tighter.',
+          'Tap teh and condensed milk into the mug, then drag the top mug up to stretch the tea. Release in the gold froth zone for three good pulls, each a little tighter.',
         winMessage:
-          'Frothy and fragrant! Pulling teh tarik cools the tea and aerates it — a performance art of South Indian mamak stalls and Tekka Centre.',
+          'Frothy and fragrant! Pulling teh tarik cools the tea and aerates it, a performance art of South Indian mamak stalls and Tekka Centre.',
       },
       {
         id: 'little-india-kolam',
         type: 'kolam',
         title: 'Kolam Pattern Trace',
         instructions:
-          'Tap dots to connect a Deepavali kolam. Match the pattern and aim for symmetry — then learn why these floor designs welcome prosperity.',
+          'Tap dots to connect a Deepavali kolam. Match the pattern and aim for symmetry, then learn why these floor designs welcome prosperity.',
         winMessage:
-          'Beautiful kolam! During Deepavali, families draw these rice-flour patterns at doorways to welcome guests, light, and good fortune.',
+          'Beautiful kolam! During Deepavali, families draw these rice flour patterns at doorways to welcome guests, light, and good fortune.',
       },
     ],
   },
@@ -165,15 +174,15 @@ export const LOCATION_GUIDES: LocationGuide[] = [
     lat: 1.302,
     lng: 103.859,
     radiusMeters: 150,
-    tagline: 'Kampong spirit & Malay-Arab heritage',
+    tagline: 'Kampong spirit & Malay Arab heritage',
     shortDescription:
-      'Walk through the Malay-Arab quarter, Sultan Mosque, and memories of traditional kampong life.',
+      'Walk through the Malay Arab quarter, Sultan Mosque, and memories of traditional kampong life.',
     overview:
-      'Kampong Glam was the historic seat of Malay royalty and a thriving Arab trading quarter. Before HDB flats, kampong villages dotted the landscape — neighbours shared food, flew wau kites, and looked out for one another. Today, the golden dome of Sultan Mosque still anchors the community, while Arab Street shops sell batik, perfumes, and textiles.',
+      'Kampong Glam was the historic seat of Malay royalty and a thriving Arab trading quarter. Before HDB flats, kampong villages dotted the landscape where neighbours shared food, flew wau kites, and looked out for one another. Today, the golden dome of Sultan Mosque still anchors the community, while Arab Street shops sell batik, perfumes, and textiles.',
     intangibleHeritage: {
       title: 'Batik & Textile Arts',
       description:
-        'Historic family storefronts along Arab Street continue the preservation of Batik block-printing, Songket weaving, and traditional garment tailoring (such as the Baju Melayu and Kebaya).',
+        'Historic family storefronts along Arab Street continue the preservation of Batik block printing, Songket weaving, and traditional garment tailoring (such as the Baju Melayu and Kebaya).',
       image: 'locations/kampong-glam-heritage.png',
     },
     heroImage: 'locations/kampong-glam.png',
@@ -182,12 +191,12 @@ export const LOCATION_GUIDES: LocationGuide[] = [
       {
         icon: '🏡',
         title: 'Kampong Life',
-        description: 'Wooden kampong houses on stilts housed families who lived by gotong royong — community cooperation.',
+        description: 'Wooden kampong houses on stilts housed families who lived by gotong royong, community cooperation.',
       },
       {
         icon: '🕌',
         title: 'Sultan Mosque',
-        description: 'The golden-domed mosque is the heart of the Muslim community and a national landmark.',
+        description: 'The golden domed mosque is the heart of the Muslim community and a national landmark.',
       },
       {
         icon: '🧣',
@@ -211,9 +220,9 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         type: 'songket',
         title: 'Songket Weave Loom',
         instructions:
-          'Study the gold-thread pattern, then recreate it on the loom. Complete three patterns to master Songket memory weaving.',
+          'Study the gold thread pattern, then recreate it on the loom. Complete three patterns to master Songket memory weaving.',
         winMessage:
-          'Bagus weaving! Songket is a Malay textile with metallic threads woven into silk or cotton — still cherished along Arab Street.',
+          'Bagus weaving! Songket is a Malay textile with metallic threads woven into silk or cotton, still cherished along Arab Street.',
       },
       {
         id: 'kampong-glam-tailor',
@@ -222,7 +231,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         instructions:
           'Choose fabric, cut the pattern, then stitch in the right order. Finish a traditional garment and unlock your tailor collectible.',
         winMessage:
-          'Tailoring complete! Family shops on Arab Street still craft the Baju Melayu and Kebaya — living textile heritage of Kampong Glam.',
+          'Tailoring complete! Family shops on Arab Street still craft the Baju Melayu and Kebaya, living textile heritage of Kampong Glam.',
       },
     ],
   },
