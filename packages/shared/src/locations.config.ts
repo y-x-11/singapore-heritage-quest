@@ -144,24 +144,6 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         winMessage:
           'Little India Legend! You gathered every wedding treasure before the baraat arrived, from Tekka garlands to Serangoon Road sweets and silk veshti.',
       },
-      {
-        id: 'little-india-teh-tarik',
-        type: 'teh-tarik',
-        title: 'Teh Tarik Pull',
-        instructions:
-          'Tap teh and condensed milk into the mug, then drag the top mug up to stretch the tea. Release in the gold froth zone for three good pulls, each a little tighter.',
-        winMessage:
-          'Frothy and fragrant! Pulling teh tarik cools the tea and aerates it, a performance art of South Indian mamak stalls and Tekka Centre.',
-      },
-      {
-        id: 'little-india-kolam',
-        type: 'kolam',
-        title: 'Kolam Pattern Trace',
-        instructions:
-          'Tap dots to connect a Deepavali kolam. Match the pattern and aim for symmetry, then learn why these floor designs welcome prosperity.',
-        winMessage:
-          'Beautiful kolam! During Deepavali, families draw these rice flour patterns at doorways to welcome guests, light, and good fortune.',
-      },
     ],
   },
   {
