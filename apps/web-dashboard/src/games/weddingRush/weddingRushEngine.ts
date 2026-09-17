@@ -1,12 +1,13 @@
 import './weddingRush.css';
+import { publicAssetUrl } from '../../lib/site';
 
 const ASSETS = {
-  intro: '/games/little-india/wedding-rush/scene-intro.jpg',
-  market: '/games/little-india/wedding-rush/scene-market.png',
-  end: '/games/little-india/wedding-rush/scene-end.jpg',
-  flower: '/games/little-india/wedding-rush/scene-flower.jpg',
-  sweet: '/games/little-india/wedding-rush/scene-sweet.jpg',
-  textile: '/games/little-india/wedding-rush/scene-textile.svg',
+  intro: publicAssetUrl('games/little-india/wedding-rush/scene-intro.jpg'),
+  market: publicAssetUrl('games/little-india/wedding-rush/scene-market.png'),
+  end: publicAssetUrl('games/little-india/wedding-rush/scene-end.jpg'),
+  flower: publicAssetUrl('games/little-india/wedding-rush/scene-flower.jpg'),
+  sweet: publicAssetUrl('games/little-india/wedding-rush/scene-sweet.jpg'),
+  textile: publicAssetUrl('games/little-india/wedding-rush/scene-textile.svg'),
 } as const;
 
 const TIMER_START = 75;

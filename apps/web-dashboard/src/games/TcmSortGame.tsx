@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import type { HeritageGameConfig } from '@heritage/shared';
+import { publicAssetUrl } from '../lib/site';
 import { useGameXpAward } from '../hooks/useGameXpAward';
 import GameShell, { GameOverlay } from './GameShell';
 
@@ -20,14 +21,19 @@ const BOWLS: { id: BowlId; label: string; emoji: string }[] = [
   { id: 'digestion', label: 'Digestion', emoji: '🍵' },
 ];
 
-const HERBS: Herb[] = [
-  { id: 'chrysanthemum', emoji: '🌼', name: 'Chrysanthemum', image: '/games/chinatown/tcm/chrysanthemum.jpg', bowl: 'cooling', fact: 'Chrysanthemum tea is used to clear heat and soothe the eyes.' },
-  { id: 'goji', emoji: '🔴', name: 'Goji berries', image: '/games/chinatown/tcm/goji-berries.jpg', bowl: 'vitality', fact: 'Goji berries are prized for nourishing the liver and supporting Qi.' },
-  { id: 'ginseng', emoji: '🫚', name: 'Ginseng', image: '/games/chinatown/tcm/ginseng.jpg', bowl: 'vitality', fact: 'Ginseng is a classic tonic for energy and resilience.' },
-  { id: 'hawthorn', emoji: '🍎', name: 'Hawthorn', image: '/games/chinatown/tcm/hawthorn.jpg', bowl: 'digestion', fact: 'Hawthorn helps settle heavy meals and supports digestion.' },
-  { id: 'mint', emoji: '🌿', name: 'Mint', image: '/games/chinatown/tcm/mint.jpg', bowl: 'cooling', fact: 'Mint cools the body and eases heat related discomfort.' },
-  { id: 'tangerine', emoji: '🍊', name: 'Dried tangerine peel', image: '/games/chinatown/tcm/dried-tangerine-peel.jpg', bowl: 'digestion', fact: 'Chen pi (dried peel) warms the middle and aids appetite.' },
+const HERB_DEFS: (Omit<Herb, 'image'> & { imagePath: string })[] = [
+  { id: 'chrysanthemum', emoji: '🌼', name: 'Chrysanthemum', imagePath: 'games/chinatown/tcm/chrysanthemum.jpg', bowl: 'cooling', fact: 'Chrysanthemum tea is used to clear heat and soothe the eyes.' },
+  { id: 'goji', emoji: '🔴', name: 'Goji berries', imagePath: 'games/chinatown/tcm/goji-berries.jpg', bowl: 'vitality', fact: 'Goji berries are prized for nourishing the liver and supporting Qi.' },
+  { id: 'ginseng', emoji: '🫚', name: 'Ginseng', imagePath: 'games/chinatown/tcm/ginseng.jpg', bowl: 'vitality', fact: 'Ginseng is a classic tonic for energy and resilience.' },
+  { id: 'hawthorn', emoji: '🍎', name: 'Hawthorn', imagePath: 'games/chinatown/tcm/hawthorn.jpg', bowl: 'digestion', fact: 'Hawthorn helps settle heavy meals and supports digestion.' },
+  { id: 'mint', emoji: '🌿', name: 'Mint', imagePath: 'games/chinatown/tcm/mint.jpg', bowl: 'cooling', fact: 'Mint cools the body and eases heat related discomfort.' },
+  { id: 'tangerine', emoji: '🍊', name: 'Dried tangerine peel', imagePath: 'games/chinatown/tcm/dried-tangerine-peel.jpg', bowl: 'digestion', fact: 'Chen pi (dried peel) warms the middle and aids appetite.' },
 ];
+
+const HERBS: Herb[] = HERB_DEFS.map(({ imagePath, ...rest }) => ({
+  ...rest,
+  image: publicAssetUrl(imagePath),
+}));
 
 interface Props {
   config: HeritageGameConfig;
