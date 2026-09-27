@@ -61,9 +61,6 @@ export default function ExploreHome() {
                       View {guide.name}
                     </Link>
                     <p className="text-xs text-white/70 font-body text-center break-all">{pageUrl}</p>
-                    <p className="text-xs text-white/80 font-body text-center">
-                      Print this QR at the site for visitors to scan
-                    </p>
                   </div>
                 </div>
               </div>
@@ -71,10 +68,6 @@ export default function ExploreHome() {
           );
         })}
       </div>
-
-      <p className="text-center text-xs text-navy/40 font-body mt-8">
-        Content editable in <code className="bg-white px-1 rounded">packages/shared/src/locations.config.ts</code>
-      </p>
     </div>
   );
 }
