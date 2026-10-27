@@ -24,6 +24,11 @@ export interface AppUser {
   xp: number;
   level: number;
   streak: number;
+  /** User-created mural from Kampong Glam studio (JPEG data URL) */
+  muralImageDataUrl?: string;
+  muralTitle?: string;
+  /** Badge id from BADGES shown on leaderboard */
+  showcaseBadgeId?: string;
 }
 
 export interface LeaderboardEntry {
@@ -32,10 +37,13 @@ export interface LeaderboardEntry {
   photoURL?: string;
   level: number;
   xp: number;
+  showcaseBadgeId?: string;
 }
 
 const USERNAME_MIN = 2;
 const USERNAME_MAX = 20;
+const MURAL_TITLE_MAX = 25;
+const MURAL_DATA_URL_MAX = 900_000;
 
 export function defaultUsernameFromDisplayName(displayName: string): string {
   const cleaned = displayName.trim().replace(/\s+/g, ' ').slice(0, USERNAME_MAX);
@@ -124,7 +132,61 @@ export async function fetchUserProfile(uid: string): Promise<AppUser | null> {
       xp: data.xp ?? 0,
       level: data.level ?? 1,
       streak: data.streak ?? 0,
+      muralImageDataUrl: data.muralImageDataUrl ?? undefined,
+      muralTitle: data.muralTitle ?? undefined,
+      showcaseBadgeId: data.showcaseBadgeId ?? undefined,
     };
+  } catch (error) {
+    throw new Error(formatFirebaseError(error));
+  }
+}
+
+export function validateMuralTitle(raw: string): string {
+  const trimmed = raw.trim().replace(/\s+/g, ' ');
+  if (!trimmed.length) {
+    throw new Error('Give your mural a name.');
+  }
+  if (trimmed.length > MURAL_TITLE_MAX) {
+    throw new Error(`Mural name must be ${MURAL_TITLE_MAX} characters or fewer.`);
+  }
+  return trimmed;
+}
+
+export async function persistUserMural(uid: string, title: string, imageDataUrl: string): Promise<void> {
+  const muralTitle = validateMuralTitle(title);
+  if (!imageDataUrl.startsWith('data:image/')) {
+    throw new Error('Invalid mural image.');
+  }
+  if (imageDataUrl.length > MURAL_DATA_URL_MAX) {
+    throw new Error('Mural image is too large. Try fewer brush strokes or simpler shapes.');
+  }
+  if (!db || !isFirebaseConfigured) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      {
+        muralTitle,
+        muralImageDataUrl: imageDataUrl,
+        lastActive: new Date().toISOString(),
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    throw new Error(formatFirebaseError(error));
+  }
+}
+
+export async function persistShowcaseBadge(uid: string, badgeId: string | null): Promise<void> {
+  if (!db || !isFirebaseConfigured) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      {
+        showcaseBadgeId: badgeId,
+        lastActive: new Date().toISOString(),
+      },
+      { merge: true }
+    );
   } catch (error) {
     throw new Error(formatFirebaseError(error));
   }
@@ -249,6 +311,7 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
         photoURL: demo.photoURL,
         level: demo.level,
         xp: demo.xp,
+        showcaseBadgeId: demo.showcaseBadgeId,
       },
     ];
   }
@@ -264,6 +327,7 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
         photoURL: data.photoURL ?? undefined,
         level: data.level ?? 1,
         xp: data.xp ?? 0,
+        showcaseBadgeId: data.showcaseBadgeId ?? undefined,
       };
     });
     return entries.sort((a, b) => b.level - a.level || b.xp - a.xp);
