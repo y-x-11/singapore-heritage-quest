@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { HeritageGameConfig } from '@heritage/shared';
+import { LOCATION_GUIDES, type HeritageGameConfig } from '@heritage/shared';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useGameXpAward } from '../hooks/useGameXpAward';
@@ -16,6 +16,17 @@ type Tool = 'select' | 'brush' | 'eraser';
 const CANVAS = 360;
 const BRUSH = 6;
 const ERASER = 22;
+
+const KAMPONG_FUN_FACTS =
+  LOCATION_GUIDES.find((g) => g.id === 'kampong-glam')?.funFacts ?? [];
+
+const HOW_TO_STEPS = [
+  'Drag shapes from the toolbar onto the round brick wall.',
+  'Select (↖️): tap a shape to move it; drag the corner square to resize.',
+  'Brush (🖌️): paint freehand strokes in your chosen colour.',
+  'Eraser (🧽): wipe brush strokes or scrub over shapes to remove them.',
+  'When you are happy, tap I\'m done!, name your mural, and save it to your profile.',
+] as const;
 
 const COLORS = [
   { id: 'red', hex: '#E63946' },
@@ -89,11 +100,34 @@ function nearResizeHandle(s: PlacedShape, px: number, py: number): boolean {
   return Math.abs(px - cx) <= HANDLE && Math.abs(py - cy) <= HANDLE;
 }
 
-function exportMural(
-  shapes: PlacedShape[],
-  paintCanvas: HTMLCanvasElement,
-  bgColor: string
-): string {
+function hitTestEraser(s: PlacedShape, px: number, py: number): boolean {
+  const cx = Math.max(s.x, Math.min(px, s.x + s.w));
+  const cy = Math.max(s.y, Math.min(py, s.y + s.h));
+  return Math.hypot(px - cx, py - cy) <= ERASER / 2;
+}
+
+function drawBrickWall(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  const mortar = '#e8e4dc';
+  const brickA = '#c45c4a';
+  const brickB = '#b85444';
+  const rowH = 14;
+  const brickW = 36;
+
+  ctx.fillStyle = mortar;
+  ctx.fillRect(0, 0, w, h);
+
+  for (let row = 0; row * rowH < h + rowH; row++) {
+    const y = row * rowH;
+    const offset = row % 2 ? brickW / 2 : 0;
+    for (let x = -brickW; x < w + brickW; x += brickW) {
+      const bx = x + offset;
+      ctx.fillStyle = (row + Math.floor((x + offset) / brickW)) % 2 === 0 ? brickA : brickB;
+      ctx.fillRect(bx + 1, y + 1, brickW - 2, rowH - 3);
+    }
+  }
+}
+
+function exportMural(shapes: PlacedShape[], paintCanvas: HTMLCanvasElement): string {
   const out = document.createElement('canvas');
   out.width = CANVAS;
   out.height = CANVAS;
@@ -104,8 +138,7 @@ function exportMural(
   ctx.beginPath();
   ctx.arc(CANVAS / 2, CANVAS / 2, CANVAS / 2, 0, Math.PI * 2);
   ctx.clip();
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0, 0, CANVAS, CANVAS);
+  drawBrickWall(ctx, CANVAS, CANVAS);
   for (const s of shapes) drawShape(ctx, s);
   ctx.drawImage(paintCanvas, 0, 0);
   ctx.restore();
@@ -133,6 +166,17 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [xpEarned, setXpEarned] = useState<number | undefined>();
+  const [savedFact, setSavedFact] = useState<string | null>(null);
+
+  const eraseShapesAt = useCallback((px: number, py: number) => {
+    setShapes((prev) => {
+      const next = prev.filter((s) => !hitTestEraser(s, px, py));
+      if (next.length !== prev.length) {
+        setSelectedId((id) => (id && next.some((s) => s.id === id) ? id : null));
+      }
+      return next;
+    });
+  }, []);
 
   const redrawComposite = useCallback(() => {
     const comp = compositeRef.current;
@@ -145,8 +189,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     ctx.beginPath();
     ctx.arc(CANVAS / 2, CANVAS / 2, CANVAS / 2, 0, Math.PI * 2);
     ctx.clip();
-    ctx.fillStyle = '#f8f6f0';
-    ctx.fillRect(0, 0, CANVAS, CANVAS);
+    drawBrickWall(ctx, CANVAS, CANVAS);
     for (const s of shapes) drawShape(ctx, s);
     ctx.drawImage(paint, 0, 0);
     if (selectedId && tool === 'select') {
@@ -186,6 +229,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     setPhase('edit');
     setTitleDraft('');
     setSaveError(null);
+    setSavedFact(null);
     const paint = paintRef.current;
     if (paint) {
       const ctx = paint.getContext('2d');
@@ -260,6 +304,10 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
       return;
     }
 
+    if (tool === 'eraser') {
+      eraseShapesAt(x, y);
+    }
+
     const paint = paintRef.current;
     if (!paint) return;
     const ctx = paint.getContext('2d');
@@ -308,6 +356,11 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     }
 
     if (!drawing) return;
+
+    if (tool === 'eraser') {
+      eraseShapesAt(x, y);
+    }
+
     const paint = paintRef.current;
     if (!paint) return;
     const ctx = paint.getContext('2d');
@@ -336,7 +389,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     }
     const paint = paintRef.current;
     if (!paint) return;
-    const url = exportMural(shapes, paint, '#f8f6f0');
+    const url = exportMural(shapes, paint);
     setExportUrl(url);
     setTitleDraft('');
     setSaveError(null);
@@ -359,6 +412,9 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     try {
       await saveMural(title, exportUrl);
       setXpEarned(awardOnWin(0));
+      if (KAMPONG_FUN_FACTS.length > 0) {
+        setSavedFact(KAMPONG_FUN_FACTS[Math.floor(Math.random() * KAMPONG_FUN_FACTS.length)] ?? null);
+      }
       setPhase('saved');
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Could not save mural.');
@@ -376,14 +432,28 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
       )}
 
       {phase === 'saved' && (
-        <GameOverlay
-          title="Mural saved!"
-          body={`"${titleDraft.trim()}" was added to your profile. Tap it there to show it on the leaderboard.`}
-          buttonLabel="Create another"
-          tone="won"
-          xpEarned={xpEarned}
-          onAction={start}
-        />
+        <div className="rounded-2xl bg-teal/90 p-5 text-center text-white">
+          <h4 className="font-heading font-extrabold text-xl mb-2">Mural saved!</h4>
+          <p className="font-body text-white/90 text-sm mb-3 leading-relaxed">
+            &ldquo;{titleDraft.trim()}&rdquo; was added to your profile. Tap it there to show it on the leaderboard.
+          </p>
+          {savedFact && (
+            <div className="rounded-xl bg-white/15 px-3 py-2 mb-3 text-left">
+              <p className="font-heading text-xs text-sunshine mb-1">Fun fact</p>
+              <p className="font-body text-sm text-white/95 leading-relaxed">{savedFact}</p>
+            </div>
+          )}
+          {xpEarned != null && xpEarned > 0 && (
+            <p className="font-heading font-bold text-sunshine text-lg mb-3">+{xpEarned} XP</p>
+          )}
+          <button
+            type="button"
+            onClick={start}
+            className="bg-sunshine text-navy font-heading font-bold px-6 py-2.5 rounded-xl hover:scale-105 transition-transform"
+          >
+            Create another
+          </button>
+        </div>
       )}
 
       {phase === 'name' && exportUrl && (
@@ -417,6 +487,14 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
 
       {phase === 'edit' && (
         <div className="flex flex-col sm:flex-row gap-3">
+          <details className="sm:hidden order-0 rounded-xl border border-navy/10 bg-cream/40 px-3 py-2">
+            <summary className="font-heading text-sm font-bold text-navy cursor-pointer">How to use the studio</summary>
+            <ol className="mt-2 space-y-1.5 font-body text-xs text-navy/75 list-decimal list-inside">
+              {HOW_TO_STEPS.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </details>
           <aside className="flex sm:flex-col gap-2 sm:w-14 shrink-0 order-2 sm:order-1">
             <p className="hidden sm:block font-heading text-xs text-navy/50 text-center mb-1">Shapes</p>
             {(['triangle', 'square', 'circle', 'rectangle', 'line'] as ShapeKind[]).map((kind) => (
@@ -451,13 +529,21 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
               type="button"
               onClick={() => setTool('eraser')}
               className={`h-11 sm:w-11 rounded-xl border-2 text-lg ${tool === 'eraser' ? 'border-teal bg-teal/10' : 'border-navy/15'}`}
-              title="Eraser"
+              title="Eraser — paint and shapes"
             >
               🧽
             </button>
           </aside>
 
           <div className="flex-1 order-1 sm:order-2">
+            <details className="hidden sm:block mb-3 rounded-xl border border-navy/10 bg-cream/40 px-3 py-2">
+              <summary className="font-heading text-sm font-bold text-navy cursor-pointer">How to use the studio</summary>
+              <ol className="mt-2 space-y-1.5 font-body text-xs text-navy/75 list-decimal list-inside">
+                {HOW_TO_STEPS.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </details>
             <div className="relative mx-auto w-full max-w-[360px] aspect-square">
               <canvas ref={paintRef} width={CANVAS} height={CANVAS} className="hidden" aria-hidden />
               <canvas
@@ -486,6 +572,12 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
                 />
               ))}
             </div>
+
+            {tool === 'eraser' && (
+              <p className="font-body text-xs text-navy/50 text-center mt-3">
+                Scrub to erase brush strokes or remove shapes on the brick wall.
+              </p>
+            )}
 
             {selected && tool === 'select' && (
               <div className="mt-3 flex flex-wrap gap-2 justify-center items-center">
