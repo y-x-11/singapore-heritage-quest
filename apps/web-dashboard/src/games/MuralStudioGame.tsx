@@ -22,9 +22,9 @@ const KAMPONG_FUN_FACTS =
 
 const HOW_TO_STEPS = [
   'Drag shapes from the toolbar onto the round brick wall.',
-  'Select (↖️): tap a shape to move it; drag the corner square to resize.',
+  'Select (↖️): move a shape; drag the corner square to resize; drag the top circle to rotate.',
   'Brush (🖌️): paint freehand strokes in your chosen colour.',
-  'Eraser (🧽): wipe brush strokes or scrub over shapes to remove them.',
+  'Eraser (🧽): wipe brush strokes pixel-by-pixel, including partial erases on shapes.',
   'When you are happy, tap I\'m done!, name your mural, and save it to your profile.',
 ] as const;
 
@@ -45,41 +45,67 @@ interface PlacedShape {
   y: number;
   w: number;
   h: number;
+  rotation: number;
   color: string;
 }
 
+function shapeCenter(s: PlacedShape) {
+  return { cx: s.x + s.w / 2, cy: s.y + s.h / 2 };
+}
+
+function toLocal(s: PlacedShape, px: number, py: number) {
+  const { cx, cy } = shapeCenter(s);
+  const cos = Math.cos(-s.rotation);
+  const sin = Math.sin(-s.rotation);
+  const dx = px - cx;
+  const dy = py - cy;
+  return { lx: dx * cos - dy * sin, ly: dx * sin + dy * cos };
+}
+
+function localToWorld(s: PlacedShape, lx: number, ly: number) {
+  const { cx, cy } = shapeCenter(s);
+  const cos = Math.cos(s.rotation);
+  const sin = Math.sin(s.rotation);
+  return { x: cx + lx * cos - ly * sin, y: cy + lx * sin + ly * cos };
+}
+
+function setShapeFromCenter(s: PlacedShape, cx: number, cy: number, w: number, h: number): PlacedShape {
+  return { ...s, x: cx - w / 2, y: cy - h / 2, w, h };
+}
+
 function drawShape(ctx: CanvasRenderingContext2D, s: PlacedShape) {
+  const { cx, cy } = shapeCenter(s);
   ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(s.rotation);
   ctx.fillStyle = s.color;
   ctx.strokeStyle = s.color;
   ctx.lineWidth = Math.max(3, Math.min(s.w, s.h) * 0.08);
-  const cx = s.x + s.w / 2;
-  const cy = s.y + s.h / 2;
+  const hw = s.w / 2;
+  const hh = s.h / 2;
 
   switch (s.kind) {
     case 'rectangle':
-      ctx.fillRect(s.x, s.y, s.w, s.h);
-      break;
     case 'square':
-      ctx.fillRect(s.x, s.y, s.w, s.h);
+      ctx.fillRect(-hw, -hh, s.w, s.h);
       break;
     case 'circle':
       ctx.beginPath();
-      ctx.arc(cx, cy, Math.min(s.w, s.h) / 2, 0, Math.PI * 2);
+      ctx.arc(0, 0, Math.min(s.w, s.h) / 2, 0, Math.PI * 2);
       ctx.fill();
       break;
     case 'triangle':
       ctx.beginPath();
-      ctx.moveTo(cx, s.y);
-      ctx.lineTo(s.x + s.w, s.y + s.h);
-      ctx.lineTo(s.x, s.y + s.h);
+      ctx.moveTo(0, -hh);
+      ctx.lineTo(hw, hh);
+      ctx.lineTo(-hw, hh);
       ctx.closePath();
       ctx.fill();
       break;
     case 'line':
       ctx.beginPath();
-      ctx.moveTo(s.x, s.y + s.h / 2);
-      ctx.lineTo(s.x + s.w, s.y + s.h / 2);
+      ctx.moveTo(-hw, 0);
+      ctx.lineTo(hw, 0);
       ctx.stroke();
       break;
     default:
@@ -89,21 +115,109 @@ function drawShape(ctx: CanvasRenderingContext2D, s: PlacedShape) {
 }
 
 const HANDLE = 16;
+const ROTATE_ARM = 24;
 
 function hitTest(s: PlacedShape, px: number, py: number): boolean {
-  return px >= s.x && px <= s.x + s.w && py >= s.y && py <= s.y + s.h;
+  const { lx, ly } = toLocal(s, px, py);
+  return lx >= -s.w / 2 && lx <= s.w / 2 && ly >= -s.h / 2 && ly <= s.h / 2;
+}
+
+function nearPoint(px: number, py: number, tx: number, ty: number, radius = HANDLE): boolean {
+  return Math.hypot(px - tx, py - ty) <= radius;
 }
 
 function nearResizeHandle(s: PlacedShape, px: number, py: number): boolean {
-  const cx = s.x + s.w;
-  const cy = s.y + s.h;
-  return Math.abs(px - cx) <= HANDLE && Math.abs(py - cy) <= HANDLE;
+  const corner = localToWorld(s, s.w / 2, s.h / 2);
+  return nearPoint(px, py, corner.x, corner.y);
 }
 
-function hitTestEraser(s: PlacedShape, px: number, py: number): boolean {
-  const cx = Math.max(s.x, Math.min(px, s.x + s.w));
-  const cy = Math.max(s.y, Math.min(py, s.y + s.h));
-  return Math.hypot(px - cx, py - cy) <= ERASER / 2;
+function nearRotateHandle(s: PlacedShape, px: number, py: number): boolean {
+  const handle = localToWorld(s, 0, -s.h / 2 - ROTATE_ARM);
+  return nearPoint(px, py, handle.x, handle.y, HANDLE);
+}
+
+function rasterizeShape(s: PlacedShape): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.ceil(s.w));
+  canvas.height = Math.max(1, Math.ceil(s.h));
+  const ctx = canvas.getContext('2d');
+  if (ctx) drawShape(ctx, { ...s, x: 0, y: 0, rotation: 0 });
+  return canvas;
+}
+
+function drawPlacedShape(
+  ctx: CanvasRenderingContext2D,
+  s: PlacedShape,
+  bitmaps: Map<string, HTMLCanvasElement>
+) {
+  const bitmap = bitmaps.get(s.id);
+  if (bitmap) {
+    const { cx, cy } = shapeCenter(s);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(s.rotation);
+    ctx.drawImage(bitmap, -s.w / 2, -s.h / 2, s.w, s.h);
+    ctx.restore();
+    return;
+  }
+  drawShape(ctx, s);
+}
+
+function eraseOnShapeBitmap(
+  s: PlacedShape,
+  bitmap: HTMLCanvasElement,
+  px: number,
+  py: number,
+  prevX?: number,
+  prevY?: number
+) {
+  const ctx = bitmap.getContext('2d');
+  if (!ctx) return;
+  const { lx, ly } = toLocal(s, px, py);
+  const bx = lx + s.w / 2;
+  const by = ly + s.h / 2;
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(0,0,0,1)';
+  ctx.lineWidth = ERASER;
+  ctx.beginPath();
+  if (prevX !== undefined && prevY !== undefined) {
+    const prev = toLocal(s, prevX, prevY);
+    ctx.moveTo(prev.lx + s.w / 2, prev.ly + s.h / 2);
+  } else {
+    ctx.moveTo(bx, by);
+  }
+  ctx.lineTo(bx, by);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSelection(ctx: CanvasRenderingContext2D, s: PlacedShape, accentColor: string) {
+  const { cx, cy } = shapeCenter(s);
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(s.rotation);
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.strokeRect(-s.w / 2, -s.h / 2, s.w, s.h);
+  ctx.setLineDash([]);
+  ctx.fillStyle = accentColor;
+  ctx.fillRect(s.w / 2 - 6, s.h / 2 - 6, 12, 12);
+  ctx.beginPath();
+  ctx.moveTo(0, -s.h / 2);
+  ctx.lineTo(0, -s.h / 2 - ROTATE_ARM);
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, -s.h / 2 - ROTATE_ARM, 7, 0, Math.PI * 2);
+  ctx.fillStyle = accentColor;
+  ctx.fill();
+  ctx.restore();
 }
 
 function drawBrickWall(ctx: CanvasRenderingContext2D, w: number, h: number) {
@@ -134,7 +248,11 @@ function drawBrickWall(ctx: CanvasRenderingContext2D, w: number, h: number) {
   }
 }
 
-function exportMural(shapes: PlacedShape[], paintCanvas: HTMLCanvasElement): string {
+function exportMural(
+  shapes: PlacedShape[],
+  paintCanvas: HTMLCanvasElement,
+  bitmaps: Map<string, HTMLCanvasElement>
+): string {
   const out = document.createElement('canvas');
   out.width = CANVAS;
   out.height = CANVAS;
@@ -146,7 +264,7 @@ function exportMural(shapes: PlacedShape[], paintCanvas: HTMLCanvasElement): str
   ctx.arc(CANVAS / 2, CANVAS / 2, CANVAS / 2, 0, Math.PI * 2);
   ctx.clip();
   drawBrickWall(ctx, CANVAS, CANVAS);
-  for (const s of shapes) drawShape(ctx, s);
+  for (const s of shapes) drawPlacedShape(ctx, s, bitmaps);
   ctx.drawImage(paintCanvas, 0, 0);
   ctx.restore();
 
@@ -158,15 +276,22 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
   const { awardOnWin, resetAward } = useGameXpAward(config.id);
   const paintRef = useRef<HTMLCanvasElement>(null);
   const compositeRef = useRef<HTMLCanvasElement>(null);
+  const shapeBitmapsRef = useRef<Map<string, HTMLCanvasElement>>(new Map());
+  const lastEraserRef = useRef<{ x: number; y: number } | null>(null);
   const [phase, setPhase] = useState<'idle' | 'edit' | 'name' | 'saved'>('idle');
   const [tool, setTool] = useState<Tool>('select');
   const [color, setColor] = useState(COLORS[0].hex);
   const [shapes, setShapes] = useState<PlacedShape[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ id: string; ox: number; oy: number } | null>(null);
-  const [resize, setResize] = useState<{ id: string; startW: number; startH: number; sx: number; sy: number } | null>(
-    null
-  );
+  const [drag, setDrag] = useState<{ id: string; offX: number; offY: number } | null>(null);
+  const [resize, setResize] = useState<{
+    id: string;
+    startW: number;
+    startH: number;
+    startLx: number;
+    startLy: number;
+  } | null>(null);
+  const [rotate, setRotate] = useState<{ id: string; startRotation: number; startAngle: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [titleDraft, setTitleDraft] = useState('');
@@ -175,15 +300,19 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
   const [xpEarned, setXpEarned] = useState<number | undefined>();
   const [savedFact, setSavedFact] = useState<string | null>(null);
 
-  const eraseShapesAt = useCallback((px: number, py: number) => {
-    setShapes((prev) => {
-      const next = prev.filter((s) => !hitTestEraser(s, px, py));
-      if (next.length !== prev.length) {
-        setSelectedId((id) => (id && next.some((s) => s.id === id) ? id : null));
+  const eraseShapePixelsAt = (px: number, py: number, stroke: boolean) => {
+    const hit = [...shapes].reverse().find((s) => hitTest(s, px, py));
+    if (hit) {
+      let bmp = shapeBitmapsRef.current.get(hit.id);
+      if (!bmp) {
+        bmp = rasterizeShape(hit);
+        shapeBitmapsRef.current.set(hit.id, bmp);
       }
-      return next;
-    });
-  }, []);
+      const prev = stroke ? lastEraserRef.current : null;
+      eraseOnShapeBitmap(hit, bmp, px, py, prev?.x, prev?.y);
+    }
+    lastEraserRef.current = { x: px, y: py };
+  };
 
   const redrawComposite = useCallback(() => {
     const comp = compositeRef.current;
@@ -197,19 +326,11 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     ctx.arc(CANVAS / 2, CANVAS / 2, CANVAS / 2, 0, Math.PI * 2);
     ctx.clip();
     drawBrickWall(ctx, CANVAS, CANVAS);
-    for (const s of shapes) drawShape(ctx, s);
+    for (const s of shapes) drawPlacedShape(ctx, s, shapeBitmapsRef.current);
     ctx.drawImage(paint, 0, 0);
     if (selectedId && tool === 'select') {
       const s = shapes.find((sh) => sh.id === selectedId);
-      if (s) {
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
-        ctx.strokeRect(s.x, s.y, s.w, s.h);
-        ctx.setLineDash([]);
-        ctx.fillStyle = accentColor;
-        ctx.fillRect(s.x + s.w - 6, s.y + s.h - 6, 12, 12);
-      }
+      if (s) drawSelection(ctx, s, accentColor);
     }
     ctx.restore();
   }, [shapes, selectedId, tool, accentColor]);
@@ -237,6 +358,8 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     setTitleDraft('');
     setSaveError(null);
     setSavedFact(null);
+    shapeBitmapsRef.current.clear();
+    lastEraserRef.current = null;
     const paint = paintRef.current;
     if (paint) {
       const ctx = paint.getContext('2d');
@@ -255,6 +378,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
       y: y - base.h / 2,
       w: base.w,
       h: base.h,
+      rotation: 0,
       color,
     };
     setShapes((prev) => [...prev, placed]);
@@ -285,13 +409,24 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
 
     if (tool === 'select') {
       const selectedShape = selectedId ? shapes.find((s) => s.id === selectedId) : undefined;
+      if (selectedShape && nearRotateHandle(selectedShape, x, y)) {
+        const { cx, cy } = shapeCenter(selectedShape);
+        setRotate({
+          id: selectedShape.id,
+          startRotation: selectedShape.rotation,
+          startAngle: Math.atan2(y - cy, x - cx),
+        });
+        e.currentTarget.setPointerCapture(e.pointerId);
+        return;
+      }
       if (selectedShape && nearResizeHandle(selectedShape, x, y)) {
+        const local = toLocal(selectedShape, x, y);
         setResize({
           id: selectedShape.id,
           startW: selectedShape.w,
           startH: selectedShape.h,
-          sx: x,
-          sy: y,
+          startLx: local.lx,
+          startLy: local.ly,
         });
         e.currentTarget.setPointerCapture(e.pointerId);
         return;
@@ -299,10 +434,24 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
       const hit = [...shapes].reverse().find((s) => hitTest(s, x, y));
       if (hit) {
         setSelectedId(hit.id);
-        if (nearResizeHandle(hit, x, y)) {
-          setResize({ id: hit.id, startW: hit.w, startH: hit.h, sx: x, sy: y });
+        const { cx, cy } = shapeCenter(hit);
+        if (nearRotateHandle(hit, x, y)) {
+          setRotate({
+            id: hit.id,
+            startRotation: hit.rotation,
+            startAngle: Math.atan2(y - cy, x - cx),
+          });
+        } else if (nearResizeHandle(hit, x, y)) {
+          const local = toLocal(hit, x, y);
+          setResize({
+            id: hit.id,
+            startW: hit.w,
+            startH: hit.h,
+            startLx: local.lx,
+            startLy: local.ly,
+          });
         } else {
-          setDrag({ id: hit.id, ox: x - hit.x, oy: y - hit.y });
+          setDrag({ id: hit.id, offX: x - cx, offY: y - cy });
         }
         e.currentTarget.setPointerCapture(e.pointerId);
       } else {
@@ -312,7 +461,8 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     }
 
     if (tool === 'eraser') {
-      eraseShapesAt(x, y);
+      lastEraserRef.current = null;
+      eraseShapePixelsAt(x, y, false);
     }
 
     const paint = paintRef.current;
@@ -342,21 +492,34 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     if (drag) {
       setShapes((prev) =>
         prev.map((s) =>
-          s.id === drag.id
-            ? { ...s, x: x - drag.ox, y: y - drag.oy }
-            : s
+          s.id === drag.id ? setShapeFromCenter(s, x - drag.offX, y - drag.offY, s.w, s.h) : s
         )
       );
       return;
     }
 
+    if (rotate) {
+      setShapes((prev) =>
+        prev.map((s) => {
+          if (s.id !== rotate.id) return s;
+          const { cx, cy } = shapeCenter(s);
+          const angle = Math.atan2(y - cy, x - cx);
+          return { ...s, rotation: rotate.startRotation + (angle - rotate.startAngle) };
+        })
+      );
+      return;
+    }
+
     if (resize) {
+      shapeBitmapsRef.current.delete(resize.id);
       setShapes((prev) =>
         prev.map((s) => {
           if (s.id !== resize.id) return s;
-          const nw = Math.max(16, resize.startW + (x - resize.sx));
-          const nh = Math.max(8, resize.startH + (y - resize.sy));
-          return { ...s, w: nw, h: nh };
+          const { cx, cy } = shapeCenter(s);
+          const { lx, ly } = toLocal(s, x, y);
+          const nw = Math.max(16, resize.startW + (lx - resize.startLx));
+          const nh = Math.max(8, resize.startH + (ly - resize.startLy));
+          return setShapeFromCenter(s, cx, cy, nw, nh);
         })
       );
       return;
@@ -365,7 +528,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     if (!drawing) return;
 
     if (tool === 'eraser') {
-      eraseShapesAt(x, y);
+      eraseShapePixelsAt(x, y, true);
     }
 
     const paint = paintRef.current;
@@ -381,6 +544,8 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     setDrawing(false);
     setDrag(null);
     setResize(null);
+    setRotate(null);
+    lastEraserRef.current = null;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
@@ -396,7 +561,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
     }
     const paint = paintRef.current;
     if (!paint) return;
-    const url = exportMural(shapes, paint);
+    const url = exportMural(shapes, paint, shapeBitmapsRef.current);
     setExportUrl(url);
     setTitleDraft('');
     setSaveError(null);
@@ -536,7 +701,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
               type="button"
               onClick={() => setTool('eraser')}
               className={`h-11 sm:w-11 rounded-xl border-2 text-lg ${tool === 'eraser' ? 'border-teal bg-teal/10' : 'border-navy/15'}`}
-              title="Eraser — paint and shapes"
+              title="Pixel eraser — paint and shapes"
             >
               🧽
             </button>
@@ -582,17 +747,20 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
 
             {tool === 'eraser' && (
               <p className="font-body text-xs text-navy/50 text-center mt-3">
-                Scrub to erase brush strokes or remove shapes on the brick wall.
+                Scrub to erase paint and shape pixels (partial erases stay on the wall).
               </p>
             )}
 
             {selected && tool === 'select' && (
               <div className="mt-3 flex flex-wrap gap-2 justify-center items-center">
-                <span className="font-body text-xs text-navy/50">Drag shape to move · corner square to resize</span>
+                <span className="font-body text-xs text-navy/50">
+                  Drag to move · corner to resize · top circle to rotate
+                </span>
                 <button
                   type="button"
                   className="font-heading text-xs text-merlion px-2"
                   onClick={() => {
+                    shapeBitmapsRef.current.delete(selected.id);
                     setShapes((prev) => prev.filter((s) => s.id !== selected.id));
                     setSelectedId(null);
                   }}
