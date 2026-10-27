@@ -20,6 +20,9 @@ import {
   persistUserXp,
   updateUserUsername,
   validateUsername,
+  persistUserMural,
+  persistShowcaseBadge,
+  validateMuralTitle,
 } from '../lib/authService';
 
 interface AuthContextType {
@@ -34,6 +37,8 @@ interface AuthContextType {
   awardGameXp: (gameId: string, amount: number) => void;
   /** Set the public username shown on profile and leaderboard */
   updateUsername: (username: string) => Promise<void>;
+  saveMural: (title: string, imageDataUrl: string) => Promise<void>;
+  updateShowcaseBadge: (badgeId: string | null) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -160,6 +165,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const saveMural = async (title: string, imageDataUrl: string) => {
+    if (!user || user.role !== 'student') {
+      throw new Error('Sign in as a student to save your mural.');
+    }
+    const muralTitle = validateMuralTitle(title);
+    const updated: AppUser = {
+      ...user,
+      muralTitle,
+      muralImageDataUrl: imageDataUrl,
+    };
+    if (!isFirebaseConfigured || !auth) {
+      saveDemoStudent(updated);
+      setUser(updated);
+      return;
+    }
+    await persistUserMural(user.uid, muralTitle, imageDataUrl);
+    setUser(updated);
+  };
+
+  const updateShowcaseBadge = async (badgeId: string | null) => {
+    if (!user || user.role !== 'student') return;
+    const updated: AppUser = { ...user, showcaseBadgeId: badgeId ?? undefined };
+    if (!isFirebaseConfigured || !auth) {
+      saveDemoStudent(updated);
+      setUser(updated);
+      return;
+    }
+    await persistShowcaseBadge(user.uid, badgeId);
+    setUser(updated);
+  };
+
   const updateUsername = async (username: string) => {
     if (!user || user.role !== 'student') return;
     const trimmed = validateUsername(username);
@@ -192,6 +228,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginStudentWithGoogle,
         awardGameXp,
         updateUsername,
+        saveMural,
+        updateShowcaseBadge,
         logout,
       }}
     >

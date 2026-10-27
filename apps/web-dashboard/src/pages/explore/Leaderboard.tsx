@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { BADGES } from '@heritage/shared';
 import { fetchLeaderboard, type LeaderboardEntry } from '../../lib/authService';
 
 export default function Leaderboard() {
@@ -73,6 +74,9 @@ export default function Leaderboard() {
         <ul className="space-y-3">
           {entries.map((entry, index) => {
             const isCurrentUser = entry.uid === user.uid;
+            const showcase = entry.showcaseBadgeId
+              ? BADGES.find((b) => b.id === entry.showcaseBadgeId)
+              : undefined;
             return (
               <li
                 key={entry.uid}
@@ -94,7 +98,19 @@ export default function Leaderboard() {
                     🧭
                   </div>
                 )}
-                <p className="font-heading font-bold text-navy flex-1 min-w-0 truncate">{entry.username}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-heading font-bold text-navy truncate">{entry.username}</p>
+                  {showcase && (
+                    <p className="font-body text-xs text-navy/50 truncate">
+                      {showcase.emoji} {showcase.name}
+                    </p>
+                  )}
+                </div>
+                {showcase && (
+                  <span className="text-xl shrink-0" title={showcase.name}>
+                    {showcase.emoji}
+                  </span>
+                )}
                 <span className="bg-teal/10 text-teal font-heading font-bold text-sm px-3 py-1 rounded-full shrink-0">
                   Lv.{entry.level}
                 </span>

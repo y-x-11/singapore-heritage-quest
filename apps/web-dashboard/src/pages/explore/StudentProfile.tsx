@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { publicUsername } from '../../lib/authService';
-import { calculateLevel, levelProgress, XP_PER_LEVEL } from '@heritage/shared';
+import { BADGES, calculateLevel, levelProgress, XP_PER_LEVEL } from '@heritage/shared';
 
 export default function StudentProfile() {
-  const { user, logout, loading, updateUsername } = useAuth();
+  const { user, logout, loading, updateUsername, updateShowcaseBadge } = useAuth();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [saving, setSaving] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [badgeSaving, setBadgeSaving] = useState(false);
 
   if (loading) {
     return <p className="text-center font-body text-navy/50 py-12">Loading…</p>;
@@ -159,6 +160,55 @@ export default function StudentProfile() {
         <p className="font-body text-xs text-navy/40 mt-2 text-center">
           {XP_PER_LEVEL - xpInLevel} XP to reach Level {level + 1}
         </p>
+      </div>
+
+      {user.muralImageDataUrl && (
+        <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm text-center">
+          <h2 className="font-heading font-bold text-navy text-sm mb-2">🎨 My mural</h2>
+          <img
+            src={user.muralImageDataUrl}
+            alt={user.muralTitle ?? 'My mural'}
+            className="w-36 h-36 rounded-full object-cover mx-auto border-4 border-teal/25 shadow-md"
+          />
+          {user.muralTitle && (
+            <p className="font-heading font-bold text-navy mt-3 truncate px-2">{user.muralTitle}</p>
+          )}
+        </div>
+      )}
+
+      <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm">
+        <h2 className="font-heading font-bold text-navy text-sm mb-1">🏆 Leaderboard badge</h2>
+        <p className="font-body text-xs text-navy/50 mb-3">Choose one badge to show next to your name on the leaderboard.</p>
+        <div className="grid grid-cols-3 gap-2">
+          {BADGES.map((badge) => {
+            const selected = user.showcaseBadgeId === badge.id;
+            return (
+              <button
+                key={badge.id}
+                type="button"
+                disabled={badgeSaving}
+                onClick={async () => {
+                  setBadgeSaving(true);
+                  try {
+                    await updateShowcaseBadge(selected ? null : badge.id);
+                  } finally {
+                    setBadgeSaving(false);
+                  }
+                }}
+                className={`rounded-xl p-2 border-2 text-center transition-transform hover:scale-[1.02] disabled:opacity-50 ${
+                  selected ? 'border-teal bg-teal/10 ring-2 ring-teal/30' : 'border-navy/10 bg-cream/50'
+                }`}
+                title={badge.description}
+              >
+                <span className="text-2xl block">{badge.emoji}</span>
+                <span className="font-heading font-bold text-[10px] text-navy leading-tight block mt-1">{badge.name}</span>
+              </button>
+            );
+          })}
+        </div>
+        {user.showcaseBadgeId && (
+          <p className="font-body text-xs text-teal mt-2 text-center">Tap again to clear your showcase badge.</p>
+        )}
       </div>
 
       <div className="mt-6 bg-sunshine/20 rounded-2xl p-5">

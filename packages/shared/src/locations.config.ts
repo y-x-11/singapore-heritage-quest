@@ -225,6 +225,15 @@ export const LOCATION_GUIDES: LocationGuide[] = [
           'You read the district like a local! Murals sit on old shophouse walls — new art on kampong-era streets. Swap in real photos at each stop when you walk the trail.',
       },
       {
+        id: 'kampong-glam-mural-studio',
+        type: 'mural-studio',
+        title: 'Create Your Mural',
+        instructions:
+          'Drag shapes onto the round wall, paint with the brush, and erase freely. Sign in to save — name your mural (25 characters) and show it on your profile below your level bar.',
+        winMessage:
+          'Your mural joins Kampong Glam’s living street art story. Haji Lane and Arab Street layers new colour onto old kampong streets every year.',
+      },
+      {
         id: 'kampong-glam-wau-workshop',
         type: 'wau-workshop',
         title: 'Wau Workshop: Design for Wind',

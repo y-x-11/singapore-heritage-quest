@@ -65,7 +65,8 @@ export type HeritageGameType =
   | 'tailor'
   | 'wedding-rush'
   | 'mural-map'
-  | 'wau-workshop';
+  | 'wau-workshop'
+  | 'mural-studio';
 
 /** Mini-game shown on each location's Games tab */
 export interface HeritageGameConfig {
