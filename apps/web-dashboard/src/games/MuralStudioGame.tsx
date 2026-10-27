@@ -378,7 +378,7 @@ export default function MuralStudioGame({ config, accentColor }: Props) {
       {phase === 'saved' && (
         <GameOverlay
           title="Mural saved!"
-          body={`"${titleDraft.trim()}" is on your profile. Pick a badge to show on the leaderboard.`}
+          body={`"${titleDraft.trim()}" was added to your profile. Tap it there to show it on the leaderboard.`}
           buttonLabel="Create another"
           tone="won"
           xpEarned={xpEarned}
