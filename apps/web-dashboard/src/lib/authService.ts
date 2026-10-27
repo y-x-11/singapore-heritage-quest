@@ -12,6 +12,13 @@ import { FirebaseError } from 'firebase/app';
 import { db, isFirebaseConfigured } from './firebase';
 import { calculateLevel, type UserRole } from '@heritage/shared';
 
+export interface SavedMural {
+  id: string;
+  title: string;
+  imageDataUrl: string;
+  createdAt: string;
+}
+
 export interface AppUser {
   uid: string;
   email: string;
@@ -24,11 +31,10 @@ export interface AppUser {
   xp: number;
   level: number;
   streak: number;
-  /** User-created mural from Kampong Glam studio (JPEG data URL) */
-  muralImageDataUrl?: string;
-  muralTitle?: string;
-  /** Badge id from BADGES shown on leaderboard */
-  showcaseBadgeId?: string;
+  /** Murals saved from Create Your Mural */
+  savedMurals: SavedMural[];
+  /** Which saved mural appears on the leaderboard */
+  showcaseMuralId?: string;
 }
 
 export interface LeaderboardEntry {
@@ -37,13 +43,103 @@ export interface LeaderboardEntry {
   photoURL?: string;
   level: number;
   xp: number;
-  showcaseBadgeId?: string;
+  showcaseMuralId?: string;
+  showcaseMuralTitle?: string;
+  showcaseMuralImageDataUrl?: string;
 }
 
 const USERNAME_MIN = 2;
 const USERNAME_MAX = 20;
 const MURAL_TITLE_MAX = 25;
 const MURAL_DATA_URL_MAX = 900_000;
+export const SAVED_MURALS_MAX = 12;
+
+function isSavedMural(value: unknown): value is SavedMural {
+  if (!value || typeof value !== 'object') return false;
+  const m = value as SavedMural;
+  return (
+    typeof m.id === 'string' &&
+    typeof m.title === 'string' &&
+    typeof m.imageDataUrl === 'string' &&
+    m.imageDataUrl.startsWith('data:image/')
+  );
+}
+
+function parseSavedMurals(data: Record<string, unknown>): SavedMural[] {
+  if (Array.isArray(data.savedMurals)) {
+    return data.savedMurals.filter(isSavedMural);
+  }
+  const legacyUrl = data.muralImageDataUrl;
+  const legacyTitle = data.muralTitle;
+  if (typeof legacyUrl === 'string' && typeof legacyTitle === 'string' && legacyUrl.startsWith('data:image/')) {
+    return [
+      {
+        id: 'mural_legacy',
+        title: legacyTitle,
+        imageDataUrl: legacyUrl,
+        createdAt: typeof data.lastActive === 'string' ? data.lastActive : new Date().toISOString(),
+      },
+    ];
+  }
+  return [];
+}
+
+export function muralShowcasePreview(
+  savedMurals: SavedMural[],
+  showcaseMuralId?: string
+): Pick<LeaderboardEntry, 'showcaseMuralTitle' | 'showcaseMuralImageDataUrl'> {
+  if (!showcaseMuralId) return {};
+  const mural = savedMurals.find((m) => m.id === showcaseMuralId);
+  if (!mural) return {};
+  return { showcaseMuralTitle: mural.title, showcaseMuralImageDataUrl: mural.imageDataUrl };
+}
+
+function mapFirestoreUser(uid: string, data: Record<string, unknown>): AppUser {
+  const savedMurals = parseSavedMurals(data);
+  const showcaseMuralIdRaw = data.showcaseMuralId;
+  const showcaseMuralId =
+    typeof showcaseMuralIdRaw === 'string' && savedMurals.some((m) => m.id === showcaseMuralIdRaw)
+      ? showcaseMuralIdRaw
+      : undefined;
+
+  return {
+    uid,
+    email: String(data.email ?? ''),
+    displayName: String(data.displayName ?? 'Explorer'),
+    username: data.username
+      ? String(data.username)
+      : defaultUsernameFromDisplayName(String(data.displayName ?? 'Explorer')),
+    photoURL: data.photoURL ? String(data.photoURL) : undefined,
+    role: data.role as UserRole,
+    classId: data.classId ? String(data.classId) : undefined,
+    xp: Number(data.xp ?? 0),
+    level: Number(data.level ?? 1),
+    streak: Number(data.streak ?? 0),
+    savedMurals,
+    showcaseMuralId,
+  };
+}
+
+export function normalizeAppUser(user: AppUser): AppUser {
+  const savedMurals = user.savedMurals ?? [];
+  const legacy = user as AppUser & { muralImageDataUrl?: string; muralTitle?: string };
+  let murals = savedMurals;
+  if (!murals.length && legacy.muralImageDataUrl && legacy.muralTitle) {
+    murals = [
+      {
+        id: 'mural_legacy',
+        title: legacy.muralTitle,
+        imageDataUrl: legacy.muralImageDataUrl,
+        createdAt: new Date().toISOString(),
+      },
+    ];
+  }
+  const showcaseMuralId =
+    user.showcaseMuralId && murals.some((m) => m.id === user.showcaseMuralId)
+      ? user.showcaseMuralId
+      : undefined;
+  return { ...user, savedMurals: murals, showcaseMuralId };
+}
 
 export function defaultUsernameFromDisplayName(displayName: string): string {
   const cleaned = displayName.trim().replace(/\s+/g, ' ').slice(0, USERNAME_MAX);
@@ -120,22 +216,7 @@ export async function fetchUserProfile(uid: string): Promise<AppUser | null> {
   try {
     const snap = await getDoc(doc(db, 'users', uid));
     if (!snap.exists()) return null;
-    const data = snap.data();
-    return {
-      uid,
-      email: data.email,
-      displayName: data.displayName,
-      username: data.username ?? defaultUsernameFromDisplayName(data.displayName ?? 'Explorer'),
-      photoURL: data.photoURL,
-      role: data.role,
-      classId: data.classId,
-      xp: data.xp ?? 0,
-      level: data.level ?? 1,
-      streak: data.streak ?? 0,
-      muralImageDataUrl: data.muralImageDataUrl ?? undefined,
-      muralTitle: data.muralTitle ?? undefined,
-      showcaseBadgeId: data.showcaseBadgeId ?? undefined,
-    };
+    return mapFirestoreUser(uid, snap.data() as Record<string, unknown>);
   } catch (error) {
     throw new Error(formatFirebaseError(error));
   }
@@ -152,7 +233,7 @@ export function validateMuralTitle(raw: string): string {
   return trimmed;
 }
 
-export async function persistUserMural(uid: string, title: string, imageDataUrl: string): Promise<void> {
+export function createSavedMural(title: string, imageDataUrl: string): SavedMural {
   const muralTitle = validateMuralTitle(title);
   if (!imageDataUrl.startsWith('data:image/')) {
     throw new Error('Invalid mural image.');
@@ -160,29 +241,32 @@ export async function persistUserMural(uid: string, title: string, imageDataUrl:
   if (imageDataUrl.length > MURAL_DATA_URL_MAX) {
     throw new Error('Mural image is too large. Try fewer brush strokes or simpler shapes.');
   }
-  if (!db || !isFirebaseConfigured) return;
-  try {
-    await setDoc(
-      doc(db, 'users', uid),
-      {
-        muralTitle,
-        muralImageDataUrl: imageDataUrl,
-        lastActive: new Date().toISOString(),
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    throw new Error(formatFirebaseError(error));
-  }
+  return {
+    id: `mural_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    title: muralTitle,
+    imageDataUrl,
+    createdAt: new Date().toISOString(),
+  };
 }
 
-export async function persistShowcaseBadge(uid: string, badgeId: string | null): Promise<void> {
+export async function persistSavedMuralsState(
+  uid: string,
+  savedMurals: SavedMural[],
+  showcaseMuralId?: string
+): Promise<void> {
   if (!db || !isFirebaseConfigured) return;
+  const preview = muralShowcasePreview(savedMurals, showcaseMuralId);
   try {
     await setDoc(
       doc(db, 'users', uid),
       {
-        showcaseBadgeId: badgeId,
+        savedMurals,
+        showcaseMuralId: showcaseMuralId ?? null,
+        showcaseMuralTitle: preview.showcaseMuralTitle ?? null,
+        showcaseMuralImageDataUrl: preview.showcaseMuralImageDataUrl ?? null,
+        muralTitle: null,
+        muralImageDataUrl: null,
+        showcaseBadgeId: null,
         lastActive: new Date().toISOString(),
       },
       { merge: true }
@@ -211,6 +295,7 @@ export async function createStudentProfile(
     xp: 0,
     level: 1,
     streak: 0,
+    savedMurals: [],
   };
 
   if (db && isFirebaseConfigured) {
@@ -255,14 +340,14 @@ export function applyXpToUser(user: AppUser, amount: number): AppUser {
 }
 
 export function saveDemoStudent(user: AppUser): void {
-  localStorage.setItem(DEMO_STUDENT_KEY, JSON.stringify(user));
+  localStorage.setItem(DEMO_STUDENT_KEY, JSON.stringify(normalizeAppUser(user)));
 }
 
 export function loadDemoStudent(): AppUser | null {
   const raw = localStorage.getItem(DEMO_STUDENT_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as AppUser;
+    return normalizeAppUser(JSON.parse(raw) as AppUser);
   } catch {
     return null;
   }
@@ -273,7 +358,7 @@ export function clearDemoStudent(): void {
 }
 
 export function createDemoGoogleStudent(displayName: string, email: string): AppUser {
-  return {
+  return normalizeAppUser({
     uid: `demo_${Date.now()}`,
     email,
     displayName,
@@ -283,7 +368,8 @@ export function createDemoGoogleStudent(displayName: string, email: string): App
     xp: 0,
     level: 1,
     streak: 0,
-  };
+    savedMurals: [],
+  });
 }
 
 export async function updateUserUsername(uid: string, username: string): Promise<void> {
@@ -311,7 +397,8 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
         photoURL: demo.photoURL,
         level: demo.level,
         xp: demo.xp,
-        showcaseBadgeId: demo.showcaseBadgeId,
+        ...muralShowcasePreview(demo.savedMurals ?? [], demo.showcaseMuralId),
+        showcaseMuralId: demo.showcaseMuralId,
       },
     ];
   }
@@ -320,14 +407,25 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
     const q = query(collection(db, 'users'), where('role', '==', 'student'));
     const snap = await getDocs(q);
     const entries: LeaderboardEntry[] = snap.docs.map((d) => {
-      const data = d.data();
+      const data = d.data() as Record<string, unknown>;
+      const savedMurals = parseSavedMurals(data);
+      const showcaseMuralId =
+        typeof data.showcaseMuralId === 'string' ? data.showcaseMuralId : undefined;
+      const denormTitle = typeof data.showcaseMuralTitle === 'string' ? data.showcaseMuralTitle : undefined;
+      const denormImage =
+        typeof data.showcaseMuralImageDataUrl === 'string' ? data.showcaseMuralImageDataUrl : undefined;
+      const fromMurals = muralShowcasePreview(savedMurals, showcaseMuralId);
       return {
         uid: d.id,
-        username: data.username ?? defaultUsernameFromDisplayName(data.displayName ?? 'Explorer'),
-        photoURL: data.photoURL ?? undefined,
-        level: data.level ?? 1,
-        xp: data.xp ?? 0,
-        showcaseBadgeId: data.showcaseBadgeId ?? undefined,
+        username:
+          (typeof data.username === 'string' && data.username) ||
+          defaultUsernameFromDisplayName(String(data.displayName ?? 'Explorer')),
+        photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
+        level: Number(data.level ?? 1),
+        xp: Number(data.xp ?? 0),
+        showcaseMuralId,
+        showcaseMuralTitle: denormTitle ?? fromMurals.showcaseMuralTitle,
+        showcaseMuralImageDataUrl: denormImage ?? fromMurals.showcaseMuralImageDataUrl,
       };
     });
     return entries.sort((a, b) => b.level - a.level || b.xp - a.xp);

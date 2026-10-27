@@ -20,9 +20,10 @@ import {
   persistUserXp,
   updateUserUsername,
   validateUsername,
-  persistUserMural,
-  persistShowcaseBadge,
-  validateMuralTitle,
+  createSavedMural,
+  persistSavedMuralsState,
+  SAVED_MURALS_MAX,
+  normalizeAppUser,
 } from '../lib/authService';
 
 interface AuthContextType {
@@ -38,7 +39,7 @@ interface AuthContextType {
   /** Set the public username shown on profile and leaderboard */
   updateUsername: (username: string) => Promise<void>;
   saveMural: (title: string, imageDataUrl: string) => Promise<void>;
-  updateShowcaseBadge: (badgeId: string | null) => Promise<void>;
+  updateShowcaseMural: (muralId: string | null) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -47,12 +48,12 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const DEMO_TEACHER_KEY = 'heritage_teacher';
 
 function mapFirebaseUser(fb: FirebaseUser, profile: AppUser): AppUser {
-  return {
+  return normalizeAppUser({
     ...profile,
     email: fb.email ?? profile.email,
     displayName: fb.displayName ?? profile.displayName,
     photoURL: fb.photoURL ?? profile.photoURL,
-  };
+  });
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -110,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       xp: 0,
       level: 1,
       streak: 0,
+      savedMurals: [],
     };
     localStorage.setItem(DEMO_TEACHER_KEY, JSON.stringify(u));
     clearDemoStudent();
@@ -169,30 +171,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user || user.role !== 'student') {
       throw new Error('Sign in as a student to save your mural.');
     }
-    const muralTitle = validateMuralTitle(title);
-    const updated: AppUser = {
-      ...user,
-      muralTitle,
-      muralImageDataUrl: imageDataUrl,
-    };
+    const murals = user.savedMurals ?? [];
+    if (murals.length >= SAVED_MURALS_MAX) {
+      throw new Error(`You can save up to ${SAVED_MURALS_MAX} murals. Remove one from profile to add more.`);
+    }
+    const newMural = createSavedMural(title, imageDataUrl);
+    const savedMurals = [...murals, newMural];
+    const updated: AppUser = { ...user, savedMurals };
     if (!isFirebaseConfigured || !auth) {
       saveDemoStudent(updated);
       setUser(updated);
       return;
     }
-    await persistUserMural(user.uid, muralTitle, imageDataUrl);
+    await persistSavedMuralsState(user.uid, savedMurals, user.showcaseMuralId);
     setUser(updated);
   };
 
-  const updateShowcaseBadge = async (badgeId: string | null) => {
+  const updateShowcaseMural = async (muralId: string | null) => {
     if (!user || user.role !== 'student') return;
-    const updated: AppUser = { ...user, showcaseBadgeId: badgeId ?? undefined };
+    const savedMurals = user.savedMurals ?? [];
+    if (muralId && !savedMurals.some((m) => m.id === muralId)) {
+      throw new Error('That mural is not in your gallery.');
+    }
+    const showcaseMuralId = muralId ?? undefined;
+    const updated: AppUser = { ...user, showcaseMuralId };
     if (!isFirebaseConfigured || !auth) {
       saveDemoStudent(updated);
       setUser(updated);
       return;
     }
-    await persistShowcaseBadge(user.uid, badgeId);
+    await persistSavedMuralsState(user.uid, savedMurals, showcaseMuralId);
     setUser(updated);
   };
 
@@ -229,7 +237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         awardGameXp,
         updateUsername,
         saveMural,
-        updateShowcaseBadge,
+        updateShowcaseMural,
         logout,
       }}
     >

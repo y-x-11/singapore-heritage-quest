@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { publicUsername } from '../../lib/authService';
-import { BADGES, calculateLevel, levelProgress, XP_PER_LEVEL } from '@heritage/shared';
+import { calculateLevel, levelProgress, XP_PER_LEVEL } from '@heritage/shared';
 
 export default function StudentProfile() {
-  const { user, logout, loading, updateUsername, updateShowcaseBadge } = useAuth();
+  const { user, logout, loading, updateUsername, updateShowcaseMural } = useAuth();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
@@ -162,54 +162,65 @@ export default function StudentProfile() {
         </p>
       </div>
 
-      {user.muralImageDataUrl && (
-        <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm text-center">
-          <h2 className="font-heading font-bold text-navy text-sm mb-2">🎨 My mural</h2>
-          <img
-            src={user.muralImageDataUrl}
-            alt={user.muralTitle ?? 'My mural'}
-            className="w-36 h-36 rounded-full object-cover mx-auto border-4 border-teal/25 shadow-md"
-          />
-          {user.muralTitle && (
-            <p className="font-heading font-bold text-navy mt-3 truncate px-2">{user.muralTitle}</p>
-          )}
+      {(user.savedMurals?.length ?? 0) > 0 && (
+        <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm">
+          <h2 className="font-heading font-bold text-navy text-sm mb-1">🎨 My murals</h2>
+          <p className="font-body text-xs text-navy/50 mb-3">
+            Canvases you saved in Create Your Mural ({user.savedMurals.length})
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {user.savedMurals.map((mural) => {
+              const selected = user.showcaseMuralId === mural.id;
+              return (
+                <button
+                  key={mural.id}
+                  type="button"
+                  disabled={badgeSaving}
+                  onClick={async () => {
+                    setBadgeSaving(true);
+                    try {
+                      await updateShowcaseMural(selected ? null : mural.id);
+                    } finally {
+                      setBadgeSaving(false);
+                    }
+                  }}
+                  className={`rounded-xl p-2 border-2 text-center transition-transform hover:scale-[1.02] disabled:opacity-50 ${
+                    selected ? 'border-teal bg-teal/10 ring-2 ring-teal/30' : 'border-navy/10 bg-cream/50'
+                  }`}
+                  title={selected ? 'Shown on leaderboard — tap to clear' : 'Show on leaderboard'}
+                >
+                  <img
+                    src={mural.imageDataUrl}
+                    alt={mural.title}
+                    className="w-full aspect-square rounded-full object-cover border border-navy/10"
+                  />
+                  <span className="font-heading font-bold text-[10px] text-navy leading-tight block mt-1 truncate">
+                    {mural.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="font-body text-xs text-navy/50 mt-3 text-center">
+            Tap a mural to use it as your <strong className="font-semibold text-navy/70">leaderboard badge</strong>.
+            {user.showcaseMuralId && ' Tap again to clear.'}
+          </p>
         </div>
       )}
 
-      <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm">
-        <h2 className="font-heading font-bold text-navy text-sm mb-1">🏆 Leaderboard badge</h2>
-        <p className="font-body text-xs text-navy/50 mb-3">Choose one badge to show next to your name on the leaderboard.</p>
-        <div className="grid grid-cols-3 gap-2">
-          {BADGES.map((badge) => {
-            const selected = user.showcaseBadgeId === badge.id;
-            return (
-              <button
-                key={badge.id}
-                type="button"
-                disabled={badgeSaving}
-                onClick={async () => {
-                  setBadgeSaving(true);
-                  try {
-                    await updateShowcaseBadge(selected ? null : badge.id);
-                  } finally {
-                    setBadgeSaving(false);
-                  }
-                }}
-                className={`rounded-xl p-2 border-2 text-center transition-transform hover:scale-[1.02] disabled:opacity-50 ${
-                  selected ? 'border-teal bg-teal/10 ring-2 ring-teal/30' : 'border-navy/10 bg-cream/50'
-                }`}
-                title={badge.description}
-              >
-                <span className="text-2xl block">{badge.emoji}</span>
-                <span className="font-heading font-bold text-[10px] text-navy leading-tight block mt-1">{badge.name}</span>
-              </button>
-            );
-          })}
+      {(user.savedMurals?.length ?? 0) === 0 && (
+        <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm text-center">
+          <p className="font-body text-sm text-navy/60">
+            No saved murals yet. Play <strong>Create Your Mural</strong> at Kampong Glam to build your gallery.
+          </p>
+          <Link
+            to="/explore/location/kampong-glam"
+            className="inline-block mt-3 text-teal font-heading font-bold text-sm hover:underline"
+          >
+            Go to Kampong Glam
+          </Link>
         </div>
-        {user.showcaseBadgeId && (
-          <p className="font-body text-xs text-teal mt-2 text-center">Tap again to clear your showcase badge.</p>
-        )}
-      </div>
+      )}
 
       <div className="mt-6 bg-sunshine/20 rounded-2xl p-5">
         <h2 className="font-heading font-bold text-navy mb-2">🗺️ Keep exploring!</h2>
