@@ -63,7 +63,9 @@ export type HeritageGameType =
   | 'kolam'
   | 'songket'
   | 'tailor'
-  | 'wedding-rush';
+  | 'wedding-rush'
+  | 'mural-map'
+  | 'wau-workshop';
 
 /** Mini-game shown on each location's Games tab */
 export interface HeritageGameConfig {

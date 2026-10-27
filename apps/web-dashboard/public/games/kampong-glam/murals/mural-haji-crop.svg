@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mural crop placeholder  Haji Lane">
+  <rect width="200" height="200" fill="#9B5DE5"/>
+  <rect x="20" y="40" width="160" height="120" fill="#2A9D8F" opacity="0.9"/>
+  <text x="100" y="105" text-anchor="middle" fill="white" font-family="sans-serif" font-size="14" font-weight="bold">CROP</text>
+  <text x="100" y="125" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Haji Lane mural</text>
+  <text x="100" y="185" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9" opacity="0.8">Replace with photo</text>
+</svg>

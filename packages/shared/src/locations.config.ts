@@ -215,6 +215,24 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         winMessage:
           'Tailoring complete! Family shops on Arab Street still craft the Baju Melayu and Kebaya, living textile heritage of Kampong Glam.',
       },
+      {
+        id: 'kampong-glam-mural-map',
+        type: 'mural-map',
+        title: 'Mural Map Hunt',
+        instructions:
+          'Study a tight crop of street art (no street name shown). Tap the zone on the Kampong Glam map — Haji Lane, Arab Street, Bussorah, and more. Wrong guesses unlock uncle and auntie hints and a wider crop.',
+        winMessage:
+          'You read the district like a local! Murals sit on old shophouse walls — new art on kampong-era streets. Swap in real photos at each stop when you walk the trail.',
+      },
+      {
+        id: 'kampong-glam-wau-workshop',
+        type: 'wau-workshop',
+        title: 'Wau Workshop: Design for Wind',
+        instructions:
+          'Build a kite: pick shape, tail length, and frame material, then launch against a random wind meter. Fail and Pak Wau explains why wau bulan and bamboo beat a plastic diamond kite.',
+        winMessage:
+          'Your wau climbs! Kampong kids flew wau kites in open fields — curved bamboo, humming bow, and a tail tuned to monsoon gusts. That is craft meeting physics.',
+      },
     ],
   },
 ];
