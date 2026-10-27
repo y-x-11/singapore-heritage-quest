@@ -107,22 +107,29 @@ function hitTestEraser(s: PlacedShape, px: number, py: number): boolean {
 }
 
 function drawBrickWall(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const mortar = '#e8e4dc';
-  const brickA = '#c45c4a';
-  const brickB = '#b85444';
-  const rowH = 14;
-  const brickW = 36;
-
-  ctx.fillStyle = mortar;
+  ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, w, h);
 
+  const rowH = 14;
+  const brickW = 36;
+  ctx.strokeStyle = 'rgba(170, 170, 178, 0.42)';
+  ctx.lineWidth = 1;
+
   for (let row = 0; row * rowH < h + rowH; row++) {
-    const y = row * rowH;
+    const yTop = row * rowH;
+    const yBottom = Math.min(h, yTop + rowH);
     const offset = row % 2 ? brickW / 2 : 0;
-    for (let x = -brickW; x < w + brickW; x += brickW) {
-      const bx = x + offset;
-      ctx.fillStyle = (row + Math.floor((x + offset) / brickW)) % 2 === 0 ? brickA : brickB;
-      ctx.fillRect(bx + 1, y + 1, brickW - 2, rowH - 3);
+
+    ctx.beginPath();
+    ctx.moveTo(0, yBottom);
+    ctx.lineTo(w, yBottom);
+    ctx.stroke();
+
+    for (let x = -brickW + offset; x < w + brickW; x += brickW) {
+      ctx.beginPath();
+      ctx.moveTo(x, yTop);
+      ctx.lineTo(x, yBottom);
+      ctx.stroke();
     }
   }
 }
