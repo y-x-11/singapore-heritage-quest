@@ -6,6 +6,8 @@ import KolamGame from './KolamGame';
 import SongketGame from './SongketGame';
 import TailorGame from './TailorGame';
 import WeddingRushGame from './WeddingRushGame';
+import MuralMapGame from './MuralMapGame';
+import WauWorkshopGame from './WauWorkshopGame';
 
 interface LocationGameProps {
   config: HeritageGameConfig;
@@ -28,6 +30,10 @@ export default function LocationGame({ config, accentColor }: LocationGameProps)
       return <TailorGame config={config} accentColor={accentColor} />;
     case 'wedding-rush':
       return <WeddingRushGame config={config} accentColor={accentColor} />;
+    case 'mural-map':
+      return <MuralMapGame config={config} accentColor={accentColor} />;
+    case 'wau-workshop':
+      return <WauWorkshopGame config={config} accentColor={accentColor} />;
     default:
       return null;
   }
