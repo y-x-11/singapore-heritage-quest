@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import WauFlightAnimation from './WauFlightAnimation';
 import type { HeritageGameConfig } from '@heritage/shared';
 import { useGameXpAward } from '../hooks/useGameXpAward';
@@ -147,11 +147,6 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
   const [flightRun, setFlightRun] = useState<{ passed: boolean; target: number; key: number } | null>(
     null
   );
-
-  const score = useMemo(() => {
-    if (!shape || !tail || !frame) return 0;
-    return flyScore(shape, tail, frame, wind);
-  }, [shape, tail, frame, wind]);
 
   const start = () => {
     mistakesRef.current = 0;
