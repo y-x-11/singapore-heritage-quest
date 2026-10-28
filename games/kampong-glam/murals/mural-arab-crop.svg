@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mural crop placeholder  Arab Street">
+  <rect width="200" height="200" fill="#C4A35A"/>
+  <path d="M40 160 Q100 40 160 160" stroke="#2A9D8F" stroke-width="24" fill="none"/>
+  <text x="100" y="105" text-anchor="middle" fill="#1a1a2e" font-family="sans-serif" font-size="14" font-weight="bold">CROP</text>
+  <text x="100" y="125" text-anchor="middle" fill="#1a1a2e" font-family="sans-serif" font-size="10">Arab Street shutter</text>
+</svg>

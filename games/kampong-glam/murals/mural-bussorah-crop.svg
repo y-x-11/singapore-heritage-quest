@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mural crop placeholder  Bussorah Street">
+  <rect width="200" height="200" fill="#2A9D8F"/>
+  <circle cx="100" cy="90" r="45" fill="#FFD166"/>
+  <text x="100" y="165" text-anchor="middle" fill="white" font-family="sans-serif" font-size="14" font-weight="bold">CROP</text>
+  <text x="100" y="182" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Bussorah detail</text>
+</svg>
