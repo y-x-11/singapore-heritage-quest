@@ -75,6 +75,10 @@ const REFERENCES = [
     text: 'Tripadvisor. (n.d.). Moghul Sweets, Singapore. https://www.tripadvisor.com/Restaurant_Review-g294265-d11803564-Reviews-Moghul_Sweets-Singapore.html',
     url: 'https://www.tripadvisor.com/Restaurant_Review-g294265-d11803564-Reviews-Moghul_Sweets-Singapore.html',
   },
+  {
+    text: 'Atap Bar. (n.d.). Wau bulan translated as moon kite is a traditional Malay kite that symbolizes [Photograph]. Facebook. https://www.facebook.com/atapbar/posts/wau-bulan-translated-as-moon-kite-is-a-traditional-malay-kite-that-symbolizes-fr/308633606308058/',
+    url: 'https://www.facebook.com/atapbar/posts/wau-bulan-translated-as-moon-kite-is-a-traditional-malay-kite-that-symbolizes-fr/308633606308058/',
+  },
 ];
 
 export default function References() {
