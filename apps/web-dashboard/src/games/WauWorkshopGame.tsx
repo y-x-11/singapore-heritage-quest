@@ -255,25 +255,27 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
             {showFrameSplitPreview && kiteTailPreview ? (
               <div className="grid grid-cols-2 h-40 min-h-[9rem]">
                 <div className="flex flex-col border-r border-navy/10 min-w-0">
-                  {frame ? (
-                    <img
-                      src={FRAME_IMAGES[frame]}
-                      alt={frameOption?.imageAlt ?? 'Frame material'}
-                      className="flex-1 w-full min-h-0 object-contain p-2"
-                    />
-                  ) : (
-                    <div className="flex-1 flex items-center justify-center p-2">
+                  <div className="flex-1 flex items-center justify-center overflow-hidden p-2 min-h-0">
+                    {frame ? (
+                      <img
+                        src={FRAME_IMAGES[frame]}
+                        alt={frameOption?.imageAlt ?? 'Frame material'}
+                        className="max-h-full max-w-full object-cover object-center"
+                      />
+                    ) : (
                       <p className="font-body text-xs text-navy/45 text-center">Select a frame material below</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                   <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Frame material</p>
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <img
-                    src={kiteTailPreview.src}
-                    alt={kiteTailPreview.alt}
-                    className="flex-1 w-full min-h-0 object-contain p-2"
-                  />
+                  <div className="flex-1 flex items-center justify-center overflow-hidden p-2 min-h-0">
+                    <img
+                      src={kiteTailPreview.src}
+                      alt={kiteTailPreview.alt}
+                      className="max-h-full max-w-full object-contain object-center"
+                    />
+                  </div>
                   <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Your kite &amp; tail</p>
                 </div>
               </div>
