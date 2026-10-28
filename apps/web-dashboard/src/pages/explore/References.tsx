@@ -109,6 +109,9 @@ export default function References() {
   return (
     <div>
       <div className="text-center mb-8">
+        <p className="font-body text-xs font-semibold tracking-wide text-navy/45 uppercase mb-3">
+          Made by Cursor
+        </p>
         <h1 className="font-heading font-extrabold text-3xl text-navy mb-2">References</h1>
         <p className="font-body text-navy/60 text-sm max-w-md mx-auto">
           Sources cited in this heritage explorer, formatted in APA 7th edition.
