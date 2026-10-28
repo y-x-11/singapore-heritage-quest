@@ -83,6 +83,10 @@ const REFERENCES = [
     text: 'Malaysian Games. (n.d.). Wau kucing [Photograph]. In Wau and galah panjang. http://malaysiangames.blogspot.com/p/wau-and-galah-panjang.html',
     url: 'http://malaysiangames.blogspot.com/p/wau-and-galah-panjang.html',
   },
+  {
+    text: 'My Best Kite. (n.d.). Dowel diamond kite [Photograph]. My Best Kite. https://www.my-best-kite.com/dowel-diamond-kite-2.html',
+    url: 'https://www.my-best-kite.com/dowel-diamond-kite-2.html',
+  },
 ];
 
 export default function References() {
