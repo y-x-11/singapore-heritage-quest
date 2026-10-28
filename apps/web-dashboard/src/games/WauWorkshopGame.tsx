@@ -70,6 +70,23 @@ const FRAME_OPTIONS: { id: Frame; label: string; sub: string; imageAlt: string }
   { id: 'plastic', label: 'Plastic spars', sub: 'Light but brittle', imageAlt: 'Plastic and carbon kite spars' },
 ];
 
+const SPLIT_PREVIEW_H = 'h-[14.5rem]';
+
+function WorkshopSplitImage({ src, alt, fit }: { src: string; alt: string; fit: 'contain' | 'cover' }) {
+  if (fit === 'cover') {
+    return (
+      <div className={`${SPLIT_PREVIEW_H} w-full bg-white p-1.5 overflow-hidden`}>
+        <img src={src} alt={alt} className="h-full w-full object-cover object-center rounded-sm" />
+      </div>
+    );
+  }
+  return (
+    <div className={`${SPLIT_PREVIEW_H} w-full bg-white p-2 grid place-items-center`}>
+      <img src={src} alt={alt} className="max-h-full max-w-full object-contain object-center" />
+    </div>
+  );
+}
+
 function pickWind(): Wind {
   const r = Math.random();
   if (r < 0.33) return 'light';
@@ -251,34 +268,30 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
 
       {['shape', 'tail', 'frame'].includes(phase) && (
         <div className="space-y-4">
-          <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20 bg-sky-100">
+          <div className="rounded-2xl border border-dashed border-navy/20 bg-sky-100">
             {showFrameSplitPreview && kiteTailPreview ? (
-              <div className="grid grid-cols-2">
-                <div className="border-r border-navy/10 min-w-0">
-                  <div className="h-44 w-full flex items-center justify-center p-3 box-border">
+              <div>
+                <div className="grid grid-cols-2 divide-x divide-navy/10">
+                  <div>
                     {frame ? (
-                      <img
+                      <WorkshopSplitImage
                         src={FRAME_IMAGES[frame]}
                         alt={frameOption?.imageAlt ?? 'Frame material'}
-                        className="block max-h-[10.5rem] max-w-full w-auto h-auto object-contain object-center"
+                        fit="cover"
                       />
                     ) : (
-                      <p className="font-body text-xs text-navy/45 text-center px-2">
-                        Select a frame material below
-                      </p>
+                      <div
+                        className={`${SPLIT_PREVIEW_H} w-full bg-white grid place-items-center p-4 text-center`}
+                      >
+                        <p className="font-body text-xs text-navy/45">Select a frame material below</p>
+                      </div>
                     )}
                   </div>
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-2">Frame material</p>
+                  <WorkshopSplitImage src={kiteTailPreview.src} alt={kiteTailPreview.alt} fit="contain" />
                 </div>
-                <div className="min-w-0">
-                  <div className="h-44 w-full flex items-center justify-center p-3 box-border">
-                    <img
-                      src={kiteTailPreview.src}
-                      alt={kiteTailPreview.alt}
-                      className="block max-h-[10.5rem] max-w-full w-auto h-auto object-contain object-center"
-                    />
-                  </div>
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-2">Your kite &amp; tail</p>
+                <div className="grid grid-cols-2 border-t border-navy/10 bg-sky-100">
+                  <p className="font-body text-[10px] text-navy/50 text-center py-1.5">Frame material</p>
+                  <p className="font-body text-[10px] text-navy/50 text-center py-1.5">Your kite &amp; tail</p>
                 </div>
               </div>
             ) : (
