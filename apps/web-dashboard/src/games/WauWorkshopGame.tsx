@@ -81,8 +81,8 @@ function WorkshopSplitImage({ src, alt, fit }: { src: string; alt: string; fit: 
     );
   }
   return (
-    <div className={`${SPLIT_PREVIEW_H} w-full bg-white p-2 grid place-items-center`}>
-      <img src={src} alt={alt} className="max-h-full max-w-full object-contain object-center" />
+    <div className={`${SPLIT_PREVIEW_H} w-full max-h-[14.5rem] bg-white p-2 overflow-hidden flex items-center justify-center`}>
+      <img src={src} alt={alt} className="h-full w-full object-contain object-center" />
     </div>
   );
 }
@@ -271,7 +271,7 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
           <div className="rounded-2xl border border-dashed border-navy/20 bg-sky-100">
             {showFrameSplitPreview && kiteTailPreview ? (
               <div>
-                <div className="grid grid-cols-2 divide-x divide-navy/10">
+                <div className="grid grid-cols-2 divide-x divide-navy/10 overflow-hidden">
                   <div>
                     {frame ? (
                       <WorkshopSplitImage
