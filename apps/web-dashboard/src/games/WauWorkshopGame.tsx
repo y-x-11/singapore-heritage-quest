@@ -18,6 +18,12 @@ type Phase = 'idle' | 'shape' | 'tail' | 'frame' | 'launch' | 'won' | 'retry';
 
 const WAU_IMG = publicAssetUrl('games/kampong-glam/wau-kite-placeholder.svg');
 const WAU_BULAN_IMG = publicAssetUrl('games/kampong-glam/wau-bulan-atapbar.jpg');
+const WAU_KUCING_IMG = publicAssetUrl('games/kampong-glam/wau-kucing-malaysiangames.jpg');
+
+const SHAPE_PREVIEW: Partial<Record<Shape, { src: string; alt: string }>> = {
+  'wau-bulan': { src: WAU_BULAN_IMG, alt: 'Wau bulan moon kite held by a craftsman' },
+  'wau-kucing': { src: WAU_KUCING_IMG, alt: 'Decorated wau kucing cat kite' },
+};
 
 function pickWind(): Wind {
   const r = Math.random();
@@ -157,8 +163,9 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
     </button>
   );
 
-  const previewSrc = shape === 'wau-bulan' ? WAU_BULAN_IMG : WAU_IMG;
-  const previewAlt = shape === 'wau-bulan' ? 'Wau bulan moon kite held by a craftsman' : 'Your wau design placeholder';
+  const shapePreview = shape ? SHAPE_PREVIEW[shape] : undefined;
+  const previewSrc = shapePreview?.src ?? WAU_IMG;
+  const previewAlt = shapePreview?.alt ?? 'Your wau design placeholder';
 
   return (
     <GameShell title={config.title} accentColor={accentColor}>
@@ -197,8 +204,12 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
       {['shape', 'tail', 'frame'].includes(phase) && (
         <div className="space-y-4">
           <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20">
-            <img src={previewSrc} alt={previewAlt} className="w-full h-36 object-cover bg-sky-100" />
-            {shape !== 'wau-bulan' && (
+            <img
+              src={previewSrc}
+              alt={previewAlt}
+              className={`w-full h-36 bg-sky-100 ${shapePreview ? 'object-contain' : 'object-cover'}`}
+            />
+            {!shapePreview && (
               <p className="text-center font-body text-xs text-navy/45 py-1">Kite art placeholder — swap for illustration or photo</p>
             )}
           </div>
@@ -215,7 +226,14 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
                   WAU_BULAN_IMG,
                   'Wau bulan moon kite'
                 )}
-                {choiceBtn(shape === 'wau-kucing', () => setShape('wau-kucing'), 'Wau kucing (cat)', 'Stable for learners')}
+                {choiceBtn(
+                  shape === 'wau-kucing',
+                  () => setShape('wau-kucing'),
+                  'Wau kucing (cat)',
+                  'Stable for learners',
+                  WAU_KUCING_IMG,
+                  'Wau kucing cat kite'
+                )}
                 {choiceBtn(shape === 'diamond', () => setShape('diamond'), 'Diamond toy kite', 'Common, but not traditional wau')}
               </div>
               <button
