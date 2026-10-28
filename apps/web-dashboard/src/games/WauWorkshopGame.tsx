@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import WauFlightAnimation from './WauFlightAnimation';
 import type { HeritageGameConfig } from '@heritage/shared';
 import { useGameXpAward } from '../hooks/useGameXpAward';
 import { publicAssetUrl } from '../lib/site';
@@ -141,9 +142,11 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
   const [tail, setTail] = useState<Tail | null>(null);
   const [frame, setFrame] = useState<Frame | null>(null);
   const [wind, setWind] = useState<Wind>(() => pickWind());
-  const [meter, setMeter] = useState(0);
   const [tip, setTip] = useState<string | null>(null);
   const [xpEarned, setXpEarned] = useState<number | undefined>();
+  const [flightRun, setFlightRun] = useState<{ passed: boolean; target: number; key: number } | null>(
+    null
+  );
 
   const score = useMemo(() => {
     if (!shape || !tail || !frame) return 0;
@@ -158,40 +161,28 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
     setTail(null);
     setFrame(null);
     setWind(pickWind());
-    setMeter(0);
+    setFlightRun(null);
     setTip(null);
     setPhase('shape');
   };
 
+  const onFlightComplete = useCallback(() => {
+    if (!shape || !tail || !frame || !flightRun) return;
+    if (flightRun.passed) {
+      setXpEarned(awardOnWin(mistakesRef.current));
+      setPhase('won');
+    } else {
+      mistakesRef.current += 1;
+      setTip(craftsmanTip(shape, tail, frame, wind));
+      setPhase('retry');
+    }
+  }, [shape, tail, frame, wind, flightRun, awardOnWin]);
+
   const launch = () => {
     if (!shape || !tail || !frame) return;
+    const target = Math.min(100, Math.max(0, flyScore(shape, tail, frame, wind)));
+    setFlightRun({ passed: target >= 72, target, key: Date.now() });
     setPhase('launch');
-    setMeter(0);
-    const target = Math.min(100, Math.max(0, score));
-    let step = 0;
-    const interval = setInterval(() => {
-      step += 1;
-      setMeter((prev) => {
-        const next = prev + (target - prev) * 0.35;
-        if (step >= 12) {
-          clearInterval(interval);
-          return target;
-        }
-        return next;
-      });
-    }, 80);
-    setTimeout(() => {
-      clearInterval(interval);
-      setMeter(target);
-      if (target >= 72) {
-        setXpEarned(awardOnWin(mistakesRef.current));
-        setPhase('won');
-      } else {
-        mistakesRef.current += 1;
-        setTip(craftsmanTip(shape, tail, frame, wind));
-        setPhase('retry');
-      }
-    }, 1100);
   };
 
   const choiceBtn = (
@@ -415,17 +406,17 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
         </div>
       )}
 
-      {phase === 'launch' && (
-        <div className="space-y-4 text-center">
-          <p className="font-heading font-bold text-navy">Wind meter</p>
-          <div className="h-8 rounded-full bg-navy/10 overflow-hidden border border-navy/15">
-            <div
-              className="h-full transition-all duration-300 rounded-full"
-              style={{ width: `${meter}%`, backgroundColor: accentColor }}
-            />
-          </div>
-          <p className="font-body text-sm text-navy/70">{WIND_LABEL[wind]} — climbing…</p>
-        </div>
+      {phase === 'launch' && shape && tail && flightRun && (
+        <WauFlightAnimation
+          key={flightRun.key}
+          kiteSrc={TAIL_IMAGES[shape][tail]}
+          kiteAlt={tailPreviewAlt(shape, tail)}
+          passed={flightRun.passed}
+          windLabel={WIND_LABEL[wind]}
+          accentColor={accentColor}
+          meterTarget={flightRun.target}
+          onComplete={onFlightComplete}
+        />
       )}
     </GameShell>
   );
