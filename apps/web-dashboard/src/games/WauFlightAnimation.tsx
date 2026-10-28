@@ -3,19 +3,30 @@ import { useEffect, useMemo, useState } from 'react';
 type FlightStage = 'ready' | 'glide' | 'finale';
 
 /** Positions are relative to the scene box; goal line is at 50% width. */
-type KitePose = { left: string; top: string; scale: number; rotate: number };
+type KitePose = {
+  left?: string;
+  right?: string;
+  top: string;
+  scale: number;
+  rotate: number;
+  widthClass: string;
+};
 
 function kitePose(stage: FlightStage, passed: boolean): KitePose {
   if (stage === 'ready') {
-    return { left: '8%', top: '28%', scale: 0.48, rotate: -8 };
+    return { left: '6%', top: '26%', scale: 0.48, rotate: -8, widthClass: 'w-[38%] max-w-[160px]' };
   }
   if (stage === 'glide') {
-    return { left: '34%', top: '16%', scale: 0.44, rotate: 4 };
+    if (passed) {
+      return { left: '44%', top: '12%', scale: 0.42, rotate: 5, widthClass: 'w-[36%] max-w-[150px]' };
+    }
+    return { left: '32%', top: '16%', scale: 0.44, rotate: 4, widthClass: 'w-[38%] max-w-[160px]' };
   }
   if (passed) {
-    return { left: '56%', top: '52%', scale: 0.4, rotate: 8 };
+    // Far side of the field — entire kite sits past the center line on the grass.
+    return { right: '2%', top: '40%', scale: 0.34, rotate: 10, widthClass: 'w-[34%] max-w-[140px]' };
   }
-  return { left: '14%', top: '54%', scale: 0.38, rotate: -18 };
+  return { left: '6%', top: '50%', scale: 0.36, rotate: -16, widthClass: 'w-[36%] max-w-[150px]' };
 }
 
 interface Props {
@@ -143,13 +154,14 @@ export default function WauFlightAnimation({
         <img
           src={kiteSrc}
           alt={kiteAlt}
-          className="absolute w-[38%] max-w-[160px] object-contain drop-shadow-md pointer-events-none will-change-[left,top,transform]"
+          className={`absolute object-contain drop-shadow-md pointer-events-none will-change-[left,right,top,transform] ${pose.widthClass}`}
           style={{
-            left: pose.left,
+            left: pose.left ?? 'auto',
+            right: pose.right ?? 'auto',
             top: pose.top,
             transform: `scale(${pose.scale}) rotate(${pose.rotate}deg)`,
             transformOrigin: 'center center',
-            transition: `left ${kiteTransition}, top ${kiteTransition}, transform ${kiteTransition}`,
+            transition: `left ${kiteTransition}, right ${kiteTransition}, top ${kiteTransition}, transform ${kiteTransition}`,
           }}
           draggable={false}
         />
