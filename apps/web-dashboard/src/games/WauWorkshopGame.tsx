@@ -17,6 +17,7 @@ type Wind = 'light' | 'moderate' | 'strong';
 type Phase = 'idle' | 'shape' | 'tail' | 'frame' | 'launch' | 'won' | 'retry';
 
 const WAU_IMG = publicAssetUrl('games/kampong-glam/wau-kite-placeholder.svg');
+const WAU_BULAN_IMG = publicAssetUrl('games/kampong-glam/wau-bulan-atapbar.jpg');
 
 function pickWind(): Wind {
   const r = Math.random();
@@ -125,7 +126,14 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
     }, 1100);
   };
 
-  const choiceBtn = (active: boolean, onClick: () => void, label: string, sub?: string) => (
+  const choiceBtn = (
+    active: boolean,
+    onClick: () => void,
+    label: string,
+    sub?: string,
+    imageSrc?: string,
+    imageAlt?: string
+  ) => (
     <button
       type="button"
       onClick={onClick}
@@ -133,10 +141,24 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
         active ? 'border-teal bg-teal/10' : 'border-navy/15 bg-white'
       }`}
     >
-      <span className="font-heading font-bold text-sm text-navy block">{label}</span>
-      {sub && <span className="font-body text-xs text-navy/60 mt-0.5 block">{sub}</span>}
+      <div className={`flex gap-3 ${imageSrc ? 'items-center' : ''}`}>
+        {imageSrc && (
+          <img
+            src={imageSrc}
+            alt={imageAlt ?? ''}
+            className="w-20 h-20 shrink-0 rounded-lg object-cover border border-navy/10"
+          />
+        )}
+        <div className="min-w-0">
+          <span className="font-heading font-bold text-sm text-navy block">{label}</span>
+          {sub && <span className="font-body text-xs text-navy/60 mt-0.5 block">{sub}</span>}
+        </div>
+      </div>
     </button>
   );
+
+  const previewSrc = shape === 'wau-bulan' ? WAU_BULAN_IMG : WAU_IMG;
+  const previewAlt = shape === 'wau-bulan' ? 'Wau bulan moon kite held by a craftsman' : 'Your wau design placeholder';
 
   return (
     <GameShell title={config.title} accentColor={accentColor}>
@@ -175,15 +197,24 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
       {['shape', 'tail', 'frame'].includes(phase) && (
         <div className="space-y-4">
           <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20">
-            <img src={WAU_IMG} alt="Your wau design placeholder" className="w-full h-36 object-contain bg-sky-100" />
-            <p className="text-center font-body text-xs text-navy/45 py-1">Kite art placeholder — swap for illustration or photo</p>
+            <img src={previewSrc} alt={previewAlt} className="w-full h-36 object-cover bg-sky-100" />
+            {shape !== 'wau-bulan' && (
+              <p className="text-center font-body text-xs text-navy/45 py-1">Kite art placeholder — swap for illustration or photo</p>
+            )}
           </div>
 
           {phase === 'shape' && (
             <>
               <p className="font-body text-sm text-navy/75">Step 1 — Choose a shape</p>
               <div className="space-y-2">
-                {choiceBtn(shape === 'wau-bulan', () => setShape('wau-bulan'), 'Wau bulan (moon bow)', 'Classic Malay crescent frame')}
+                {choiceBtn(
+                  shape === 'wau-bulan',
+                  () => setShape('wau-bulan'),
+                  'Wau bulan (moon bow)',
+                  'Classic Malay crescent frame',
+                  WAU_BULAN_IMG,
+                  'Wau bulan moon kite'
+                )}
                 {choiceBtn(shape === 'wau-kucing', () => setShape('wau-kucing'), 'Wau kucing (cat)', 'Stable for learners')}
                 {choiceBtn(shape === 'diamond', () => setShape('diamond'), 'Diamond toy kite', 'Common, but not traditional wau')}
               </div>
