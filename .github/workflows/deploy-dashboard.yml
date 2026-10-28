@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -41,13 +41,18 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
 
-      - name: SPA fallback for GitHub Pages
-        run: cp apps/web-dashboard/dist/index.html apps/web-dashboard/dist/404.html
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web-dashboard/dist
+
+      - name: Publish gh-pages branch (SPA fallback for direct URLs)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: apps/web-dashboard/dist
+          publish_branch: gh-pages
+          force_orphan: true
 
   deploy:
     needs: build
