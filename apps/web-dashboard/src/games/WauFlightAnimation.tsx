@@ -1,0 +1,162 @@
+import { useEffect, useMemo, useState } from 'react';
+
+type FlightStage = 'ready' | 'glide' | 'finale';
+
+interface Props {
+  kiteSrc: string;
+  kiteAlt: string;
+  passed: boolean;
+  windLabel: string;
+  accentColor: string;
+  meterTarget: number;
+  onComplete: () => void;
+}
+
+function StickFigure({ throwing }: { throwing: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 80 120"
+      className="absolute left-[4%] bottom-[14%] w-[18%] max-w-[72px] h-auto text-navy pointer-events-none"
+      aria-hidden
+    >
+      <circle cx="40" cy="14" r="10" fill="none" stroke="currentColor" strokeWidth="3" />
+      <circle cx="44" cy="12" r="1.5" fill="currentColor" />
+      <path
+        d="M34 18 Q38 22 42 18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <line x1="40" y1="24" x2="40" y2="68" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <line x1="40" y1="36" x2="22" y2="52" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <line
+        x1="40"
+        y1="36"
+        x2={throwing ? 58 : 52}
+        y2={throwing ? 28 : 38}
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        className="transition-all duration-500 ease-out"
+      />
+      <line x1="40" y1="68" x2="26" y2="98" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <line x1="40" y1="68" x2="54" y2="98" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export default function WauFlightAnimation({
+  kiteSrc,
+  kiteAlt,
+  passed,
+  windLabel,
+  accentColor,
+  meterTarget,
+  onComplete,
+}: Props) {
+  const [stage, setStage] = useState<FlightStage>('ready');
+  const [meter, setMeter] = useState(0);
+
+  useEffect(() => {
+    setStage('ready');
+    setMeter(0);
+    const tGlide = window.setTimeout(() => setStage('glide'), 550);
+    const tFinale = window.setTimeout(() => setStage('finale'), 2100);
+    const tDone = window.setTimeout(() => onComplete(), 3800);
+    return () => {
+      window.clearTimeout(tGlide);
+      window.clearTimeout(tFinale);
+      window.clearTimeout(tDone);
+    };
+  }, [kiteSrc, passed, onComplete]);
+
+  useEffect(() => {
+    let frame = 0;
+    const start = performance.now();
+    const duration = 2200;
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - (1 - t) ** 2;
+      setMeter(meterTarget * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [meterTarget, kiteSrc, passed]);
+
+  const kiteTransform = useMemo(() => {
+    const base =
+      'left-0 top-0 w-[42%] max-w-[168px] will-change-transform origin-center transition-[transform] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
+    if (stage === 'ready') {
+      return `${base} translate-x-[14%] translate-y-[18%] scale-[0.48] rotate-[-8deg]`;
+    }
+    if (stage === 'glide') {
+      return `${base} translate-x-[34%] translate-y-[8%] scale-[0.44] rotate-[4deg]`;
+    }
+    if (passed) {
+      return `${base} duration-[1000ms] ease-out translate-x-[52%] translate-y-[-4%] scale-[0.42] rotate-[6deg]`;
+    }
+    return `${base} duration-[1100ms] ease-[cubic-bezier(0.55,0.06,0.68,0.19)] translate-x-[22%] translate-y-[58%] scale-[0.38] rotate-[-18deg]`;
+  }, [stage, passed]);
+
+  const statusText =
+    stage === 'finale'
+      ? passed
+        ? 'Passed the line — steady flight!'
+        : 'Fell short of the line — try a longer tail or bamboo frame.'
+      : stage === 'glide'
+        ? `${windLabel} — gliding…`
+        : 'Ready to launch…';
+
+  return (
+    <div className="space-y-3">
+      <div
+        className="relative w-full aspect-[5/3] min-h-[200px] max-h-[280px] rounded-2xl border-2 border-navy/25 bg-gradient-to-b from-sky-50 to-white overflow-hidden"
+        role="img"
+        aria-label={passed ? 'Kite flight succeeded' : 'Kite flight animation'}
+      >
+        <div className="absolute inset-x-0 bottom-0 h-[22%] bg-gradient-to-t from-emerald-500/90 via-emerald-400/70 to-transparent pointer-events-none" />
+        <div
+          className="absolute inset-x-0 bottom-[18%] h-3 opacity-80 pointer-events-none"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(115deg, transparent, transparent 6px, rgba(22,101,52,0.35) 6px, rgba(22,101,52,0.35) 12px)',
+          }}
+        />
+
+        <div className="absolute left-1/2 bottom-[12%] top-[8%] w-0 border-l-2 border-dashed border-amber-500 pointer-events-none -translate-x-1/2" />
+        <p className="absolute left-1/2 top-[6%] -translate-x-1/2 font-heading text-[11px] sm:text-xs font-bold text-amber-600 whitespace-nowrap pointer-events-none">
+          Pass this line
+        </p>
+
+        <StickFigure throwing={stage !== 'ready'} />
+
+        <img
+          src={kiteSrc}
+          alt={kiteAlt}
+          className={`absolute object-contain drop-shadow-md pointer-events-none ${kiteTransform}`}
+          draggable={false}
+        />
+
+        {stage === 'finale' && passed && (
+          <div className="absolute right-[8%] top-[12%] text-2xl motion-safe:animate-bounce pointer-events-none" aria-hidden>
+            ✨
+          </div>
+        )}
+      </div>
+
+      <div>
+        <p className="font-heading font-bold text-sm text-navy text-center mb-2">Wind meter</p>
+        <div className="h-8 rounded-full bg-navy/10 overflow-hidden border border-navy/15">
+          <div
+            className="h-full rounded-full transition-[width] duration-300 ease-out"
+            style={{ width: `${meter}%`, backgroundColor: accentColor }}
+          />
+        </div>
+        <p className="font-body text-sm text-navy/70 text-center mt-2 min-h-[2.5rem]">{statusText}</p>
+      </div>
+    </div>
+  );
+}
