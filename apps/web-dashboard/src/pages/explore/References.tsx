@@ -99,6 +99,10 @@ const REFERENCES = [
     text: 'OneThatch. (n.d.). Artificial split bamboo pole [Photograph]. OneThatch. https://onethatch.com/product/artificial-split-bamboo-pole/',
     url: 'https://onethatch.com/product/artificial-split-bamboo-pole/',
   },
+  {
+    text: 'Magnific. (n.d.). Location pin emoji png [Photograph]. Magnific. https://www.magnific.com/psd/location-pin-emoji-png',
+    url: 'https://www.magnific.com/psd/location-pin-emoji-png',
+  },
 ];
 
 export default function References() {
