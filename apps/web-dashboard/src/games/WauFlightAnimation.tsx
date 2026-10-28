@@ -2,6 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 
 type FlightStage = 'ready' | 'glide' | 'finale';
 
+/** Positions are relative to the scene box; goal line is at 50% width. */
+type KitePose = { left: string; top: string; scale: number; rotate: number };
+
+function kitePose(stage: FlightStage, passed: boolean): KitePose {
+  if (stage === 'ready') {
+    return { left: '8%', top: '28%', scale: 0.48, rotate: -8 };
+  }
+  if (stage === 'glide') {
+    return { left: '34%', top: '16%', scale: 0.44, rotate: 4 };
+  }
+  if (passed) {
+    return { left: '56%', top: '52%', scale: 0.4, rotate: 8 };
+  }
+  return { left: '14%', top: '54%', scale: 0.38, rotate: -18 };
+}
+
 interface Props {
   kiteSrc: string;
   kiteAlt: string;
@@ -86,21 +102,11 @@ export default function WauFlightAnimation({
     return () => cancelAnimationFrame(raf);
   }, [meterTarget, kiteSrc, passed]);
 
-  const kiteTransform = useMemo(() => {
-    const base =
-      'left-0 top-0 w-[42%] max-w-[168px] will-change-transform origin-center transition-[transform] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
-    if (stage === 'ready') {
-      return `${base} translate-x-[14%] translate-y-[18%] scale-[0.48] rotate-[-8deg]`;
-    }
-    if (stage === 'glide') {
-      return `${base} translate-x-[34%] translate-y-[8%] scale-[0.44] rotate-[4deg]`;
-    }
-    if (passed) {
-      // Past the line, resting on the grass (right of center marker).
-      return `${base} duration-[1000ms] ease-out translate-x-[58%] translate-y-[52%] scale-[0.4] rotate-[8deg]`;
-    }
-    return `${base} duration-[1100ms] ease-[cubic-bezier(0.55,0.06,0.68,0.19)] translate-x-[22%] translate-y-[58%] scale-[0.38] rotate-[-18deg]`;
-  }, [stage, passed]);
+  const pose = useMemo(() => kitePose(stage, passed), [stage, passed]);
+  const kiteTransition =
+    stage === 'finale' && !passed
+      ? '1100ms cubic-bezier(0.55, 0.06, 0.68, 0.19)'
+      : '1200ms cubic-bezier(0.22, 1, 0.36, 1)';
 
   const statusText =
     stage === 'finale'
@@ -137,7 +143,14 @@ export default function WauFlightAnimation({
         <img
           src={kiteSrc}
           alt={kiteAlt}
-          className={`absolute object-contain drop-shadow-md pointer-events-none ${kiteTransform}`}
+          className="absolute w-[38%] max-w-[160px] object-contain drop-shadow-md pointer-events-none will-change-[left,top,transform]"
+          style={{
+            left: pose.left,
+            top: pose.top,
+            transform: `scale(${pose.scale}) rotate(${pose.rotate}deg)`,
+            transformOrigin: 'center center',
+            transition: `left ${kiteTransition}, top ${kiteTransition}, transform ${kiteTransition}`,
+          }}
           draggable={false}
         />
 
