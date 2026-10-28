@@ -253,30 +253,32 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
         <div className="space-y-4">
           <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20 bg-sky-100">
             {showFrameSplitPreview && kiteTailPreview ? (
-              <div className="grid grid-cols-2 h-40 min-h-[9rem]">
-                <div className="flex flex-col border-r border-navy/10 min-w-0">
-                  <div className="flex-1 flex items-center justify-center overflow-hidden p-2 min-h-0">
+              <div className="grid grid-cols-2">
+                <div className="border-r border-navy/10 min-w-0">
+                  <div className="h-44 w-full flex items-center justify-center p-3 box-border">
                     {frame ? (
                       <img
                         src={FRAME_IMAGES[frame]}
                         alt={frameOption?.imageAlt ?? 'Frame material'}
-                        className="max-h-full max-w-full object-cover object-center"
+                        className="block max-h-[10.5rem] max-w-full w-auto h-auto object-contain object-center"
                       />
                     ) : (
-                      <p className="font-body text-xs text-navy/45 text-center">Select a frame material below</p>
+                      <p className="font-body text-xs text-navy/45 text-center px-2">
+                        Select a frame material below
+                      </p>
                     )}
                   </div>
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Frame material</p>
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-2">Frame material</p>
                 </div>
-                <div className="flex flex-col min-w-0">
-                  <div className="flex-1 flex items-center justify-center overflow-hidden p-2 min-h-0">
+                <div className="min-w-0">
+                  <div className="h-44 w-full flex items-center justify-center p-3 box-border">
                     <img
                       src={kiteTailPreview.src}
                       alt={kiteTailPreview.alt}
-                      className="max-h-full max-w-full object-contain object-center"
+                      className="block max-h-[10.5rem] max-w-full w-auto h-auto object-contain object-center"
                     />
                   </div>
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Your kite &amp; tail</p>
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-2">Your kite &amp; tail</p>
                 </div>
               </div>
             ) : (
