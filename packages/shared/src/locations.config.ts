@@ -229,7 +229,7 @@ export const LOCATION_GUIDES: LocationGuide[] = [
         type: 'mural-studio',
         title: 'Create Your Mural',
         instructions:
-          'Design on a white shophouse wall with a light brick-line overlay: drag shapes, paint with the brush, and use the eraser on strokes or shapes. Sign in to save — name your mural (25 characters), unlock a Kampong Glam fun fact, and show your art on your profile and leaderboard.',
+          'Design on a white shophouse wall with a light brick-line overlay: drag shapes, paint with the brush, and use the eraser on strokes or shapes. Sign in to save, name your mural (25 characters), unlock a Kampong Glam fun fact, and show your art on your profile and leaderboard.',
         winMessage:
           'Your mural joins Kampong Glam’s living street art story. Haji Lane and Arab Street layers new colour onto old kampong streets every year.',
       },
