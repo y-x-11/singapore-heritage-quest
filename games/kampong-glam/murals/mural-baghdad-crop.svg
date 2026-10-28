@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mural crop placeholder  Baghdad Street">
+  <rect width="200" height="200" fill="#E63946"/>
+  <rect x="60" y="50" width="80" height="100" fill="#1a1a2e" opacity="0.3"/>
+  <text x="100" y="175" text-anchor="middle" fill="white" font-family="sans-serif" font-size="14" font-weight="bold">CROP</text>
+</svg>

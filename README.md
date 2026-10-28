@@ -23,7 +23,7 @@ The teacher website is hosted on **GitHub Pages**, not on your PC.
 1. Push this repo to GitHub (e.g. `github.com/YOUR_USERNAME/singapore-heritage-quest`).
 2. In the repo on GitHub: **Settings → Pages → Build and deployment**
    - **Source:** GitHub Actions (recommended), **or** Deploy from branch **`gh-pages`** / **`/ (root)`**
-   - If you see a generic GitHub **404 File not found** on links like `/explore/location/kampong-glam`, the source is probably **main** branch — switch to **GitHub Actions** or **`gh-pages`** as above.
+   - If you see a generic GitHub **404 File not found** on links like `/explore/location/kampong-glam`, the source is probably **main** branch without the built `404.html` at the repo root. Each deploy copies the Vite build to the **repository root** (`index.html`, `404.html`, `assets/`, …) for legacy Pages, or switch source to **GitHub Actions** / **`gh-pages`** as above.
 3. Push to `main` (or `master`). The workflow [`.github/workflows/deploy-dashboard.yml`](.github/workflows/deploy-dashboard.yml) builds and deploys automatically.
 4. Your site will be live at:
    ```
