@@ -198,33 +198,6 @@ export const LOCATION_GUIDES: LocationGuide[] = [
     ],
     games: [
       {
-        id: 'kampong-glam-songket',
-        type: 'songket',
-        title: 'Songket Weave Loom',
-        instructions:
-          'Study the gold thread pattern, then recreate it on the loom. Complete three patterns to master Songket memory weaving.',
-        winMessage:
-          'Bagus weaving! Songket is a Malay textile with metallic threads woven into silk or cotton, still cherished along Arab Street.',
-      },
-      {
-        id: 'kampong-glam-tailor',
-        type: 'tailor',
-        title: 'Kebaya & Baju Melayu Tailor',
-        instructions:
-          'Choose fabric, cut the pattern, then stitch in the right order. Finish a traditional garment and unlock your tailor collectible.',
-        winMessage:
-          'Tailoring complete! Family shops on Arab Street still craft the Baju Melayu and Kebaya, living textile heritage of Kampong Glam.',
-      },
-      {
-        id: 'kampong-glam-mural-map',
-        type: 'mural-map',
-        title: 'Mural Map Hunt',
-        instructions:
-          'Study a tight crop of street art (no street name shown). Tap the zone on the Kampong Glam map — Haji Lane, Arab Street, Bussorah, and more. Wrong guesses unlock uncle and auntie hints and a wider crop.',
-        winMessage:
-          'You read the district like a local! Murals sit on old shophouse walls — new art on kampong-era streets. Swap in real photos at each stop when you walk the trail.',
-      },
-      {
         id: 'kampong-glam-mural-studio',
         type: 'mural-studio',
         title: 'Create Your Mural',
