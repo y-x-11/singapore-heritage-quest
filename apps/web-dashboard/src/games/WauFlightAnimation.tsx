@@ -96,7 +96,8 @@ export default function WauFlightAnimation({
       return `${base} translate-x-[34%] translate-y-[8%] scale-[0.44] rotate-[4deg]`;
     }
     if (passed) {
-      return `${base} duration-[1000ms] ease-out translate-x-[52%] translate-y-[-4%] scale-[0.42] rotate-[6deg]`;
+      // Past the line, resting on the grass (right of center marker).
+      return `${base} duration-[1000ms] ease-out translate-x-[58%] translate-y-[52%] scale-[0.4] rotate-[8deg]`;
     }
     return `${base} duration-[1100ms] ease-[cubic-bezier(0.55,0.06,0.68,0.19)] translate-x-[22%] translate-y-[58%] scale-[0.38] rotate-[-18deg]`;
   }, [stage, passed]);
@@ -104,7 +105,7 @@ export default function WauFlightAnimation({
   const statusText =
     stage === 'finale'
       ? passed
-        ? 'Passed the line — steady flight!'
+        ? 'Passed the line — kite down on the far grass!'
         : 'Fell short of the line — try a longer tail or bamboo frame.'
       : stage === 'glide'
         ? `${windLabel} — gliding…`
@@ -141,7 +142,10 @@ export default function WauFlightAnimation({
         />
 
         {stage === 'finale' && passed && (
-          <div className="absolute right-[8%] top-[12%] text-2xl motion-safe:animate-bounce pointer-events-none" aria-hidden>
+          <div
+            className="absolute right-[10%] bottom-[20%] text-2xl motion-safe:animate-bounce pointer-events-none"
+            aria-hidden
+          >
             ✨
           </div>
         )}
