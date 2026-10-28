@@ -27,6 +27,37 @@ const SHAPE_PREVIEW: Partial<Record<Shape, { src: string; alt: string }>> = {
   diamond: { src: DIAMOND_KITE_IMG, alt: 'Diamond dowel toy kite in the sky' },
 };
 
+const TAIL_IMAGES: Record<Shape, Record<Tail, string>> = {
+  'wau-bulan': {
+    short: publicAssetUrl('games/kampong-glam/tails/wau-bulan-short.png'),
+    medium: publicAssetUrl('games/kampong-glam/tails/wau-bulan-medium.png'),
+    long: publicAssetUrl('games/kampong-glam/tails/wau-bulan-long.png'),
+  },
+  'wau-kucing': {
+    short: publicAssetUrl('games/kampong-glam/tails/wau-kucing-short.png'),
+    medium: publicAssetUrl('games/kampong-glam/tails/wau-kucing-medium.png'),
+    long: publicAssetUrl('games/kampong-glam/tails/wau-kucing-long.png'),
+  },
+  diamond: {
+    short: publicAssetUrl('games/kampong-glam/tails/diamond-short.png'),
+    medium: publicAssetUrl('games/kampong-glam/tails/diamond-medium.png'),
+    long: publicAssetUrl('games/kampong-glam/tails/diamond-long.png'),
+  },
+};
+
+const TAIL_OPTIONS: { id: Tail; label: string; sub: string }[] = [
+  { id: 'short', label: 'Short tail', sub: 'Neat, but shaky in strong wind' },
+  { id: 'medium', label: 'Medium tail', sub: 'Balanced for practice' },
+  { id: 'long', label: 'Long tail', sub: 'Steadies the wau in gusts' },
+];
+
+function tailPreviewAlt(shape: Shape, tail: Tail): string {
+  const shapeName =
+    shape === 'wau-bulan' ? 'Wau bulan' : shape === 'wau-kucing' ? 'Wau kucing' : 'Diamond toy kite';
+  const tailName = tail === 'short' ? 'short tail' : tail === 'medium' ? 'medium tail' : 'long tail';
+  return `${shapeName} with ${tailName}`;
+}
+
 function pickWind(): Wind {
   const r = Math.random();
   if (r < 0.33) return 'light';
@@ -154,7 +185,7 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
           <img
             src={imageSrc}
             alt={imageAlt ?? ''}
-            className="w-20 h-20 shrink-0 rounded-lg object-cover border border-navy/10"
+            className="w-20 h-20 shrink-0 rounded-lg object-contain bg-sky-50 border border-navy/10"
           />
         )}
         <div className="min-w-0">
@@ -165,9 +196,14 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
     </button>
   );
 
-  const shapePreview = shape ? SHAPE_PREVIEW[shape] : undefined;
-  const previewSrc = shapePreview?.src ?? WAU_IMG;
-  const previewAlt = shapePreview?.alt ?? 'Your wau design placeholder';
+  const designPreview =
+    shape && tail
+      ? { src: TAIL_IMAGES[shape][tail], alt: tailPreviewAlt(shape, tail) }
+      : shape
+        ? SHAPE_PREVIEW[shape]
+        : undefined;
+  const previewSrc = designPreview?.src ?? WAU_IMG;
+  const previewAlt = designPreview?.alt ?? 'Your wau design placeholder';
 
   return (
     <GameShell title={config.title} accentColor={accentColor}>
@@ -209,9 +245,9 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
             <img
               src={previewSrc}
               alt={previewAlt}
-              className={`w-full h-36 bg-sky-100 ${shapePreview ? 'object-contain' : 'object-cover'}`}
+              className={`w-full h-36 bg-sky-100 ${designPreview ? 'object-contain' : 'object-cover'}`}
             />
-            {!shapePreview && (
+            {!designPreview && (
               <p className="text-center font-body text-xs text-navy/45 py-1">Kite art placeholder — swap for illustration or photo</p>
             )}
           </div>
@@ -222,7 +258,10 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
               <div className="space-y-2">
                 {choiceBtn(
                   shape === 'wau-bulan',
-                  () => setShape('wau-bulan'),
+                  () => {
+                    setShape('wau-bulan');
+                    setTail(null);
+                  },
                   'Wau bulan (moon bow)',
                   'Classic Malay crescent frame',
                   WAU_BULAN_IMG,
@@ -230,7 +269,10 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
                 )}
                 {choiceBtn(
                   shape === 'wau-kucing',
-                  () => setShape('wau-kucing'),
+                  () => {
+                    setShape('wau-kucing');
+                    setTail(null);
+                  },
                   'Wau kucing (cat)',
                   'Stable for learners',
                   WAU_KUCING_IMG,
@@ -238,7 +280,10 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
                 )}
                 {choiceBtn(
                   shape === 'diamond',
-                  () => setShape('diamond'),
+                  () => {
+                    setShape('diamond');
+                    setTail(null);
+                  },
                   'Diamond toy kite',
                   'Common, but not traditional wau',
                   DIAMOND_KITE_IMG,
@@ -256,13 +301,20 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
             </>
           )}
 
-          {phase === 'tail' && (
+          {phase === 'tail' && shape && (
             <>
               <p className="font-body text-sm text-navy/75">Step 2 — Tail length</p>
               <div className="space-y-2">
-                {choiceBtn(tail === 'short', () => setTail('short'), 'Short tail', 'Neat, but shaky in strong wind')}
-                {choiceBtn(tail === 'medium', () => setTail('medium'), 'Medium tail', 'Balanced for practice')}
-                {choiceBtn(tail === 'long', () => setTail('long'), 'Long tail', 'Steadies the wau in gusts')}
+                {TAIL_OPTIONS.map((opt) =>
+                  choiceBtn(
+                    tail === opt.id,
+                    () => setTail(opt.id),
+                    opt.label,
+                    opt.sub,
+                    TAIL_IMAGES[shape][opt.id],
+                    tailPreviewAlt(shape, opt.id)
+                  )
+                )}
               </div>
               <button
                 type="button"
