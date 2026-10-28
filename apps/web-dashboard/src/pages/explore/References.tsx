@@ -79,6 +79,10 @@ const REFERENCES = [
     text: 'Atap Bar. (n.d.). Wau bulan translated as moon kite is a traditional Malay kite that symbolizes [Photograph]. Facebook. https://www.facebook.com/atapbar/posts/wau-bulan-translated-as-moon-kite-is-a-traditional-malay-kite-that-symbolizes-fr/308633606308058/',
     url: 'https://www.facebook.com/atapbar/posts/wau-bulan-translated-as-moon-kite-is-a-traditional-malay-kite-that-symbolizes-fr/308633606308058/',
   },
+  {
+    text: 'Malaysian Games. (n.d.). Wau kucing [Photograph]. In Wau and galah panjang. http://malaysiangames.blogspot.com/p/wau-and-galah-panjang.html',
+    url: 'http://malaysiangames.blogspot.com/p/wau-and-galah-panjang.html',
+  },
 ];
 
 export default function References() {
