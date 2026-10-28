@@ -208,14 +208,12 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
     </button>
   );
 
-  const designPreview =
-    shape && tail
-      ? { src: TAIL_IMAGES[shape][tail], alt: tailPreviewAlt(shape, tail) }
-      : shape
-        ? SHAPE_PREVIEW[shape]
-        : undefined;
-  const previewSrc = designPreview?.src ?? WAU_IMG;
-  const previewAlt = designPreview?.alt ?? 'Your wau design placeholder';
+  const kiteTailPreview =
+    shape && tail ? { src: TAIL_IMAGES[shape][tail], alt: tailPreviewAlt(shape, tail) } : undefined;
+  const shapeOnlyPreview = shape ? SHAPE_PREVIEW[shape] : undefined;
+  const designPreview = kiteTailPreview ?? shapeOnlyPreview;
+  const frameOption = frame ? FRAME_OPTIONS.find((f) => f.id === frame) : undefined;
+  const showFrameSplitPreview = phase === 'frame' && frame && kiteTailPreview;
 
   return (
     <GameShell title={config.title} accentColor={accentColor}>
@@ -253,14 +251,39 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
 
       {['shape', 'tail', 'frame'].includes(phase) && (
         <div className="space-y-4">
-          <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20">
-            <img
-              src={previewSrc}
-              alt={previewAlt}
-              className={`w-full h-36 bg-sky-100 ${designPreview ? 'object-contain' : 'object-cover'}`}
-            />
-            {!designPreview && (
-              <p className="text-center font-body text-xs text-navy/45 py-1">Kite art placeholder — swap for illustration or photo</p>
+          <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20 bg-sky-100">
+            {showFrameSplitPreview ? (
+              <div className="flex h-36">
+                <div className="w-1/2 h-full flex flex-col border-r border-navy/10">
+                  <img
+                    src={FRAME_IMAGES[frame]}
+                    alt={frameOption?.imageAlt ?? 'Frame material'}
+                    className="flex-1 w-full object-contain p-1"
+                  />
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-1">Frame material</p>
+                </div>
+                <div className="w-1/2 h-full flex flex-col">
+                  <img
+                    src={kiteTailPreview.src}
+                    alt={kiteTailPreview.alt}
+                    className="flex-1 w-full object-contain p-1"
+                  />
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-1">Your kite &amp; tail</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <img
+                  src={designPreview?.src ?? WAU_IMG}
+                  alt={designPreview?.alt ?? 'Your wau design placeholder'}
+                  className={`w-full h-36 ${designPreview ? 'object-contain' : 'object-cover'}`}
+                />
+                {!designPreview && (
+                  <p className="text-center font-body text-xs text-navy/45 py-1">
+                    Kite art placeholder — swap for illustration or photo
+                  </p>
+                )}
+              </>
             )}
           </div>
 
