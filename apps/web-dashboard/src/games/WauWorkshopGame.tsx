@@ -58,6 +58,18 @@ function tailPreviewAlt(shape: Shape, tail: Tail): string {
   return `${shapeName} with ${tailName}`;
 }
 
+const FRAME_IMAGES: Record<Frame, string> = {
+  plastic: publicAssetUrl('games/kampong-glam/frames/plastic-spar.jpg'),
+  rattan: publicAssetUrl('games/kampong-glam/frames/rattan.jpg'),
+  bamboo: publicAssetUrl('games/kampong-glam/frames/bamboo.jpg'),
+};
+
+const FRAME_OPTIONS: { id: Frame; label: string; sub: string; imageAlt: string }[] = [
+  { id: 'bamboo', label: 'Split bamboo', sub: 'Traditional kampong choice', imageAlt: 'Split bamboo poles' },
+  { id: 'rattan', label: 'Rattan', sub: 'Flexible backup', imageAlt: 'Bundled rattan poles' },
+  { id: 'plastic', label: 'Plastic spars', sub: 'Light but brittle', imageAlt: 'Plastic and carbon kite spars' },
+];
+
 function pickWind(): Wind {
   const r = Math.random();
   if (r < 0.33) return 'light';
@@ -331,9 +343,16 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
             <>
               <p className="font-body text-sm text-navy/75">Step 3 — Frame material</p>
               <div className="space-y-2">
-                {choiceBtn(frame === 'bamboo', () => setFrame('bamboo'), 'Split bamboo', 'Traditional kampong choice')}
-                {choiceBtn(frame === 'rattan', () => setFrame('rattan'), 'Rattan', 'Flexible backup')}
-                {choiceBtn(frame === 'plastic', () => setFrame('plastic'), 'Plastic spars', 'Light but brittle')}
+                {FRAME_OPTIONS.map((opt) =>
+                  choiceBtn(
+                    frame === opt.id,
+                    () => setFrame(opt.id),
+                    opt.label,
+                    opt.sub,
+                    FRAME_IMAGES[opt.id],
+                    opt.imageAlt
+                  )
+                )}
               </div>
               <p className="font-body text-xs text-navy/60 text-center">Today&apos;s wind: {WIND_LABEL[wind]}</p>
               <button
