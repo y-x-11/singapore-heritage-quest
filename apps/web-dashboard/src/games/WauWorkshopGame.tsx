@@ -213,7 +213,7 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
   const shapeOnlyPreview = shape ? SHAPE_PREVIEW[shape] : undefined;
   const designPreview = kiteTailPreview ?? shapeOnlyPreview;
   const frameOption = frame ? FRAME_OPTIONS.find((f) => f.id === frame) : undefined;
-  const showFrameSplitPreview = phase === 'frame' && frame && kiteTailPreview;
+  const showFrameSplitPreview = phase === 'frame' && !!kiteTailPreview;
 
   return (
     <GameShell title={config.title} accentColor={accentColor}>
@@ -252,23 +252,29 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
       {['shape', 'tail', 'frame'].includes(phase) && (
         <div className="space-y-4">
           <div className="rounded-2xl overflow-hidden border border-dashed border-navy/20 bg-sky-100">
-            {showFrameSplitPreview ? (
-              <div className="flex h-36">
-                <div className="w-1/2 h-full flex flex-col border-r border-navy/10">
-                  <img
-                    src={FRAME_IMAGES[frame]}
-                    alt={frameOption?.imageAlt ?? 'Frame material'}
-                    className="flex-1 w-full object-contain p-1"
-                  />
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-1">Frame material</p>
+            {showFrameSplitPreview && kiteTailPreview ? (
+              <div className="grid grid-cols-2 h-40 min-h-[9rem]">
+                <div className="flex flex-col border-r border-navy/10 min-w-0">
+                  {frame ? (
+                    <img
+                      src={FRAME_IMAGES[frame]}
+                      alt={frameOption?.imageAlt ?? 'Frame material'}
+                      className="flex-1 w-full min-h-0 object-contain p-2"
+                    />
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center p-2">
+                      <p className="font-body text-xs text-navy/45 text-center">Select a frame material below</p>
+                    </div>
+                  )}
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Frame material</p>
                 </div>
-                <div className="w-1/2 h-full flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <img
                     src={kiteTailPreview.src}
                     alt={kiteTailPreview.alt}
-                    className="flex-1 w-full object-contain p-1"
+                    className="flex-1 w-full min-h-0 object-contain p-2"
                   />
-                  <p className="font-body text-[10px] text-navy/50 text-center pb-1">Your kite &amp; tail</p>
+                  <p className="font-body text-[10px] text-navy/50 text-center pb-1 shrink-0">Your kite &amp; tail</p>
                 </div>
               </div>
             ) : (
