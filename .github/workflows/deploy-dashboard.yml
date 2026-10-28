@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   build:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      !contains(github.event.head_commit.message, '[pages publish]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -54,8 +57,25 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
 
+      - name: Publish static bundle to main root (legacy Pages source)
+        run: |
+          chmod +x scripts/publish-pages-root.sh
+          ./scripts/publish-pages-root.sh apps/web-dashboard/dist .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html 404.html favicon.png favicon-192.png assets games locations .nojekyll 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No Pages root changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: publish dashboard to Pages root [pages publish]"
+          git push
+
   deploy:
     needs: build
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      !contains(github.event.head_commit.message, '[pages publish]')
     runs-on: ubuntu-latest
     environment:
       name: github-pages

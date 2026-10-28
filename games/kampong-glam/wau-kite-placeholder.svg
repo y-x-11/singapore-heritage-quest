@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Wau kite placeholder">
+  <rect width="320" height="240" fill="#87CEEB"/>
+  <ellipse cx="160" cy="200" rx="120" ry="18" fill="#2d5016" opacity="0.35"/>
+  <path d="M160 200 L160 120" stroke="#8B4513" stroke-width="3"/>
+  <path d="M120 130 Q160 70 200 130 L160 120 Z" fill="#2A9D8F" stroke="#1a1a2e" stroke-width="2"/>
+  <path d="M160 120 L100 180 M160 120 L220 180" stroke="#FFD166" stroke-width="4"/>
+  <text x="160" y="28" text-anchor="middle" fill="#1a1a2e" font-family="sans-serif" font-size="12">Replace with wau photo / illustration</text>
+</svg>
