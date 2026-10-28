@@ -19,10 +19,12 @@ type Phase = 'idle' | 'shape' | 'tail' | 'frame' | 'launch' | 'won' | 'retry';
 const WAU_IMG = publicAssetUrl('games/kampong-glam/wau-kite-placeholder.svg');
 const WAU_BULAN_IMG = publicAssetUrl('games/kampong-glam/wau-bulan-atapbar.jpg');
 const WAU_KUCING_IMG = publicAssetUrl('games/kampong-glam/wau-kucing-malaysiangames.jpg');
+const DIAMOND_KITE_IMG = publicAssetUrl('games/kampong-glam/diamond-kite-mybestkite.jpg');
 
 const SHAPE_PREVIEW: Partial<Record<Shape, { src: string; alt: string }>> = {
   'wau-bulan': { src: WAU_BULAN_IMG, alt: 'Wau bulan moon kite held by a craftsman' },
   'wau-kucing': { src: WAU_KUCING_IMG, alt: 'Decorated wau kucing cat kite' },
+  diamond: { src: DIAMOND_KITE_IMG, alt: 'Diamond dowel toy kite in the sky' },
 };
 
 function pickWind(): Wind {
@@ -234,7 +236,14 @@ export default function WauWorkshopGame({ config, accentColor }: Props) {
                   WAU_KUCING_IMG,
                   'Wau kucing cat kite'
                 )}
-                {choiceBtn(shape === 'diamond', () => setShape('diamond'), 'Diamond toy kite', 'Common, but not traditional wau')}
+                {choiceBtn(
+                  shape === 'diamond',
+                  () => setShape('diamond'),
+                  'Diamond toy kite',
+                  'Common, but not traditional wau',
+                  DIAMOND_KITE_IMG,
+                  'Diamond toy kite'
+                )}
               </div>
               <button
                 type="button"
