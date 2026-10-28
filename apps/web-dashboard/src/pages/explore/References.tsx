@@ -87,6 +87,18 @@ const REFERENCES = [
     text: 'My Best Kite. (n.d.). Dowel diamond kite [Photograph]. My Best Kite. https://www.my-best-kite.com/dowel-diamond-kite-2.html',
     url: 'https://www.my-best-kite.com/dowel-diamond-kite-2.html',
   },
+  {
+    text: 'Kite Guys. (n.d.). ITTW 12 delta kite highlighter delta parts [Photograph]. Kite Guys. https://www.kiteguys.ca/ittw-12-delta-kite-highlighter-delta-parts/',
+    url: 'https://www.kiteguys.ca/ittw-12-delta-kite-highlighter-delta-parts/',
+  },
+  {
+    text: 'H.H. Perkins Co. (n.d.). Basketry and rattan supplies [Photograph]. H.H. Perkins Co. https://hhperkins.com/',
+    url: 'https://hhperkins.com/',
+  },
+  {
+    text: 'OneThatch. (n.d.). Artificial split bamboo pole [Photograph]. OneThatch. https://onethatch.com/product/artificial-split-bamboo-pole/',
+    url: 'https://onethatch.com/product/artificial-split-bamboo-pole/',
+  },
 ];
 
 export default function References() {
